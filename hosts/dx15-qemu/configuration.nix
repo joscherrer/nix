@@ -62,7 +62,6 @@
     alacritty
     kitty
     pciutils
-    glxinfo
     git
   ];
 
