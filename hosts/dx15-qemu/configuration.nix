@@ -63,6 +63,7 @@
     kitty
     pciutils
     glxinfo
+    git
   ];
 
   nix.settings = {
