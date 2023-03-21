@@ -1,0 +1,38 @@
+{
+    "nixpkgs": {
+        "branch": "release-22.11",
+        "description": "Nix Packages collection",
+        "homepage": "",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "ab1254087f4cdf4af74b552d7fc95175d9bdbb49",
+        "sha256": "0n8fv6072mcb923rr7d7l7sx1acblfpkrpv7fn2x886gdbr1rb6s",
+        "type": "tarball",
+        "url": "https://github.com/NixOS/nixpkgs/archive/ab1254087f4cdf4af74b552d7fc95175d9bdbb49.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "zsh-autosuggestions": {
+        "branch": "master",
+        "description": "Fish-like autosuggestions for zsh",
+        "homepage": null,
+        "owner": "zsh-users",
+        "repo": "zsh-autosuggestions",
+        "rev": "a411ef3e0992d4839f0732ebeb9823024afaaaa8",
+        "sha256": "1g3pij5qn2j7v7jjac2a63lxd97mcsgw6xq6k5p7835q9fjiid98",
+        "type": "tarball",
+        "url": "https://github.com/zsh-users/zsh-autosuggestions/archive/a411ef3e0992d4839f0732ebeb9823024afaaaa8.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "zsh-history-substring-search": {
+        "branch": "master",
+        "description": "🐠 ZSH port of Fish history search (up arrow)",
+        "homepage": "",
+        "owner": "zsh-users",
+        "repo": "zsh-history-substring-search",
+        "rev": "400e58a87f72ecec14f783fbd29bc6be4ff1641c",
+        "sha256": "0vjw4s0h4sams1a1jg9jx92d6hd2swq4z908nbmmm2qnz212y88r",
+        "type": "tarball",
+        "url": "https://github.com/zsh-users/zsh-history-substring-search/archive/400e58a87f72ecec14f783fbd29bc6be4ff1641c.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    }
+}
