@@ -2,12 +2,11 @@
 {
   imports = [
     ./zsh.nix
-    ./vscode.nix
+    ./neovim.nix
   ];
 
   nixpkgs = {
     config.allowUnfree = true;
-    # overlays = builtins.attrValues outputs.overlays;
   };
 
   nix = {
@@ -19,8 +18,6 @@
   };
 
   home = {
-    username = lib.mkDefault "jscherrer";
-    homeDirectory = lib.mkDefault "/home/${config.home.username}";
     stateVersion = lib.mkDefault "22.11";
   };
 

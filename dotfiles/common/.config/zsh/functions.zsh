@@ -72,7 +72,26 @@ function jjq {
     jq -R 'fromjson?' "$@"
 }
 
+function envmunge() {
+    varname=$1
+    value=$2
+    varvalue=$(eval "echo \$$varname")
+
+    if [[ :$varvalue: != *:"$value":* ]]; then
+        if [ -z "$varvalue" ]; then
+            eval "$varname=\"$value\""
+        elif [ "$3" = "after" ]; then
+            eval "$varname=\"\$$varname:$value\""
+        else
+            eval "$varname=\"$value:\$$varname\""
+        fi
+    fi
+}
 
 # Required for $langinfo
 zmodload zsh/langinfo
 
+# Magic functions
+autoload -Uz is-at-least bracketed-paste-magic url-quote-magic
+zle -N bracketed-paste bracketed-paste-magic
+zle -N self-insert url-quote-magic

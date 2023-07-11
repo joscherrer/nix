@@ -72,3 +72,12 @@ bindkey "^[m" copy-prev-shell-word
 # Real fuzzy search
 bindkey "$terminfo[kcuu1]" history-substring-search-up
 bindkey "$terminfo[kcud1]" history-substring-search-down
+
+function fzfz {
+  _dir=$(z | awk '{print $2}' | fzf --tac)
+  cd "$_dir"
+  zle reset-prompt
+}
+
+zle -N fzfz
+bindkey '^e' fzfz

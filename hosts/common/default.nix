@@ -3,17 +3,6 @@ let
   better-gc = pkgs.writeShellScriptBin "better-gc" (builtins.readFile "${self}/scripts/better-gc");
 in
 {
-  imports = [
-    inputs.home-manager.nixosModules.home-manager
-  ];
-
-  home-manager = {
-    useUserPackages = true;
-    useGlobalPkgs = true;
-    users.jscherrer = import "${self}/home/jscherrer/${config.networking.hostName}.nix";
-    extraSpecialArgs = { inherit inputs outputs; };
-  };
-
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.systemd-boot.enable = true;
 
