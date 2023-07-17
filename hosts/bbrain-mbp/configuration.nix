@@ -4,38 +4,20 @@
     inputs.home-manager.darwinModules.home-manager
   ];
 
-
   networking.localHostName = "bbrain-mbp";
 
   environment.systemPackages = [
-    pkgs.vim
     pkgs.alacritty
     pkgs.discord
   ];
 
-  nix = {
-    package = lib.mkDefault pkgs.nix;
-    settings = {
-      experimental-features = [ "nix-command" "flakes" "repl-flake" ];
-      warn-dirty = false;
-    };
-  };
-
   services.nix-daemon.enable = true;
-  nixpkgs.config.allowUnfree = true;
-  nixpkgs.overlays = builtins.attrValues outputs.overlays;
 
   fonts.fontDir.enable = true;
   fonts.fonts = [
     pkgs.nerdfonts
   ];
 
-  # Don't forget to replace /etc/zshrc with
-  #   if test -e /etc/static/zshrc; then source /etc/static/zshrc; fi
-  # And change the default shell with
-  #   sudo dscl . -create /Users/jscherrer UserShell /run/current-system/sw/bin/zsh
-  programs.zsh.enable = true;
-  programs.zsh.promptInit = "autoload -U promptinit && promptinit";
   security.pam.enableSudoTouchIdAuth = true;
 
   services.dnsmasq = {

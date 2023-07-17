@@ -1,11 +1,10 @@
 .PHONY: all linux
+TMPDIR := $(shell mktemp -d -p /tmp)
 
 all:
 
 linux:
-	ssh jscherrer@192.168.1.90 "mkdir -p /home/jscherrer/dev/nix"
-	rsync -avz --exclude '.git/' ./ jscherrer@192.168.1.90:/home/jscherrer/dev/nix
-	ssh jscherrer@192.168.1.90 "sudo nixos-rebuild switch --flake /home/jscherrer/dev/nix#bbrain-linux"
+	TMPDIR=$(TMPDIR) nixos-rebuild --fast --target-host jscherrer@192.168.1.175 --build-host jscherrer@192.168.1.175 switch --flake '/Users/jscherrer/dev/nix#bbrain-linux' --use-remote-sudo $(EXTRA_ARGS)
 
 mbp:
 	darwin-rebuild switch --flake ~/dev/nix#bbrain-mbp

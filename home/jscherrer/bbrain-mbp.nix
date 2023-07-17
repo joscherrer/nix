@@ -10,57 +10,6 @@
   home.stateVersion = "22.11";
 
   home.packages = with pkgs; [
-    # Shell utilities
-    coreutils
-    socat
-    curl
-    git
-    delta
-    jq
-    yq-go
-    ripgrep
-    tmux
-    pgcli
-    gnupg
-    shellcheck
-    cht-sh
-    fzf
-    pure-prompt
-
-    cmake
-
-    # Containers
-    podman-compose
-    dive
-    buildah
-    kustomize
-    kubectl
-    kubectx
-    kubelogin-oidc
-    kind
-    hadolint
-
-    # JS/TS
-    unstable.nodejs
-    nodePackages.typescript
-    yarn
-
-    # Golang
-    unstable.gopls
-    unstable.go-outline
-
-    # Java
-    openjdk11
-    gradle
-    maven
-    kotlin
-    kotlin-native
-    kotlin-language-server
-
-    # Nix
-    niv
-    rnix-lsp
-  
     # Others
     terraform
     unstable.vault-bin
