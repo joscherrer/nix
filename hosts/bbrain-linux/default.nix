@@ -3,6 +3,6 @@
     ./configuration.nix
     ./hardware-configuration.nix
     ../common
-    ../common/default-darwin.nix
+    ../common/default-linux.nix
   ];
 }
