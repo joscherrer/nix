@@ -1,9 +1,5 @@
 { self, inputs, outputs, config, pkgs, lib, ... }:
 {
-  imports = [
-    inputs.home-manager.darwinModules.home-manager
-  ];
-
   networking.localHostName = "bbrain-mbp";
 
   environment.systemPackages = [

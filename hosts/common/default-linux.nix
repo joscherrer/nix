@@ -3,6 +3,10 @@ let
   better-gc = pkgs.writeShellScriptBin "better-gc" (builtins.readFile "${self}/scripts/better-gc");
 in
 {
+  imports = [
+    inputs.home-manager.nixosModules.home-manager
+  ];
+
   networking = {
     firewall.enable = true;
     networkmanager.enable = true;
