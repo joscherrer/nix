@@ -20,9 +20,6 @@
     inputs.kmonad.packages."${pkgs.system}".kmonad
   ];
 
-  programs.go.enable = true;
-  programs.go.package = pkgs.unstable.go;
-
   programs.alacritty.settings = {
     font.normal.family = "CaskaydiaCove Nerd Font Mono";
     font.bold.family = "CaskaydiaCove Nerd Font Mono";

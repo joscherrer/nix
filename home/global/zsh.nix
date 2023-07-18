@@ -76,7 +76,10 @@ in
   home.file.".config/zsh/history.zsh".source = "${common-root}/.config/zsh/history.zsh";
   home.file.".config/zsh/misc.zsh".source = "${common-root}/.config/zsh/misc.zsh";
   home.file.".config/zsh/plugins.zsh".text = ''
-  PODMAN_COMP=~/.config/zsh/site-functions/_podman
+  USER_COMP="$HOME/.config/zsh/site-functions"
+  PODMAN_COMP="$USER_COMP/_podman"
+  [ -d "$USER_COMP" ] || mkdir -p "$USER_COMP"
+
   command -v podman > /dev/null && [ ! -f "$PODMAN_COMP" ] && podman completion zsh -f "$PODMAN_COMP"
   # source ${pkgs.zsh-vi-mode}/share/zsh-vi-mode/zsh-vi-mode.plugin.zsh
   '';
