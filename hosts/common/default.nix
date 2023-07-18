@@ -1,8 +1,8 @@
 { self, inputs, outputs, config, pkgs, lib, ... }:
 {
-  # imports = [
-  #   inputs.home-manager.darwinModules.home-manager
-  # ];
+  imports = [
+    inputs.home-manager.darwinModules.home-manager
+  ];
 
   environment.pathsToLink = [ "/share/zsh" ];
   environment.systemPackages = with pkgs; [

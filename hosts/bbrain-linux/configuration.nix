@@ -35,10 +35,10 @@
 
   system.stateVersion = "23.05"; # Did you read the comment?
 
-  # home-manager = {
-  #   useGlobalPkgs = true;
-  #   useUserPackages = true;
-  #   users.jscherrer = import "${self}/home/jscherrer/bbrain-linux.nix";
-  #   extraSpecialArgs = { inherit inputs outputs; };
-  # };
+  home-manager = {
+    useGlobalPkgs = true;
+    useUserPackages = true;
+    users.jscherrer = import "${self}/home/jscherrer/bbrain-linux.nix";
+    extraSpecialArgs = { inherit inputs outputs; };
+  };
 }

@@ -4,7 +4,7 @@ let
 in
 {
   networking = {
-    firewall.enable = false;
+    firewall.enable = true;
     networkmanager.enable = true;
   };
 
