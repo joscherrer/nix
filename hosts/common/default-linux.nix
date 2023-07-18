@@ -16,16 +16,9 @@ in
   i18n.defaultLocale = "en_US.UTF-8";
 
   security.sudo.enable = true;
+  security.sudo.wheelNeedsPassword = false;
+
   security.sudo.extraRules = [
-    {
-      groups = [ "wheel" ];
-      commands = [
-        {
-          command = "ALL";
-          options = [ "NOPASSWD" ];
-        }
-      ];
-    }
     {
       users = [ "better-gc" ];
       commands = [
@@ -38,7 +31,6 @@ in
   ];
 
   services.openssh.enable = true;
-  system.copySystemConfiguration = false;
 
   systemd.timers."better-gc" = {
     wantedBy = [ "timers.target" ];
@@ -78,8 +70,4 @@ in
     better-gc = { };
     jscherrer = { };
   };
-
-  environment.systemPackages = with pkgs; [
-    sudo
-  ];
 }
