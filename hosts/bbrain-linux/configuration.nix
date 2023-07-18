@@ -41,4 +41,6 @@
     users.jscherrer = import "${self}/home/jscherrer/bbrain-linux.nix";
     extraSpecialArgs = { inherit inputs outputs; };
   };
+
+  programs.hyprland.nvidiaPatches = true;
 }
