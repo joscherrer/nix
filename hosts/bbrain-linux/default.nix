@@ -5,5 +5,6 @@
     ../common
     ../common/default-linux.nix
     ../common/gui.nix
+    ../common/sound.nix
   ];
 }
