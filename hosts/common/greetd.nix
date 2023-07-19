@@ -1,7 +1,7 @@
 { inputs, outputs, config, pkgs, ... }:
 let
   cage-kiosk = pkgs.writeShellScriptBin "cage-kiosk" ''
-    dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK
+    dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP
     exec ${pkgs.cage}/bin/cage -s -- ${pkgs.greetd.gtkgreet}/bin/gtkgreet -l -s /etc/greetd/gtkgreet.css
   '';
 
@@ -16,7 +16,7 @@ let
     export SDL_IM_MODULE=fcitx
     export GLFW_IM_MODULE=ibus
 
-    dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK
+    dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP
     exec ${config.programs.hyprland.package}/bin/Hyprland --config /etc/greetd/hyprland.conf
   '';
 in
@@ -42,6 +42,7 @@ in
     hyprland-kiosk
     pkgs.greetd.gtkgreet
     pkgs.cage
+    # pkgs.qt6.qtwayland
   ];
 
   environment.etc."greetd/environments".text = "zsh";
@@ -57,6 +58,7 @@ in
   # '';
   environment.etc."greetd/hyprland.conf".text = ''
     source = /etc/hypr/default.conf
+    exec-once=dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
     exec = systemd-cat --identifier=regreet ${pkgs.greetd.regreet}/bin/regreet; hyprctl dispatch exit ""
   '';
 }
