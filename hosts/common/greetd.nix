@@ -29,12 +29,17 @@ in
   services.greetd = {
     enable = true;
     settings = {
+      # default_session = {
+      #   command = "${hyprland-kiosk}/bin/hyprland-kiosk";
+      #   user = "greeter";
+      # };
       default_session = {
-        command = "${hyprland-kiosk}/bin/hyprland-kiosk";
+        command = "${pkgs.cage}/bin/cage -s -- ${config.programs.regreet.package}";
         user = "greeter";
       };
     };
   };
+  programs.regreet.enable = true;
 
   environment.systemPackages = [
     cage-kiosk
