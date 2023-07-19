@@ -41,6 +41,7 @@ in
       color = "#282a36";
     };
     gtk = {
+      theme_name = "fluent-dark";
       application_prefer_dark_theme = true;
     };
   };
@@ -50,7 +51,7 @@ in
     hyprland-kiosk
     pkgs.greetd.gtkgreet
     pkgs.cage
-    # pkgs.fluent-gtk-theme
+    pkgs.fluent-gtk-theme
     # pkgs.qt6.qtwayland
   ];
 
