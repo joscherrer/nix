@@ -40,7 +40,7 @@ in
     background = {
       color = "#282a36";
     };
-    gtk = {
+    GTK = {
       theme_name = "Fluent-Dark-compact";
       application_prefer_dark_theme = true;
     };
