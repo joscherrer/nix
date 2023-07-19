@@ -29,12 +29,8 @@ in
   services.greetd = {
     enable = true;
     settings = {
-      # default_session = {
-      #   command = "${hyprland-kiosk}/bin/hyprland-kiosk";
-      #   user = "greeter";
-      # };
       default_session = {
-        command = "${pkgs.cage}/bin/cage -s -- ${config.programs.regreet.package}";
+        command = "${hyprland-kiosk}/bin/hyprland-kiosk";
         user = "greeter";
       };
     };
@@ -55,9 +51,13 @@ in
         color: white;
     }
   '';
+  # environment.etc."greetd/hyprland.conf".text = ''
+  #   source = /etc/hypr/default.conf
+  #   exec = systemd-cat --identifier=gtkgreet ${pkgs.greetd.gtkgreet}/bin/gtkgreet -l -s /etc/greetd/gtkgreet.css; hyprctl dispatch exit ""
+  # '';
   environment.etc."greetd/hyprland.conf".text = ''
     source = /etc/hypr/default.conf
-    exec = systemd-cat --identifier=gtkgreet ${pkgs.greetd.gtkgreet}/bin/gtkgreet -l -s /etc/greetd/gtkgreet.css; hyprctl dispatch exit ""
+    exec = systemd-cat --identifier=regreet ${pkgs.greetd.regreet}/bin/regreet; hyprctl dispatch exit ""
   '';
 }
 
