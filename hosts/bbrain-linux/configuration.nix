@@ -57,12 +57,12 @@
     package = config.boot.kernelPackages.nvidiaPackages.production;
   };
 
-  # environment.sessionVariables = {
-  #   LIBVA_DRIVER_NAME = "nvidia";
-  #   GBM_BACKEND = "nvidia-drm";
-  #   WLR_NO_HARDWARE_CURSORS = "1";
-  #   __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-  # };
+  environment.sessionVariables = {
+    # LIBVA_DRIVER_NAME = "nvidia";
+    # GBM_BACKEND = "nvidia-drm";
+    WLR_NO_HARDWARE_CURSORS = "1";
+    # __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+  };
 
   # Tell Xorg to use the nvidia driver
   # The services.xserver.videoDrivers setting is also
