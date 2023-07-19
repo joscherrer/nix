@@ -36,13 +36,14 @@ in
     };
   };
   programs.regreet.enable = true;
-  programs.regreet.settings = ''
-  [background]
-  color = #282a36
-
-  [GTK]
-  application_prefer_dark_theme = true
-  '';
+  programs.regreet.settings = {
+    background = {
+      color = "#282a36";
+    };
+    gtk = {
+      application_prefer_dark_theme = true;
+    };
+  };
 
   environment.systemPackages = [
     cage-kiosk
