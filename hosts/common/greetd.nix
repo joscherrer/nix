@@ -36,12 +36,20 @@ in
     };
   };
   programs.regreet.enable = true;
+  programs.regreet.settings = ''
+  [background]
+  color = #282a36
+
+  [GTK]
+  application_prefer_dark_theme = true
+  '';
 
   environment.systemPackages = [
     cage-kiosk
     hyprland-kiosk
     pkgs.greetd.gtkgreet
     pkgs.cage
+    # pkgs.fluent-gtk-theme
     # pkgs.qt6.qtwayland
   ];
 
