@@ -1,7 +1,7 @@
 { inputs, outputs, config, pkgs, ... }:
 let
   cage-kiosk = pkgs.writeShellScriptBin "cage-kiosk" ''
-    dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP
+    dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
     exec ${pkgs.cage}/bin/cage -s -- ${pkgs.greetd.gtkgreet}/bin/gtkgreet -l -s /etc/greetd/gtkgreet.css
   '';
 
@@ -10,13 +10,13 @@ let
     export HYPRLAND_LOG_WLR=1
     export XCURSOR_THEME=Bibata-Modern-Classic
     export XCURSOR_SIZE=24
-    export GTK_IM_MODULE=fcitx
-    export QT_IM_MODULE=fcitx
-    export XMODIFIERS=@im=fcitx
-    export SDL_IM_MODULE=fcitx
-    export GLFW_IM_MODULE=ibus
+    # export GTK_IM_MODULE=fcitx
+    # export QT_IM_MODULE=fcitx
+    # export XMODIFIERS=@im=fcitx
+    # export SDL_IM_MODULE=fcitx
+    # export GLFW_IM_MODULE=ibus
 
-    dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP
+    dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
     exec ${config.programs.hyprland.package}/bin/Hyprland --config /etc/greetd/hyprland.conf
   '';
 in
