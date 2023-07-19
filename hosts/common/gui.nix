@@ -3,6 +3,8 @@
   imports = [
     ./. # hosts/common/
     ./hyprland.nix
+    ./vscode.nix
+    ./sound.nix
   ];
 
   environment.systemPackages = with pkgs; [
