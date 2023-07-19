@@ -41,7 +41,7 @@ in
       color = "#282a36";
     };
     gtk = {
-      theme_name = "fluent-dark";
+      theme_name = "Fluent-Dark-compact";
       application_prefer_dark_theme = true;
     };
   };
