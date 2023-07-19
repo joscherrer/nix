@@ -16,6 +16,8 @@
     kmonad.inputs.nixpkgs.follows = "nixpkgs";
 
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+
+    vscode-server.url = "github:nix-community/nixos-vscode-server";
   };
 
   outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, darwin, kmonad, ... }@inputs:
