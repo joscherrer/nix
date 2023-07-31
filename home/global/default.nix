@@ -26,6 +26,9 @@
   programs.go.package = pkgs.unstable.go;
   programs.lsd.enable = true;
 
+  programs.keychain.enable = true;
+  services.gnome-keyring.enable = true;
+
   home.packages = with pkgs; [
     # Shell utilities
     coreutils
@@ -34,6 +37,7 @@
     git
     delta
     jq
+    fd
     yq-go
     ripgrep
     tmux
@@ -43,7 +47,12 @@
     cht-sh
     fzf
     pure-prompt
-
+    unzip
+    httpie
+    curlie
+    procs
+    bottom
+  
     cmake
 
     # Containers

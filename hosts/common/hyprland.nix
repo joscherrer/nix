@@ -59,6 +59,7 @@ in
 
   environment.systemPackages = [
     hyprland-wrapper
+    pkgs.wayvnc
   ];
 
   environment.etc."greetd/environments".text = "hyprland";

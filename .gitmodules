@@ -1,0 +1,3 @@
+[submodule "dotfiles/common/.config/nvim"]
+	path = dotfiles/common/.config/nvim
+	url = https://github.com/NvChad/NvChad

@@ -24,7 +24,7 @@ stdenv.mkDerivation rec {
     homepage = "https://github.com/zsh-users/zsh-autosuggestions";
     license = licenses.mit;
     platforms = platforms.unix;
-    maintainers = [ maintainers.loskutov ];
+    maintainers = [ maintainers.joscherrer ];
   };
 
   passthru = {

@@ -5,10 +5,22 @@
         "homepage": "",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "ab1254087f4cdf4af74b552d7fc95175d9bdbb49",
-        "sha256": "0n8fv6072mcb923rr7d7l7sx1acblfpkrpv7fn2x886gdbr1rb6s",
+        "rev": "ea4c80b39be4c09702b0cb3b42eab59e2ba4f24b",
+        "sha256": "1xi53rlslcprybsvrmipm69ypd3g3hr7wkxvzc73ag8296yclyll",
         "type": "tarball",
-        "url": "https://github.com/NixOS/nixpkgs/archive/ab1254087f4cdf4af74b552d7fc95175d9bdbb49.tar.gz",
+        "url": "https://github.com/NixOS/nixpkgs/archive/ea4c80b39be4c09702b0cb3b42eab59e2ba4f24b.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "nvchad": {
+        "branch": "v2.0",
+        "description": "Blazing fast Neovim config providing solid defaults and a beautiful UI, enhancing your neovim experience.",
+        "homepage": "https://nvchad.com/",
+        "owner": "NvChad",
+        "repo": "NvChad",
+        "rev": "720d71b546b8300bf3951c839f52db6cb83c3dc5",
+        "sha256": "0byhs3711k9ji1vwvc2zgv75jvj7njfcmg47ipw28hl3nmhv3h67",
+        "type": "tarball",
+        "url": "https://github.com/NvChad/NvChad/archive/720d71b546b8300bf3951c839f52db6cb83c3dc5.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "zsh-autosuggestions": {

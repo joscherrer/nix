@@ -1,9 +1,11 @@
 { self, inputs, outputs, config, pkgs, ... }:
 {
-  programs.rofi = {
-    enable = true;
-    package = pkgs.rofi-wayland;
-  };
+  imports = [
+    ../../modules/alacritty
+    ./hyprland.nix
+    ./rofi.nix
+  ];
+
 
   programs.vscode = {
     enable = true;

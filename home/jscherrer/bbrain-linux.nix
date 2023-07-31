@@ -2,7 +2,6 @@
 {
   imports = [
     ../global
-    ../../modules/alacritty
     ../global/gui.nix
   ];
 
