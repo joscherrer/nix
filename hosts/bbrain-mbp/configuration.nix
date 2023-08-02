@@ -84,6 +84,10 @@
     "teamviewer"
     "nrlquaker-winbox"
   ];
+
+  homebrew.brews = [
+    "tiger-vnc"
+  ];
   homebrew.onActivation.autoUpdate = true;
 
   home-manager = {

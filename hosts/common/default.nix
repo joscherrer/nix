@@ -10,6 +10,7 @@
     pypy3
     pciutils
     git
+    virt-manager
   ];
 
   time.timeZone = "Europe/Paris";
