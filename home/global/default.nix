@@ -52,6 +52,12 @@
   
     cmake
 
+    # IaC
+    terraform
+    packer
+    hcloud
+
+
     # Containers
     podman-compose
     dive
