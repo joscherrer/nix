@@ -63,7 +63,7 @@ in
     initialHashedPassword = "";
     isNormalUser = true;
     group = "jscherrer";
-    extraGroups = [ "wheel" "networkmanager" ];
+    extraGroups = [ "wheel" "networkmanager" "libvirtd" ];
     createHome = true;
   };
 

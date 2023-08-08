@@ -4,8 +4,14 @@
   boot.loader.efi.canTouchEfiVariables = true;
 
   networking.hostName = "bbrain-linux"; # Define your hostname.
-
   networking.networkmanager.enable = true;
+  #networking.bridges = {
+  #  "br0" = {
+  #    interfaces = [
+  #      "enp39s0"
+  #    ];
+  #  };
+  #};
 
   i18n.extraLocaleSettings = {
     LC_ADDRESS = "fr_FR.UTF-8";
