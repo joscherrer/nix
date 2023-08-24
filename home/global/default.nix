@@ -21,10 +21,25 @@
     stateVersion = lib.mkDefault "23.05";
   };
 
+  xdg.enable = true;
+
   programs.home-manager.enable = true;
   programs.go.enable = true;
   programs.go.package = pkgs.unstable.go;
   programs.lsd.enable = true;
+  programs.direnv.enable = true;
+  programs.direnv.enableZshIntegration = true;
+  programs.direnv.config = {
+    global = {
+      load_dotenv = true;
+    };
+    whitelist = {
+      prefix = [
+        "/home/jscherrer/dev"
+        "/Users/jscherrer/dev"
+      ];
+    };
+  };
 
   home.packages = with pkgs; [
     # Shell utilities
@@ -49,14 +64,18 @@
     curlie
     procs
     bottom
-  
+    age
+    sops
     cmake
 
-    # IaC
+    # IaC/Cloud
     terraform
     packer
     hcloud
-
+    google-cloud-sdk
+    gh
+    scaleway-cli
+    fluxcd
 
     # Containers
     podman-compose
@@ -68,6 +87,7 @@
     kubelogin-oidc
     kind
     hadolint
+    kubernetes-helm
 
     # JS/TS
     unstable.nodejs

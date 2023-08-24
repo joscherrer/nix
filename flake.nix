@@ -30,7 +30,6 @@
       overlay-kubectx = final: prev: {
         kubectx = prev.kubectx.overrideAttrs (old: {
           postInstall = old.postInstall + ''
-            ln -s $out/bin/kubectx $out/bin/kubectl-ctx
             ln -s $out/bin/kubens $out/bin/kubectl-ns
           '';
         });

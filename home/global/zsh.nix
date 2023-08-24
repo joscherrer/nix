@@ -1,5 +1,10 @@
 { inputs, lib, pkgs, config, outputs, ... }:
 let
+  kubectx-wrapper = pkgs.writeShellScriptBin "kubectl-ctx" ''
+  kubeconfig_tmp=($(find ${config.xdg.configHome}/kube -name "*.yaml" -type f -print0 | xargs -0))
+  KUBECONFIG="$(IFS=: ; echo "''${kubeconfig_tmp[*]}")" kubectl config view --merge --flatten > ${config.xdg.configHome}/kube/config
+  exec kubectx "$@"
+  '';
   initExtra = ''
   prompt pure
 
@@ -12,6 +17,9 @@ let
   if [ -f "''$HOME/.zshrc" ]; then
     source "''$HOME/.zshrc"
   fi
+
+  complete -o nospace -C ${pkgs.vault-bin}/bin/vault vault
+  complete -o nospace -C ${pkgs.terraform}/bin/terraform terraform
   '';
 
   envExtra = ''
@@ -51,7 +59,7 @@ in
       vim = "nvim";
       vi = "nvim";
       grep = "rg";
-      kz = "kuztomize";
+      kz = "kustomize";
       k = "kubectl";
       p = "podman";
       pc = "podman-compose";
@@ -59,16 +67,24 @@ in
       rd = "rmdir";
       tf = "terraform";
       _ = "sudo ";
-
+      kexec = "kubectl exec -it ";
+      kpods = "kubectl get pods ";
+      kdesc = "kubectl describe ";
     };
     initExtra = initExtra;
     envExtra = envExtra;
+    sessionVariables = {
+      KUBECACHEDIR = "${config.xdg.cacheHome}/kube";
+      KUBECONFIG = "${config.xdg.configHome}/kube/config";
+      EDITOR = "nvim";
+    };
   };
 
   programs.zsh.historySubstringSearch.enable = true;
 
   home.packages = [
     pkgs.z-lua
+    kubectx-wrapper
   ];
 
   home.file.".config/zsh/keybindings.zsh".source = "${common-root}/.config/zsh/keybindings.zsh";
