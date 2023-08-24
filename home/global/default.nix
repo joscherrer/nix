@@ -67,6 +67,7 @@
     age
     sops
     cmake
+    gnumake
 
     # IaC/Cloud
     terraform
