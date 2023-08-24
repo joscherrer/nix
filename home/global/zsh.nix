@@ -40,6 +40,10 @@ in
     dotDir = ".config/zsh";
     enableAutosuggestions = true;
     enableCompletion = true;
+    completionInit = ''
+    autoload -U compinit && compinit
+    autoload -U +X bashcompinit && bashcompinit
+    '';
     syntaxHighlighting = {
       enable = true;
     };
