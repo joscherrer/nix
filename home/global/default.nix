@@ -68,6 +68,7 @@
     sops
     cmake
     gnumake
+    jwt-cli
 
     # IaC/Cloud
     terraform
