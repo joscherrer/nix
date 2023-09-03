@@ -29,15 +29,17 @@
       inherit (self) outputs;
       overlay-unstable = final: prev: {
         unstable = import nixpkgs-unstable {
-          inherit system;
+          system = prev.system;
           config.allowUnfree = true;
         };
+        # unstable = nixpkgs-unstable.legacyPackages.${prev.system};
       };
       overlay-stable = final: prev: {
         stable = import nixpkgs-stable {
-          inherit system;
+          system = prev.system;
           config.allowUnfree = true;
         };
+        # stable = nixpkgs-stable.legacyPackages.${prev.system};
       };
       overlay-kubectx = final: prev: {
         kubectx = prev.kubectx.overrideAttrs (old: {
