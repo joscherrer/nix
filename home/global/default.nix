@@ -25,7 +25,7 @@
 
   programs.home-manager.enable = true;
   programs.go.enable = true;
-  programs.go.package = pkgs.unstable.go;
+  programs.go.package = pkgs.go;
   programs.lsd.enable = true;
   programs.direnv.enable = true;
   programs.direnv.enableZshIntegration = true;
@@ -78,6 +78,8 @@
     gh
     scaleway-cli
     fluxcd
+    vault-bin
+    open-policy-agent
 
     # Containers
     podman-compose
@@ -88,7 +90,7 @@
     kubectx
     kubelogin-oidc
     kind
-    hadolint
+    stable.hadolint
     kubernetes-helm
 
     # JS/TS
