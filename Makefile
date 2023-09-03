@@ -16,7 +16,7 @@ darwin: darwin-local
 endif
 
 linux-local:
-	sudo nixos-rebuild switch --flake "$HOME/nix#bbrain-linux" $(EXTRA_ARGS)
+	sudo nixos-rebuild switch --flake "$(HOME)/nix#bbrain-linux" $(EXTRA_ARGS)
 
 darwin-local:
 	darwin-rebuild switch --flake ~/dev/nix#bbrain-mbp $(EXTRA_ARGS)
