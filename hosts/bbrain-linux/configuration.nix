@@ -5,6 +5,7 @@
 
   environment.systemPackages = [
     pkgs.jetbrains.idea-community
+    pkgs.jetbrains.jdk
   ];
 
   networking.hostName = "bbrain-linux"; # Define your hostname.

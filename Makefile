@@ -1,4 +1,4 @@
-.PHONY: all linux
+.PHONY: all linux darwin linux-local darwin-local linux-remote darwin-remote commit-lockfile
 TMPDIR := $(shell mktemp -d -p /tmp)
 OS_NAME := $(shell uname -s | tr A-Z a-z)
 
