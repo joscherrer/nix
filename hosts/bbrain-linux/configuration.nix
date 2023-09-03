@@ -9,6 +9,8 @@
     pkgs.unstable.jetbrains.idea-community
   ];
 
+  nixpkgs.config.allowUnfree = true;
+
   networking.hostName = "bbrain-linux"; # Define your hostname.
   networking.networkmanager.enable = true;
   networking.interfaces.enp39s0.wakeOnLan.enable = true;
