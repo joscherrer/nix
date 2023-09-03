@@ -69,6 +69,7 @@
     cmake
     gnumake
     jwt-cli
+    gettext
 
     # IaC/Cloud
     terraform
