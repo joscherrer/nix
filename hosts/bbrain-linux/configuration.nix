@@ -4,7 +4,7 @@
   boot.loader.efi.canTouchEfiVariables = true;
 
   environment.systemPackages = [
-    pkgs.jetbrains.idea-community
+    pkgs.unstable.jetbrains.idea-community
     pkgs.jetbrains.jdk
   ];
 
