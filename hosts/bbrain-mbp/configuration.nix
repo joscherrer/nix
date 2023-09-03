@@ -23,8 +23,8 @@
     };
   };
 
-  services.yabai.enable = true;
-  services.yabai.enableScriptingAddition = true;
+  # services.yabai.enable = true;
+  # services.yabai.enableScriptingAddition = true;
 
   system.defaults = {
     ".GlobalPreferences" = {
@@ -87,6 +87,7 @@
 
   homebrew.brews = [
     "tiger-vnc"
+    "koekeishiya/formulae/yabai"
   ];
   homebrew.onActivation.autoUpdate = true;
 

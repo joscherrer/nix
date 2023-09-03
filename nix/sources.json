@@ -17,10 +17,10 @@
         "homepage": "https://nvchad.com/",
         "owner": "NvChad",
         "repo": "NvChad",
-        "rev": "720d71b546b8300bf3951c839f52db6cb83c3dc5",
-        "sha256": "0byhs3711k9ji1vwvc2zgv75jvj7njfcmg47ipw28hl3nmhv3h67",
+        "rev": "a69e8dc59142fac200d93ace190829fb12b455ec",
+        "sha256": "04yy8qrfkb10zmg176q5f1c8x7ggl6x9m6ikklakx0nky9943byz",
         "type": "tarball",
-        "url": "https://github.com/NvChad/NvChad/archive/720d71b546b8300bf3951c839f52db6cb83c3dc5.tar.gz",
+        "url": "https://github.com/NvChad/NvChad/archive/a69e8dc59142fac200d93ace190829fb12b455ec.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "zsh-autosuggestions": {
@@ -29,10 +29,10 @@
         "homepage": null,
         "owner": "zsh-users",
         "repo": "zsh-autosuggestions",
-        "rev": "a411ef3e0992d4839f0732ebeb9823024afaaaa8",
-        "sha256": "1g3pij5qn2j7v7jjac2a63lxd97mcsgw6xq6k5p7835q9fjiid98",
+        "rev": "9908eb49a3fd18e25cfd8a0b9aa841e58429e59d",
+        "sha256": "1qqi3kxynpgjvbn20svaxbff84r3aj39n7nl33wh20ifrqxqrkp2",
         "type": "tarball",
-        "url": "https://github.com/zsh-users/zsh-autosuggestions/archive/a411ef3e0992d4839f0732ebeb9823024afaaaa8.tar.gz",
+        "url": "https://github.com/zsh-users/zsh-autosuggestions/archive/9908eb49a3fd18e25cfd8a0b9aa841e58429e59d.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "zsh-history-substring-search": {

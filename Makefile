@@ -1,10 +1,30 @@
 .PHONY: all linux
 TMPDIR := $(shell mktemp -d -p /tmp)
+OS_NAME := $(shell uname -s | tr A-Z a-z)
 
-all:
+all: $(OS_NAME)
 
-linux:
-	TMPDIR=$(TMPDIR) nixos-rebuild --fast --target-host jscherrer@192.168.1.175 --build-host jscherrer@192.168.1.175 switch --flake '/Users/jscherrer/dev/nix#bbrain-linux' --use-remote-sudo $(EXTRA_ARGS)
+fresh: EXTRA_ARGS += --recreate-lock-file
+fresh: $(OS_NAME)
 
-mbp:
-	darwin-rebuild switch --flake ~/dev/nix#bbrain-mbp
+ifeq ($(OS_NAME), linux)
+linux: linux-local
+darwin: darwin-remote
+else ifeq ($(OS_NAME), darwin)
+linux: linux-remote
+darwin: darwin-local
+endif
+
+linux-local:
+	sudo nixos-rebuild switch --flake "$HOME/nix#bbrain-linux" $(EXTRA_ARGS)
+
+darwin-local:
+	darwin-rebuild switch --flake ~/dev/nix#bbrain-mbp $(EXTRA_ARGS)
+
+linux-remote: EXTRA_ARGS += --fast --use-remote-sudo --target-host jscherrer@bbrain-linux --build-host jscherrer@bbrain-linux
+linux-remote:
+	TMPDIR=$(TMPDIR) nixos-rebuild switch --flake ~/dev/nix#bbrain-linux $(EXTRA_ARGS)
+
+darwin-remote:
+	@echo "Not implemented yet"
+

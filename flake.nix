@@ -1,9 +1,12 @@
 {
   inputs = {
     # nixpkgs.url = "nixpkgs/nixos-23.05";
-    nixpkgs.url = "nixpkgs/nixos-unstable";
     # nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-23.05-darwin";
+  
+    nixpkgs.url = "nixpkgs/nixos-unstable";
+    nixpkgs-stable.url = "nixpkgs/nixos-23.05";
     nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+    nixpkgs-darwin-stable.url = "github:nixos/nixpkgs/nixpkgs-23.05-darwin";
     nixpkgs-unstable.url = "nixpkgs/nixos-unstable";
     hyprland.url = "github:hyprwm/Hyprland";
 
@@ -21,11 +24,14 @@
     vscode-server.url = "github:nix-community/nixos-vscode-server";
   };
 
-  outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, darwin, kmonad, ... }@inputs:
+  outputs = { self, nixpkgs, nixpkgs-stable, nixpkgs-unstable, home-manager, darwin, kmonad, ... }@inputs:
     let
       inherit (self) outputs;
       overlay-unstable = final: prev: {
         unstable = nixpkgs-unstable.legacyPackages.${prev.system};
+      };
+      overlay-stable = final: prev: {
+        stable = nixpkgs-stable.legacyPackages.${prev.system};
       };
       overlay-kubectx = final: prev: {
         kubectx = prev.kubectx.overrideAttrs (old: {
@@ -42,6 +48,7 @@
       homeManagerModules = import ./modules/home-manager;
       overlays = import ./overlays // {
         unstable = overlay-unstable;
+        stable = overlay-stable;
         inherit overlay-kubectx;
       };
 

@@ -45,7 +45,6 @@ in
       enable = true;
       xwayland = {
         enable = true;
-        hidpi = true;
       };
       package = inputs.hyprland.packages.${pkgs.system}.hyprland;
     };

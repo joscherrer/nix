@@ -3,6 +3,10 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
+  environment.systemPackages = [
+    pkgs.jetbrains.idea-community
+  ];
+
   networking.hostName = "bbrain-linux"; # Define your hostname.
   networking.networkmanager.enable = true;
   networking.interfaces.enp39s0.wakeOnLan.enable = true;
@@ -49,7 +53,7 @@
     extraSpecialArgs = { inherit inputs outputs; };
   };
 
-  programs.hyprland.nvidiaPatches = true;
+  programs.hyprland.enableNvidiaPatches = true;
 
   hardware.opengl = {
     enable = true;

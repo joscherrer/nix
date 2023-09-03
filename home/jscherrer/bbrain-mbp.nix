@@ -11,12 +11,9 @@
 
   home.packages = with pkgs; [
     # Others
-    terraform
-    unstable.vault-bin
     unstable.mitmproxy
     wireshark
     youtube-dl
-    unstable.open-policy-agent
     inputs.kmonad.packages."${pkgs.system}".kmonad
   ];
 
