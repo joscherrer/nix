@@ -5,7 +5,7 @@ OS_NAME := $(shell uname -s | tr A-Z a-z)
 all: $(OS_NAME)
 
 fresh: EXTRA_ARGS += --recreate-lock-file
-fresh: $(OS_NAME)
+fresh: $(OS_NAME) commit-lockfile
 
 ifeq ($(OS_NAME), linux)
 linux: linux-local
@@ -28,3 +28,7 @@ linux-remote:
 darwin-remote:
 	@echo "Not implemented yet"
 
+commit-lockfile:
+	git add flake.lock
+	git diff-index --quiet HEAD flake.lock || git commit --only flake.lock -m "Update flake.lock"
+	git push
