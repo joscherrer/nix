@@ -4,8 +4,9 @@
   boot.loader.efi.canTouchEfiVariables = true;
 
   environment.systemPackages = [
+    pkgs.unstable.jetbrains.jdk
+    pkgs.unstable.jetbrains.gateway
     pkgs.unstable.jetbrains.idea-community
-    pkgs.jetbrains.jdk
   ];
 
   networking.hostName = "bbrain-linux"; # Define your hostname.
