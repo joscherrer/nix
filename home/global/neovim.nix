@@ -4,11 +4,11 @@
     enable = true;
   };
 
-  xdg.configFile.nvim = {
-    enable = true;
-    source = pkgs.nvchad;
-    recursive = true;
-  };
+  # xdg.configFile.nvim = {
+  #   enable = false;
+  #   source = pkgs.nvchad;
+  #   recursive = true;
+  # };
 
   home.packages = [
     # Needed for NvChad

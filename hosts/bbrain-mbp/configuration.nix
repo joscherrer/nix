@@ -88,6 +88,7 @@
   homebrew.brews = [
     "tiger-vnc"
     "koekeishiya/formulae/yabai"
+    "openjdk@17"
   ];
   homebrew.onActivation.autoUpdate = true;
 

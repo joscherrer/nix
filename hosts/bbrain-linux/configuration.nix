@@ -9,6 +9,10 @@
     pkgs.unstable.jetbrains.idea-community
   ];
 
+  fonts.packages = [
+    pkgs.nerdfonts
+  ];
+
   nixpkgs.config.allowUnfree = true;
 
   networking.hostName = "bbrain-linux"; # Define your hostname.

@@ -18,10 +18,10 @@
   ];
 
   programs.alacritty.settings = {
-    font.normal.family = "CaskaydiaCove Nerd Font Mono";
-    font.bold.family = "CaskaydiaCove Nerd Font Mono";
-    font.italic.family = "CaskaydiaCove Nerd Font Mono";
-    font.bold_italic.family = "CaskaydiaCove Nerd Font Mono";
+    font.normal.family = "JetBrainsMono Nerd Font";
+    font.bold.family = "JetBrainsMono Nerd Font";
+    font.italic.family = "JetBrainsMono Nerd Font";
+    font.bold_italic.family = "JetBrainsMono Nerd Font";
   };
 
   programs.lsd.enable = true;
