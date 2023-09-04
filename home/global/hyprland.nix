@@ -45,10 +45,12 @@ in
 
       decoration = {
         rounding = 10;
-        blur = true;
-        blur_size = 3;
-        blur_passes = 1;
-        blur_new_optimizations = true;
+        blur = {
+          enabled = true;
+          size = 3;
+          passes = 1;
+          new_optimizations = true;
+        };
 
         drop_shadow = true;
         shadow_range = 4;
@@ -66,7 +68,7 @@ in
           "border, 1, 10, default"
           "borderangle, 1, 8, default"
           "fade, 1, 7, default"
-          "workspaces, 1, 6, default"
+          "workspaces, 1, 3, default"
         ];
       };
 
