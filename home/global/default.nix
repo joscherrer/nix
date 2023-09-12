@@ -70,6 +70,7 @@
     gnumake
     jwt-cli
     gettext
+    argbash
 
     # IaC/Cloud
     terraform
@@ -81,6 +82,7 @@
     fluxcd
     vault-bin
     open-policy-agent
+    ibmcloud-cli
 
     # Containers
     podman-compose
