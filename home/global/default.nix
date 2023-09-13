@@ -71,6 +71,7 @@
     jwt-cli
     gettext
     argbash
+    du-dust
 
     # IaC/Cloud
     terraform
