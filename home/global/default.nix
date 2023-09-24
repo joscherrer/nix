@@ -96,6 +96,7 @@
     kind
     stable.hadolint
     kubernetes-helm
+    kubetail
 
     # JS/TS
     unstable.nodejs
@@ -107,7 +108,7 @@
     unstable.go-outline
 
     # Java
-    openjdk11
+    openjdk19
     gradle
     maven
     kotlin
@@ -117,6 +118,9 @@
     # Nix
     niv
     rnix-lsp
+
+    # Dev misc
+    openapi-generator-cli
 
   ];
 }
