@@ -2,7 +2,7 @@
   inputs = {
     # nixpkgs.url = "nixpkgs/nixos-23.05";
     # nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-23.05-darwin";
-  
+
     nixpkgs.url = "nixpkgs/nixos-unstable";
     nixpkgs-stable.url = "nixpkgs/nixos-23.05";
     nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-unstable";
@@ -50,6 +50,7 @@
       };
       supportedSystems = [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" ];
       forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
+      colorlib = import ./colors.nix nixpkgs.lib;
     in
     rec {
       nixosModules = import ./modules/nixos;
@@ -67,23 +68,12 @@
       );
 
       nixosConfigurations = {
-        dx15-qemu = nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit self inputs outputs; };
-          modules = [
-            ./hosts/dx15-qemu
-          ];
-        };
-
-        dx15 = nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit self inputs outputs; };
-          modules = [
-            ./hosts/dx15
-          ];
-        };
-
         bbrain-linux = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
-          specialArgs = { inherit self inputs outputs; };
+          specialArgs = {
+            default = import ./lib/theme { inherit colorlib; };
+            inherit self inputs outputs;
+          };
           modules = [
             ./hosts/bbrain-linux
           ];

@@ -1,7 +1,8 @@
 { inputs, lib, pkgs, config, outputs, ... }:
 {
   programs.vscode = {
-    enable = false;
+    enable = true;
+    package = pkgs.vscode;
     mutableExtensionsDir = true;
     enableExtensionUpdateCheck = true;
     enableUpdateCheck = true;

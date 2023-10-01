@@ -7,6 +7,7 @@
     pkgs.unstable.jetbrains.jdk
     pkgs.unstable.jetbrains.gateway
     pkgs.unstable.jetbrains.idea-community
+    pkgs.usbutils
   ];
 
   fonts.packages = [
@@ -87,4 +88,12 @@
   # The services.xserver.videoDrivers setting is also
   # valid for wayland installations despite it's name
   services.xserver.videoDrivers = ["nvidia"];
+  services.flatpak.enable = true;
+  services.logind.extraConfig = ''
+    HandlePowerKey=suspend
+  '';
+
+  services.udev.extraRules = ''
+    ACTION=="add", ATTR{idProduct}=="0002", ATTR{idVendor}=="a103", RUN="${pkgs.bash}/bin/bash -c 'echo enabled > /sys%E{DEVPATH}/power/wakeup'"
+  '';
 }

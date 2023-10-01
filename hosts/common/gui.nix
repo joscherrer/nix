@@ -12,4 +12,7 @@
   ];
 
   i18n.inputMethod.enabled = "ibus";
+  security.pam.services.swaylock = {
+    text = "auth include login";
+  };
 }

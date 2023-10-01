@@ -5,19 +5,19 @@
     draw_bold_text_with_bright_colors = true;
     font = {
       normal = {
-        family = lib.mkDefault "JetBrainsMono Nerd Font";
+        family = lib.mkDefault "CaskaydiaCove Nerd Font";
         style = "Regular";
       };
       bold = {
-        family = lib.mkDefault "JetBrainsMono Nerd Font";
+        family = lib.mkDefault "CaskaydiaCove Nerd Font";
         style = "Bold";
       };
       italic = {
-        family = lib.mkDefault "JetBrainsMono Nerd Font";
+        family = lib.mkDefault "CaskaydiaCove Nerd Font";
         style = "Italic";
       };
       bold_italic = {
-        family = lib.mkDefault "JetBrainsMono Nerd Font";
+        family = lib.mkDefault "CaskaydiaCove Nerd Font";
         style = "Bold Italic";
       };
       size = 16.0;
