@@ -26,8 +26,27 @@ let
     export GLFW_IM_MODULE=ibus
     export XMODIFIERS=@im=ibus
 
+    # Misc
+    export GBM_BACKEND=nvidia-drm
+    export __GLX_VENDOR_LIBRARY_NAME=nvidia
+    export WLR_NO_HARDWARE_CURSORS=1
+
     cd ~ && exec systemd-cat --identifier=Hyprland ${config.programs.hyprland.package}/bin/Hyprland "$@"
   '';
+
+  hyprland-log = pkgs.writeTextFile {
+    name = "hyprland-log";
+    destination = "/share/wayland-sessions/hyprland-log.desktop";
+    text = ''
+      [Desktop Entry]
+      Name=Hyprland Log
+      Comment=An intelligent dynamic tiling Wayland compositor
+      Exec=systemd-cat -t hyprland Hyprland
+      Type=Application
+    '';
+  } // {
+    providedSessions = ["hyprland-log"];
+  };
 in
 {
   imports = [
@@ -43,6 +62,7 @@ in
   programs = {
     hyprland = {
       enable = true;
+      enableNvidiaPatches = true;
       xwayland = {
         enable = true;
       };
@@ -59,7 +79,10 @@ in
   environment.systemPackages = [
     hyprland-wrapper
     pkgs.wayvnc
+    hyprland-log
   ];
+
+  services.xserver.displayManager.sessionPackages = [ hyprland-log ];
 
   environment.etc."greetd/environments".text = "hyprland";
   environment.etc."hypr/default.conf".text = ''

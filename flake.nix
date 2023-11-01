@@ -24,7 +24,7 @@
     vscode-server.url = "github:nix-community/nixos-vscode-server";
   };
 
-  outputs = { self, nixpkgs, nixpkgs-stable, nixpkgs-unstable, home-manager, darwin, kmonad, ... }@inputs:
+  outputs = { self, nixpkgs, nixpkgs-stable, nixpkgs-unstable, home-manager, darwin, kmonad, hyprland, ... }@inputs:
     let
       inherit (self) outputs;
       overlay-unstable = final: prev: {
@@ -48,6 +48,7 @@
           '';
         });
       };
+
       supportedSystems = [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" ];
       forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
       colorlib = import ./colors.nix nixpkgs.lib;

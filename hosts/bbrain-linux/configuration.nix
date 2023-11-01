@@ -2,13 +2,24 @@
 {
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+  boot.kernelParams = ["nvidia.NVreg_PreserveVideoMemoryAllocations=1"];
 
   environment.systemPackages = [
     pkgs.unstable.jetbrains.jdk
     pkgs.unstable.jetbrains.gateway
     pkgs.unstable.jetbrains.idea-community
     pkgs.usbutils
+    pkgs.semeru-bin-8
+    pkgs.qt6.qtwayland
+    pkgs.qt5.qtwayland
+    pkgs.libva
+    pkgs.unstable.xwaylandvideobridge
+    pkgs.wineWowPackages.waylandFull
   ];
+
+  hardware.bluetooth.enable = true;
+  hardware.bluetooth.powerOnBoot = true;
+  services.blueman.enable = true;
 
   fonts.packages = [
     pkgs.nerdfonts
@@ -73,6 +84,7 @@
   hardware.nvidia = {
     modesetting.enable = true;
     open = false;
+    powerManagement.enable = true;
     nvidiaSettings = true;
     package = config.boot.kernelPackages.nvidiaPackages.production;
   };
@@ -87,11 +99,29 @@
   # Tell Xorg to use the nvidia driver
   # The services.xserver.videoDrivers setting is also
   # valid for wayland installations despite it's name
-  services.xserver.videoDrivers = ["nvidia"];
+  services.xserver.videoDrivers = [ "nvidia" ];
   services.flatpak.enable = true;
   services.logind.extraConfig = ''
     HandlePowerKey=suspend
+    IdleAction=suspend
+    IdleActionSec=15min
   '';
+
+  security.rtkit.enable = true;
+  services.pipewire = {
+    enable = true;
+    wireplumber.enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    pulse.enable = true;
+  };
+
+  xdg.portal = {
+    enable = true;
+    extraPortals = [
+      pkgs.xdg-desktop-portal-gtk
+    ];
+  };
 
   services.udev.extraRules = ''
     ACTION=="add", ATTR{idProduct}=="0002", ATTR{idVendor}=="a103", RUN="${pkgs.bash}/bin/bash -c 'echo enabled > /sys%E{DEVPATH}/power/wakeup'"

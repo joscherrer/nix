@@ -52,9 +52,9 @@ in
           on-click = "activate";
           show-special = "false";
           sort-by-number = true;
-          persistent_workspaces = {
-            "*" = 10;
-          };
+          # persistent_workspaces = {
+          #   "*" = 10;
+          # };
         };
 
         "hyprland/window" = {
@@ -157,9 +157,9 @@ in
           format = "{icon} {volume}%";
           format-muted = "";
           format-icons = { default = [ "" "" "" ]; };
-          on-click = "bash ~/.scripts/volume mute";
-          on-scroll-up = "bash ~/.scripts/volume up";
-          on-scroll-down = "bash ~/.scripts/volume down";
+          on-click = "pamixer --toggle-mute";
+          on-scroll-up = "pamixer --increase 5";
+          on-scroll-down = "pamixer --decrease 5";
           scroll-step = 5;
           on-click-right = "pavucontrol";
           tooltip = false;
@@ -305,6 +305,7 @@ in
 
       #pulseaudio.muted {
         color: ${xcolors.color1};
+        padding-right: 10px;
       }
     '';
   };

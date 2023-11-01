@@ -2,29 +2,61 @@
 let
   common-root = "${inputs.self}/dotfiles/common";
   colors = default.colors;
+  screenshot-handler = pkgs.writeShellScriptBin "screenshot-handler" ''
+    #!/usr/bin/env bash
+
+    mode="$1"
+
+    if [ "$mode" = "region" ]; then
+      slurp | grim -g - - | wl-copy
+    elif [ "$mode" = "window" ]; then
+      hyprctl -j activewindow | jq -r '"\(.at[0]),\(.at[1]) \(.size[0])x\(.size[1])"' | grim -g - - | wl-copy
+    fi
+  '';
+  waybar-wrapper = pkgs.writeShellScriptBin "waybar-wrapper" ''
+    #!/usr/bin/env bash
+    while true; do
+      systemd-cat -t waybar waybar
+      sleep 1
+    done
+  '';
 in
 rec
 {
   # home.file.".config/hypr/hyprland.conf".source = "${common-root}/.config/hypr/hyprland.conf";
+  home.packages = [
+    screenshot-handler
+  ];
   wayland.windowManager.hyprland = {
     enable = true;
+    enableNvidiaPatches = true;
+    package = inputs.hyprland.packages.${pkgs.system}.hyprland;
+    xwayland.enable = true;
     settings = {
       exec-once = [
         "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
+        "${pkgs.wl-clipboard}/bin/wl-paste --type text --watch cliphist store"
+        "${pkgs.wl-clipboard}/bin/wl-paste --type image --watch cliphist store"
+        "${waybar-wrapper}/bin/waybar-wrapper"
       ];
 
       exec = [
-        "pkill waybar; waybar"
+        # "pkill waybar-wrapper; systemd-cat -t waybar ${waybar-wrapper}/bin/waybar-wrapper --log-level trace"
         "pkill swaybg; ${pkgs.swaybg}/bin/swaybg -i ${default.wallpaper} -m fill"
       ];
 
       monitor = [
-        "DP-1,preferred,1920x0,auto"
-        "DP-2,preferred,0x200,auto"
+        "desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675,3840x1600@144,1920x0,auto"
+        "desc:Dell Inc. DELL U2415 7MT0167B2YNL,1920x1200@60,0x200,auto"
       ];
 
       env = [
         "XCURSOR_SIZE,24"
+        "LIBVA_DRIVER_NAME,nvidia"
+        "XDG_SESSION_TYPE,wayland"
+        "GBM_BACKEND,nvidia-drm"
+        "__GLX_VENDOR_LIBRARY_NAME,nvidia"
+        "WLR_NO_HARDWARE_CURSORS,1"
       ];
 
       input = {
@@ -49,11 +81,14 @@ rec
         "col.active_border" = "rgb(${colors.background}) rgb(${colors.color8}) 270deg";
         "col.inactive_border" = "rgb(${colors.contrast}) rgb(${colors.color4}) 270deg";
         # group borders
-        "col.group_border_active" = "rgb(${colors.color5})";
-        "col.group_border" = "rgb(${colors.contrast})";
         "no_border_on_floating" = false;
-        layout = "dwindle";
+        layout = "master";
         no_cursor_warps = true;
+      };
+
+      group = {
+        "col.border_active" = "rgb(${colors.color5})";
+        "col.border_inactive" = "rgb(${colors.contrast})";
       };
 
       misc = {
@@ -62,7 +97,6 @@ rec
 
       decoration = {
         rounding = 5;
-        multisample_edges = true;
         blur = {
           size = 6;
           passes = 3;
@@ -111,7 +145,8 @@ rec
       };
 
       master = {
-        new_is_master = true;
+        new_is_master = false;
+        mfact = 0.66;
       };
 
       "$mainMod" = "SUPER";
@@ -121,9 +156,12 @@ rec
         "$mainMod, C, killactive,"
         "$mainMod, M, exit,"
         "$mainMod, E, exec, dolphin"
-        "$mainMod, V, togglefloating,"
+        "$mainMod, F, fullscreen,"
+        "$mainMod SHIFT, F, fakefullscreen,"
+        "$mainMod, S, layoutmsg, swapwithmaster master"
+        "$mainMod, V, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy"
         "$mainMod, R, exec, rofi -show drun"
-        "$mainMod, P, pseudo, # dwindle"
+        "$mainMod, P, togglefloating,"
         "$mainMod, J, togglesplit, # dwindle"
         "$mainMod, L, exec, loginctl lock-session"
         "$mainMod SHIFT, Q, exec, wlogout -p layer-shell"
@@ -153,6 +191,8 @@ rec
         "$mainMod SHIFT, 0, movetoworkspace, 10"
         "$mainMod, mouse_down, workspace, e+1"
         "$mainMod, mouse_up, workspace, e-1"
+        ",Print, exec, slurp | grim -g - - | wl-copy"
+        "SHIFT, Print, exec, hyprctl -j activewindow | jq -r '\"\\(.at[0]),\\(.at[1]) \\(.size[0])x\\(.size[1])\"' | grim -g - - | wl-copy"
       ];
 
       bindm = [

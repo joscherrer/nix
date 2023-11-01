@@ -23,7 +23,10 @@
   };
 
   xdg.enable = true;
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 
   programs.home-manager.enable = true;
   programs.go.enable = true;
