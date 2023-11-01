@@ -83,6 +83,7 @@
     "box-drive"
     "teamviewer"
     "nrlquaker-winbox"
+    "nightfall"
   ];
 
   homebrew.brews = [

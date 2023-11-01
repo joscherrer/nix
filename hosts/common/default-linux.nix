@@ -38,6 +38,7 @@ in
   ];
 
   services.openssh.enable = true;
+  services.locate.enable = true;
 
   systemd.timers."better-gc" = {
     wantedBy = [ "timers.target" ];

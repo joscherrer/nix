@@ -44,5 +44,4 @@
       pkgs.lib.splitString "\n" (builtins.readFile authorizedKeys);
   };
 
-  services.locate.enable = true;
 }
