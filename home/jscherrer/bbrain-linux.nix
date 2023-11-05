@@ -36,4 +36,55 @@
     "x-scheme-handler/about" = "firefox.desktop";
     "x-scheme-handler/unknown" = "firefox.desktop";
   };
+  home.packages = [
+    pkgs.kanshi
+  ];
+
+  services.kanshi.enable = true;
+  services.kanshi.systemdTarget = "hyprland-session.target";
+  services.kanshi.profiles = {
+    connected = {
+      outputs = [
+        {
+          criteria = "LG Electronics LG HDR WQHD+ 205NTCZ8L675";
+          mode = "3840x1600@120Hz";
+          position = "1920,0";
+          status = "enable";
+        }
+        {
+          criteria = "Dell Inc. DELL U2415 7MT0167B2YNL";
+          mode = "1920x1200";
+          position = "0,200";
+          status = "enable";
+        }
+        {
+          criteria = "AOC 28E850 Unknown";
+          mode = "1920x1200";
+          position = "0,0";
+          status = "enable";
+        }
+      ];
+    };
+    disconnected = {
+      outputs = [
+        {
+          criteria = "AOC 28E850 Unknown";
+          mode = "1920x1200";
+          position = "0,0";
+          status = "enable";
+        }
+      ];
+    };
+  };
+
+  # home.file.".config/kanshi/config" = ''
+  #   output eDP-1
+  #     mode 1920x1080
+  #     position 0,0
+  #     scale 1
+  #   output DP-1
+  #     mode 1920x1080
+  #     position 1920,0
+  #     scale 1
+  # '';
 }

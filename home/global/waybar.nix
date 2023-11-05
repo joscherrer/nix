@@ -52,6 +52,15 @@ in
           on-click = "activate";
           show-special = "false";
           sort-by-number = true;
+          "format-icons" = {
+            "1" = "";
+            "2" = "";
+            "3" = "";
+            "4" = "";
+            "5" = "";
+            "active" = "";
+            "default" = "";
+          };
           # persistent_workspaces = {
           #   "*" = 10;
           # };

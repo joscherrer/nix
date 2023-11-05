@@ -23,10 +23,6 @@
   };
 
   xdg.enable = true;
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
 
   programs.home-manager.enable = true;
   programs.go.enable = true;
@@ -89,7 +85,7 @@
     scaleway-cli
     fluxcd
     vault-bin
-    open-policy-agent
+    stable.open-policy-agent
     ibmcloud-cli
 
     # Containers
@@ -104,6 +100,7 @@
     stable.hadolint
     kubernetes-helm
     kubetail
+    # kubie
 
     # JS/TS
     unstable.nodejs

@@ -20,5 +20,5 @@
     ];
   };
 
-  systemd.user.services.swayidle.Install.WantedBy = [ "hyprland-session.target" ];
+  systemd.user.services.swayidle.Install.WantedBy = [ "hyprland-session.target" "greetd.target" ];
 }

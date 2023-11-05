@@ -20,12 +20,22 @@ let
       sleep 1
     done
   '';
+  gather-windows = pkgs.writeShellScriptBin "gather-windows" ''
+    for client in $(hyprctl clients -j | jq -r '.[] | @base64'); do
+      data=$(printf '%s' "$client" | base64 --decode)
+      title=$(printf '%s' "$data" | jq -r '.title')
+      [ -z "$title" ] && continue
+      address=$(printf '%s' "$data" | jq -r '.address')
+      hyprctl dispatch movetoworkspace "1,address:$address"
+    done
+  '';
 in
 rec
 {
   # home.file.".config/hypr/hyprland.conf".source = "${common-root}/.config/hypr/hyprland.conf";
   home.packages = [
     screenshot-handler
+    gather-windows
   ];
   wayland.windowManager.hyprland = {
     enable = true;
@@ -42,13 +52,15 @@ rec
 
       exec = [
         # "pkill waybar-wrapper; systemd-cat -t waybar ${waybar-wrapper}/bin/waybar-wrapper --log-level trace"
+        # "pkill kanshi; kanshi"
         "pkill swaybg; ${pkgs.swaybg}/bin/swaybg -i ${default.wallpaper} -m fill"
       ];
 
-      monitor = [
-        "desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675,3840x1600@144,1920x0,auto"
-        "desc:Dell Inc. DELL U2415 7MT0167B2YNL,1920x1200@60,0x200,auto"
-      ];
+      # monitor = [
+      #   "desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675,3840x1600@144,1920x0,auto"
+      #   "desc:Dell Inc. DELL U2415 7MT0167B2YNL,1920x1200@60,0x200,auto"
+      #   "desc:AOC 28E850,1920x1080@60,5760x200,auto"
+      # ];
 
       env = [
         "XCURSOR_SIZE,24"
@@ -73,6 +85,11 @@ rec
         sensitivity = 0;
         accel_profile = "flat";
       };
+
+      workspace = [
+        "1, monitor:desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675, persistent:true, default:true"
+        "2, monitor:desc:Dell Inc. DELL U2415 7MT0167B2YNL, persistent:true, default:true"
+      ];
 
       general = {
         gaps_in = 5;
@@ -161,6 +178,7 @@ rec
         "$mainMod, S, layoutmsg, swapwithmaster master"
         "$mainMod, V, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy"
         "$mainMod, R, exec, rofi -show drun"
+        "$mainMod SHIFT, R, exec, gather-windows"
         "$mainMod, P, togglefloating,"
         "$mainMod, J, togglesplit, # dwindle"
         "$mainMod, L, exec, loginctl lock-session"

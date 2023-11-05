@@ -2,7 +2,10 @@
 let
   kubectx-wrapper = pkgs.writeShellScriptBin "kubectl-ctx" ''
   kubeconfig_tmp=($(find ${config.xdg.configHome}/kube -name "*.yaml" -type f -print0 | xargs -0))
-  KUBECONFIG="$(IFS=: ; echo "''${kubeconfig_tmp[*]}")" kubectl config view --merge --flatten > ${config.xdg.configHome}/kube/config
+  KUBECONFIG="$(IFS=: ; echo "''${kubeconfig_tmp[*]}")"
+  [ -f "${config.xdg.configHome}/kube/config" ] && KUBECONFIG="${config.xdg.configHome}/kube/config:$KUBECONFIG"
+  [ -n "$KUBECONFIG" ] && KUBECONFIG="$KUBECONFIG" kubectl config view --merge --flatten > ${config.xdg.configHome}/kube/config
+  export KUBECONFIG="${config.xdg.configHome}/kube/config"
   exec kubectx "$@"
   '';
   initExtra = ''
