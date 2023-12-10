@@ -16,6 +16,7 @@ in
 
   programs.firefox.enable = true;
   home.sessionVariables.BROWSER = "${pkgs.firefox}/bin/firefox";
+  home.sessionVariables.GTK_THEME = "Catppuccin-Mocha-Compact-Mauve-Dark";
   home.sessionVariables.DEFAULT_BROWSER = "${pkgs.firefox}/bin/firefox";
   programs.swaylock.enable = true;
 
@@ -34,7 +35,7 @@ in
     };
 
     theme = {
-      name = "Catppuccin-Mocha-Compact-Mauve-dark";
+      name = "Catppuccin-Mocha-Compact-Mauve-Dark";
       package = pkgs.catppuccin-gtk.override {
         accents = [ "mauve" ];
         size = "compact";
@@ -42,8 +43,10 @@ in
       };
     };
 
+    gtk2.extraConfig = ''
+      gtk-application-prefer-dark-theme = 1
+    '';
     gtk3.extraConfig = { gtk-application-prefer-dark-theme = 1; };
-
     gtk4.extraConfig = { gtk-application-prefer-dark-theme = 1; };
   };
 
@@ -55,6 +58,7 @@ in
       };
     };
   };
+
 
   xdg.mimeApps.enable = true;
   xdg.mimeApps.defaultApplications = {
@@ -84,6 +88,7 @@ in
 
 
   home.packages = with pkgs; [
+    qalculate-qt
     wlogout
     cliphist
     wl-clipboard
@@ -97,6 +102,7 @@ in
     wf-recorder
     zathura
     spotify
+    filezilla
     libsForQt5.qtstyleplugin-kvantum
     (catppuccin-kvantum.override {
       accent = "Mauve";

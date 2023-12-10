@@ -41,7 +41,7 @@ let
       [Desktop Entry]
       Name=Hyprland Log
       Comment=An intelligent dynamic tiling Wayland compositor
-      Exec=systemd-cat -t hyprland Hyprland
+      Exec=${hyprland-wrapper}/bin/hyprland
       Type=Application
     '';
   } // {
@@ -62,7 +62,6 @@ in
   programs = {
     hyprland = {
       enable = true;
-      enableNvidiaPatches = true;
       xwayland = {
         enable = true;
       };
@@ -85,8 +84,22 @@ in
   services.xserver.displayManager.sessionPackages = [ hyprland-log ];
 
   environment.etc."greetd/environments".text = "hyprland";
+  environment.etc."kanshi/default.conf".text = ''
+    profile connected {
+      output "LG Electronics LG HDR WQHD+ 205NTCZ8L675" enable mode 3840x1600@120Hz position 1920,0
+      output "Dell Inc. DELL U2415 7MT0167B2YNL" enable mode 1920x1200 position 0,200
+      output "AOC 28E850 Unknown" disable
+    }
+
+    profile disconnected {
+      output "AOC 28E850 Unknown" enable mode 1920x1200 position 0,0
+    }
+  '';
   environment.etc."hypr/default.conf".text = ''
-    monitor=,preferred,auto,auto
+    monitor=desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675,preferred,auto,auto
+    exec-once=${pkgs.kanshi} -c /etc/kanshi/default.conf
+    $mainMod=SUPER
+    bind=$mainMod, M, exit,
     misc {
       disable_hyprland_logo = true
     }

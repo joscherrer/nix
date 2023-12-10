@@ -79,6 +79,9 @@
     # IaC/Cloud
     terraform
     packer
+    vagrant
+    ansible
+    ansible-lint
     hcloud
     google-cloud-sdk
     gh
@@ -100,6 +103,7 @@
     stable.hadolint
     kubernetes-helm
     kubetail
+    k9s
     # kubie
 
     # JS/TS
@@ -125,6 +129,8 @@
 
     # Dev misc
     openapi-generator-cli
+    caddy
+    termscp
 
   ];
 }

@@ -80,6 +80,7 @@ in
   };
 
   security.pam.loginLimits = [
-    {domain = "*"; type = "soft"; item = "nofile"; value = "65535";}
+    {domain = "*"; type = "soft"; item = "nofile"; value = "131070";}
   ];
+  systemd.user.extraConfig = "DefaultLimitNOFILE=131070";
 }

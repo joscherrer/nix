@@ -1,10 +1,11 @@
-{ self, inputs, outputs, config, pkgs, ... }:
+{ self, lib, inputs, outputs, config, pkgs, ... }:
 {
   imports = [
     ./. # hosts/common/
     ./hyprland.nix
     ./vscode.nix
     ./sound.nix
+    ../../lib
   ];
 
   environment.systemPackages = with pkgs; [

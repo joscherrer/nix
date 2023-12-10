@@ -1,4 +1,4 @@
-{ inputs, outputs, config, pkgs, ... }:
+{ inputs, lib, outputs, config, pkgs, default, ... }:
 let
   cage-kiosk = pkgs.writeShellScriptBin "cage-kiosk" ''
     dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
@@ -38,10 +38,12 @@ in
   programs.regreet.enable = true;
   programs.regreet.settings = {
     background = {
-      color = "#282a36";
+      path = "${default.wallpaper}";
+      fit = "Cover";
+      # color = "#282a36";
     };
     GTK = {
-      theme_name = "Fluent-Dark-compact";
+      theme_name = "Catppuccin-Mocha-Compact-Mauve-Dark";
       application_prefer_dark_theme = true;
     };
   };

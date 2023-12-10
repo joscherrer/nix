@@ -39,7 +39,6 @@ rec
   ];
   wayland.windowManager.hyprland = {
     enable = true;
-    enableNvidiaPatches = true;
     package = inputs.hyprland.packages.${pkgs.system}.hyprland;
     xwayland.enable = true;
     settings = {
@@ -52,7 +51,7 @@ rec
 
       exec = [
         # "pkill waybar-wrapper; systemd-cat -t waybar ${waybar-wrapper}/bin/waybar-wrapper --log-level trace"
-        # "pkill kanshi; kanshi"
+        "pkill kanshi; kanshi"
         "pkill swaybg; ${pkgs.swaybg}/bin/swaybg -i ${default.wallpaper} -m fill"
       ];
 
@@ -69,6 +68,7 @@ rec
         "GBM_BACKEND,nvidia-drm"
         "__GLX_VENDOR_LIBRARY_NAME,nvidia"
         "WLR_NO_HARDWARE_CURSORS,1"
+        "GTK_THEME,Catppuccin-Mocha-Compact-Mauve-Dark"
       ];
 
       input = {
@@ -89,6 +89,15 @@ rec
       workspace = [
         "1, monitor:desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675, persistent:true, default:true"
         "2, monitor:desc:Dell Inc. DELL U2415 7MT0167B2YNL, persistent:true, default:true"
+        "3, monitor:desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675, persistent:true, default:false"
+        "4, monitor:desc:Dell Inc. DELL U2415 7MT0167B2YNL, persistent:true, default:false"
+        "5, monitor:desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675, persistent:true, default:false"
+        "6, monitor:desc:Dell Inc. DELL U2415 7MT0167B2YNL, persistent:true, default:false"
+        "7, monitor:desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675, persistent:true, default:false"
+        "8, monitor:desc:Dell Inc. DELL U2415 7MT0167B2YNL, persistent:true, default:false"
+        "9, monitor:desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675, persistent:true, default:false"
+        "10, monitor:desc:Dell Inc. DELL U2415 7MT0167B2YNL, persistent:true, default:false"
+        "11, monitor:desc:AOC 28E850, persistent:true, default:true"
       ];
 
       general = {
@@ -177,7 +186,7 @@ rec
         "$mainMod SHIFT, F, fakefullscreen,"
         "$mainMod, S, layoutmsg, swapwithmaster master"
         "$mainMod, V, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy"
-        "$mainMod, R, exec, rofi -show drun"
+        "$mainMod, Space, exec, rofi -show drun"
         "$mainMod SHIFT, R, exec, gather-windows"
         "$mainMod, P, togglefloating,"
         "$mainMod, J, togglesplit, # dwindle"
@@ -259,7 +268,8 @@ rec
         "float,title:^(branchdialog)$"
         "float,title:^(Confirm to replace files)$"
         "float,title:^(File Operation Progress)$"
-
+        "float,title:^(Qalculate!)$"
+        "float,class:^(.blueman-manager-wrapped)$"
         "noshadow, floating:0"
 
         "tile, title:^(Spotify)$"

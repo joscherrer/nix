@@ -3,6 +3,7 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.kernelParams = ["nvidia.NVreg_PreserveVideoMemoryAllocations=1"];
+  boot.kernelModules = [ "coretemp" ];
 
   environment.systemPackages = [
     pkgs.unstable.jetbrains.jdk
@@ -73,8 +74,6 @@
     extraSpecialArgs = { inherit inputs outputs; };
   };
 
-  programs.hyprland.enableNvidiaPatches = true;
-
   hardware.opengl = {
     enable = true;
     driSupport = true;
@@ -121,6 +120,7 @@
     extraPortals = [
       pkgs.xdg-desktop-portal-gtk
     ];
+    config.common.default = "*";
   };
 
   services.udev.extraRules = ''

@@ -33,7 +33,7 @@ let
   infopath+=(/usr/share/info /opt/homebrew/share/info)
   manpath+=(/usr/share/man /opt/homebrew/share/man /run/current-system/sw/share/man/ /etc/profiles/per-user/jscherrer/share/man)
   fpath+=(~/.config/zsh/site-functions)
-  path+=(~/.local/bin /opt/homebrew/bin /opt/homebrew/sbin)
+  path=(~/.local/bin /opt/homebrew/bin /opt/homebrew/sbin "''${path[@]}")
   '';
   common-root = "${inputs.self}/dotfiles/common";
 in
@@ -83,6 +83,7 @@ in
     sessionVariables = {
       KUBECACHEDIR = "${config.xdg.cacheHome}/kube";
       KUBECONFIG = "${config.xdg.configHome}/kube/config";
+      KUBECTL_EXTERNAL_DIFF = "diff --color=always";
       EDITOR = "nvim";
     };
   };

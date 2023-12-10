@@ -4,9 +4,9 @@
     # nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-23.05-darwin";
 
     nixpkgs.url = "nixpkgs/nixos-unstable";
-    nixpkgs-stable.url = "nixpkgs/nixos-23.05";
+    nixpkgs-stable.url = "nixpkgs/nixos-23.11";
     nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-unstable";
-    nixpkgs-darwin-stable.url = "github:nixos/nixpkgs/nixpkgs-23.05-darwin";
+    nixpkgs-darwin-stable.url = "github:nixos/nixpkgs/nixpkgs-23.11-darwin";
     nixpkgs-unstable.url = "nixpkgs/nixos-unstable";
     hyprland.url = "github:hyprwm/Hyprland";
 
@@ -72,7 +72,7 @@
         bbrain-linux = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           specialArgs = {
-            default = import ./lib/theme { inherit colorlib; };
+            default = import ./lib/theme { inherit colorlib; lib = nixpkgs.lib; };
             inherit self inputs outputs;
           };
           modules = [
