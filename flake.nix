@@ -49,6 +49,12 @@
         });
       };
 
+      overlay-terraform = final: prev: {
+        terraform = prev.terraform.overrideAttrs (old: {
+          ldflags = old.ldflags ++ ["-X" "'github.com/hashicorp/terraform/version.dev=no'"];
+        });
+      };
+
       supportedSystems = [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" ];
       forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
       colorlib = import ./colors.nix nixpkgs.lib;
@@ -60,6 +66,7 @@
         unstable = overlay-unstable;
         stable = overlay-stable;
         inherit overlay-kubectx;
+        inherit overlay-terraform;
       };
 
       packages = forAllSystems (system:
