@@ -74,7 +74,7 @@ bindkey "^[m" copy-prev-shell-word
 # bindkey "$terminfo[kcud1]" history-substring-search-down
 
 function fzfz {
-  _dir=$(z | awk '{print $2}' | fzf --tac)
+  _dir=$(z -l | awk '{print $2}' | fzf --tac)
   cd "$_dir"
   zle reset-prompt
 }
