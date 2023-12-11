@@ -47,8 +47,11 @@ in
     autoload -U compinit && compinit
     autoload -U +X bashcompinit && bashcompinit
     '';
-    syntaxHighlighting = {
+    syntaxHighlighting.enable = true;
+    historySubstringSearch = {
       enable = true;
+      searchUpKey = "$terminfo[kcuu1]";
+      searchDownKey = "$terminfo[kcud1]";
     };
     history = {
       extended = true;
@@ -88,10 +91,15 @@ in
     };
   };
 
-  programs.zsh.historySubstringSearch.enable = true;
+  programs.z-lua = {
+    enable = true;
+    enableAliases = true;
+    enableZshIntegration = true;
+    options = [ "enhanced" "once" "fzf" ];
+  };
+  # programs.autojump.enable = true;
 
   home.packages = [
-    pkgs.z-lua
     kubectx-wrapper
   ];
 
