@@ -55,6 +55,12 @@
         });
       };
 
+      overlay-pdm = final: prev: {
+        pdm = prev.pdm.overrideAttrs (old: {
+          python = (prev.python3.withPackages (ps: with ps; [ virtualenv ]));
+        });
+      };
+
       supportedSystems = [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" ];
       forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
       colorlib = import ./colors.nix nixpkgs.lib;

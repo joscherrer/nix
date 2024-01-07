@@ -20,15 +20,18 @@ let
       sleep 1
     done
   '';
-  gather-windows = pkgs.writeShellScriptBin "gather-windows" ''
-    for client in $(hyprctl clients -j | jq -r '.[] | @base64'); do
-      data=$(printf '%s' "$client" | base64 --decode)
-      title=$(printf '%s' "$data" | jq -r '.title')
-      [ -z "$title" ] && continue
-      address=$(printf '%s' "$data" | jq -r '.address')
-      hyprctl dispatch movetoworkspace "1,address:$address"
-    done
-  '';
+  # gather-windows = pkgs.writeShellScriptBin "gather-windows" ''
+  #   for client in $(hyprctl clients -j | jq -r '.[] | @base64'); do
+  #     data=$(printf '%s' "$client" | base64 --decode)
+  #     title=$(printf '%s' "$data" | jq -r '.title')
+  #     [ -z "$title" ] && continue
+  #     address=$(printf '%s' "$data" | jq -r '.address')
+  #     hyprctl dispatch movetoworkspace "1,address:$address"
+  #   done
+  # '';
+
+  gather-windows = pkgs.writeScriptBin "gather-windows" (builtins.readFile "${inputs.self}/scripts/hyprdispatch");
+  hyprdispatch = pkgs.writeScriptBin "hyprdispatch" (builtins.readFile "${inputs.self}/scripts/hyprdispatch");
 in
 rec
 {
@@ -36,9 +39,12 @@ rec
   home.packages = [
     screenshot-handler
     gather-windows
+    hyprdispatch
   ];
   wayland.windowManager.hyprland = {
     enable = true;
+    # package = pkgs.hyprland;
+    # package = hyprland-flake.packages.${pkgs.system}.hyprland;
     package = inputs.hyprland.packages.${pkgs.system}.hyprland;
     xwayland.enable = true;
     settings = {
@@ -51,15 +57,17 @@ rec
 
       exec = [
         # "pkill waybar-wrapper; systemd-cat -t waybar ${waybar-wrapper}/bin/waybar-wrapper --log-level trace"
-        "pkill kanshi; kanshi"
+        # "pkill hyprdispatch; systemd-cat --identifier=hyprdispatch ${hyprdispatch}/bin/hyprdispatch start"
+        # "pkill kanshi; systemd-cat --identifier=kanshi kanshi"
         "pkill swaybg; ${pkgs.swaybg}/bin/swaybg -i ${default.wallpaper} -m fill"
       ];
 
-      # monitor = [
-      #   "desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675,3840x1600@144,1920x0,auto"
-      #   "desc:Dell Inc. DELL U2415 7MT0167B2YNL,1920x1200@60,0x200,auto"
-      #   "desc:AOC 28E850,1920x1080@60,5760x200,auto"
-      # ];
+      monitor = [
+        "desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675,3840x1600@144,1920x0,auto"
+        "desc:Dell Inc. DELL U2415 7MT0167B2YNL,1920x1200@60,0x200,auto"
+        "desc:AOC 28E850,disable"
+        # "desc:AOC 28E850,1920x1080@60,6000x0,auto"
+      ];
 
       env = [
         "XCURSOR_SIZE,24"
@@ -180,18 +188,18 @@ rec
       bind = [
         "$mainMod, Q, exec, alacritty"
         "$mainMod, C, killactive,"
-        "$mainMod, M, exit,"
         "$mainMod, E, exec, dolphin"
         "$mainMod, F, fullscreen,"
+        "$mainMod, M, fullscreen, 1"
         "$mainMod SHIFT, F, fakefullscreen,"
         "$mainMod, S, layoutmsg, swapwithmaster master"
-        "$mainMod, V, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy"
+        "$mainMod, V, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy && wtype -M ctrl -M shift v -m ctrl -m shift"
+        "$mainMod, W, layoutmsg, toggle split"
         "$mainMod, Space, exec, rofi -show drun"
         "$mainMod SHIFT, R, exec, gather-windows"
         "$mainMod, P, togglefloating,"
         "$mainMod, J, togglesplit, # dwindle"
         "$mainMod, L, exec, loginctl lock-session"
-        "$mainMod SHIFT, Q, exec, wlogout -p layer-shell"
         "$mainMod, left, movefocus, l"
         "$mainMod, right, movefocus, r"
         "$mainMod, up, movefocus, u"
@@ -220,6 +228,9 @@ rec
         "$mainMod, mouse_up, workspace, e-1"
         ",Print, exec, slurp | grim -g - - | wl-copy"
         "SHIFT, Print, exec, hyprctl -j activewindow | jq -r '\"\\(.at[0]),\\(.at[1]) \\(.size[0])x\\(.size[1])\"' | grim -g - - | wl-copy"
+        "SUPER CTRL ALT SHIFT, DELETE, exit,"
+        "$mainMod SHIFT, Q, exec, wlogout -p layer-shell"
+        "CTRL ALT, DELETE, exec, wlogout -p layer-shell"
       ];
 
       bindm = [
@@ -228,6 +239,7 @@ rec
       ];
 
       windowrulev2 = [
+        "fakefullscreen, title:^(notion)$"
         "opacity 0.90 0.90,class:^(org.wezfurlong.wezterm)$"
         "opacity 0.90 0.90,class:^(Alacritty)$"
         "opacity 0.90 0.90,class:^(Brave-browser)$"
@@ -237,7 +249,8 @@ rec
         "opacity 0.80 0.80,class:^(steam)$"
         "opacity 0.80 0.80,class:^(steamwebhelper)$"
         "opacity 0.80 0.80,class:^(Spotify)$"
-        "opacity 0.95 0.95,class:^(Code)$"
+        "opacity 0.95 0.90,class:^(Code)$"
+        "opacity 0.95 0.90,class:^(code-url-handler)$"
         "opacity 0.80 0.80,class:^(thunar)$"
         "opacity 0.80 0.80,class:^(file-roller)$"
         "opacity 0.80 0.80,class:^(nwg-look)$"
@@ -247,7 +260,6 @@ rec
         "opacity 0.80 0.70,class:^(pavucontrol)$"
         "opacity 0.80 0.70,class:^(org.kde.polkit-kde-authentication-agent-1)$"
         "opacity 0.80 0.80,class:^(org.telegram.desktop)$"
-        "opacity 0.80 0.80,class:^(code-url-handler)$"
         "opacity 0.80 0.80,title:^(Spotify)$"
 
         "float,class:^(org.kde.polkit-kde-authentication-agent-1)$"

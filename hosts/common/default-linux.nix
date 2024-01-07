@@ -1,4 +1,4 @@
-{ self, inputs, outputs, config, pkgs, ... }:
+{ self, inputs, outputs, config, pkgs, lib, ... }:
 let
   better-gc = pkgs.writeShellScriptBin "better-gc" (builtins.readFile "${self}/scripts/better-gc");
 in
@@ -8,13 +8,21 @@ in
   ];
 
   networking = {
-    firewall.enable = true;
+    firewall = {
+      enable = true;
+      trustedInterfaces = [ "kind" "kindrl" "kindrf" "podman0" "podman1" "enp39s0" ];
+    };
     networkmanager.enable = true;
   };
 
   virtualisation.podman = {
     enable = true;
     dockerSocket.enable = true;
+  };
+  virtualisation.containers = {
+    enable = true;
+    registries.search = ["registry.access.redhat.com" "docker.io" "quay.io" "ghcr.io"];
+    # registries.insecure = ["cr.dns.podman" "cr.dns.podman:5000" "kind-cr.dns.podman:5000" "localhost:5000"];
   };
 
   virtualisation.libvirtd.enable = true;
@@ -41,6 +49,7 @@ in
   services.locate.enable = true;
 
   systemd.timers."better-gc" = {
+    enable = false;
     wantedBy = [ "timers.target" ];
     timerConfig = {
       OnBootSec = "5m";
@@ -64,7 +73,7 @@ in
     initialHashedPassword = "";
     isNormalUser = true;
     group = "jscherrer";
-    extraGroups = [ "wheel" "networkmanager" "libvirtd" ];
+    extraGroups = [ "wheel" "networkmanager" "libvirtd" "podman" ];
     createHome = true;
   };
 
@@ -80,7 +89,7 @@ in
   };
 
   security.pam.loginLimits = [
-    {domain = "*"; type = "soft"; item = "nofile"; value = "131070";}
+    { domain = "*"; type = "soft"; item = "nofile"; value = "131070"; }
   ];
   systemd.user.extraConfig = "DefaultLimitNOFILE=131070";
 }

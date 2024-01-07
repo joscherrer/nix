@@ -6,8 +6,6 @@
     neovim
     curl
     wget
-    python3
-    pypy3
     pciutils
     git
     virt-manager
@@ -21,6 +19,11 @@
       auto-optimise-store = true;
       experimental-features = [ "nix-command" "flakes" "repl-flake" ];
       warn-dirty = false;
+    };
+    gc = {
+      automatic = true;
+      dates = "weekly";
+      options = "--delete-older-than 30d";
     };
   };
 

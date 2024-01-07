@@ -3,8 +3,9 @@ let
   kubectx-wrapper = pkgs.writeShellScriptBin "kubectl-ctx" ''
   kubeconfig_tmp=($(find ${config.xdg.configHome}/kube -name "*.yaml" -type f -print0 | xargs -0))
   KUBECONFIG="$(IFS=: ; echo "''${kubeconfig_tmp[*]}")"
-  [ -f "${config.xdg.configHome}/kube/config" ] && KUBECONFIG="${config.xdg.configHome}/kube/config:$KUBECONFIG"
-  [ -n "$KUBECONFIG" ] && KUBECONFIG="$KUBECONFIG" kubectl config view --merge --flatten > ${config.xdg.configHome}/kube/config
+  [ -f "${config.xdg.configHome}/kube/config" ] && KUBECONFIG="$KUBECONFIG:${config.xdg.configHome}/kube/config"
+  [ -n "$KUBECONFIG" ] && KUBECONFIG="$KUBECONFIG" kubectl config view --merge --flatten > ${config.xdg.configHome}/kube/config.tmp
+  mv -f ${config.xdg.configHome}/kube/config.tmp ${config.xdg.configHome}/kube/config
   export KUBECONFIG="${config.xdg.configHome}/kube/config"
   exec kubectx "$@"
   '';
@@ -77,9 +78,11 @@ in
       rd = "rmdir";
       tf = "terraform";
       _ = "sudo ";
+      cat = "bat";
       kexec = "kubectl exec -it ";
       kpods = "kubectl get pods ";
       kdesc = "kubectl describe ";
+      kwaitp = "kubectl wait --for=condition=ready pod ";
     };
     initExtra = initExtra;
     envExtra = envExtra;
@@ -88,6 +91,7 @@ in
       KUBECONFIG = "${config.xdg.configHome}/kube/config";
       KUBECTL_EXTERNAL_DIFF = "diff --color=always";
       EDITOR = "nvim";
+      HELM_PLUGINS = "${config.xdg.dataHome}/helm/plugins:${pkgs.kubernetes-helmPlugins.helm-diff}";
     };
   };
 

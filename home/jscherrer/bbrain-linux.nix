@@ -40,26 +40,27 @@
     pkgs.kanshi
   ];
 
-  services.kanshi.enable = true;
+  services.kanshi.enable = false;
   # services.kanshi.systemdTarget = "hyprland-session.target";
   services.kanshi.profiles = {
     connected = {
-      exec = [
-        "hyprctl dispatch moveworkspacetomonitor '1 DP-1'"
-        "hyprctl dispatch moveworkspacetomonitor '3 DP-1'"
-        "hyprctl dispatch moveworkspacetomonitor '5 DP-1'"
-        "hyprctl dispatch moveworkspacetomonitor '7 DP-1'"
-        "hyprctl dispatch moveworkspacetomonitor '9 DP-1'"
-        "hyprctl dispatch moveworkspacetomonitor '2 DP-2'"
-        "hyprctl dispatch moveworkspacetomonitor '4 DP-2'"
-        "hyprctl dispatch moveworkspacetomonitor '6 DP-2'"
-        "hyprctl dispatch moveworkspacetomonitor '8 DP-2'"
-        "hyprctl dispatch moveworkspacetomonitor '10 DP-2'"
-      ];
+      # exec = [
+      #   "hyprctl dispatch movecursor 3840 800"
+      #   "hyprctl dispatch moveworkspacetomonitor '1 DP-1'"
+      #   "hyprctl dispatch moveworkspacetomonitor '3 DP-1'"
+      #   "hyprctl dispatch moveworkspacetomonitor '5 DP-1'"
+      #   "hyprctl dispatch moveworkspacetomonitor '7 DP-1'"
+      #   "hyprctl dispatch moveworkspacetomonitor '9 DP-1'"
+      #   "hyprctl dispatch moveworkspacetomonitor '2 DP-2'"
+      #   "hyprctl dispatch moveworkspacetomonitor '4 DP-2'"
+      #   "hyprctl dispatch moveworkspacetomonitor '6 DP-2'"
+      #   "hyprctl dispatch moveworkspacetomonitor '8 DP-2'"
+      #   "hyprctl dispatch moveworkspacetomonitor '10 DP-2'"
+      # ];
       outputs = [
         {
           criteria = "LG Electronics LG HDR WQHD+ 205NTCZ8L675";
-          mode = "3840x1600@120Hz";
+          mode = "3840x1600@143.998001Hz";
           position = "1920,0";
           status = "enable";
         }
@@ -73,7 +74,7 @@
           criteria = "AOC 28E850 Unknown";
           mode = "1920x1200";
           position = "6000,0";
-          status = "disable";
+          status = "enable";
         }
       ];
     };
@@ -88,15 +89,4 @@
       ];
     };
   };
-
-  # home.file.".config/kanshi/config" = ''
-  #   output eDP-1
-  #     mode 1920x1080
-  #     position 0,0
-  #     scale 1
-  #   output DP-1
-  #     mode 1920x1080
-  #     position 1920,0
-  #     scale 1
-  # '';
 }

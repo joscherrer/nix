@@ -84,20 +84,11 @@ in
   services.xserver.displayManager.sessionPackages = [ hyprland-log ];
 
   environment.etc."greetd/environments".text = "hyprland";
-  environment.etc."kanshi/default.conf".text = ''
-    profile connected {
-      output "LG Electronics LG HDR WQHD+ 205NTCZ8L675" enable mode 3840x1600@120Hz position 1920,0
-      output "Dell Inc. DELL U2415 7MT0167B2YNL" enable mode 1920x1200 position 0,200
-      output "AOC 28E850 Unknown" disable
-    }
-
-    profile disconnected {
-      output "AOC 28E850 Unknown" enable mode 1920x1200 position 0,0
-    }
-  '';
   environment.etc."hypr/default.conf".text = ''
-    monitor=desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675,preferred,auto,auto
-    exec-once=${pkgs.kanshi} -c /etc/kanshi/default.conf
+    monitor=desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675,3840x1600@144,1920x0,auto
+    monitor=desc:Dell Inc. DELL U2415 7MT0167B2YNL,disable
+    monitor=desc:AOC 28E850,disable
+  
     $mainMod=SUPER
     bind=$mainMod, M, exit,
     misc {

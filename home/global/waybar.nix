@@ -9,7 +9,6 @@ with lib; let
   xcolors = default.xcolors;
 in
 {
-  home.packages = with pkgs; [ python39Packages.requests ];
   programs.waybar = {
     enable = true;
     settings = {

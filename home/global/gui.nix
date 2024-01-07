@@ -1,6 +1,10 @@
 { self, inputs, outputs, config, pkgs, default, ... }:
 let
   browser = ["firefox.desktop"];
+  notion-icon = builtins.fetchurl {
+    url = "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Notion-logo.svg/480px-Notion-logo.svg.png";
+    sha256 = "sha256:0vrbmwl13hf3sqv8157z4r5glvz8mhffr1r1v46dj7yzd95a97bp";
+  };
 in
 {
   imports = [
@@ -14,11 +18,11 @@ in
     ./dunst.nix
   ];
 
+
   programs.firefox.enable = true;
   home.sessionVariables.BROWSER = "${pkgs.firefox}/bin/firefox";
   home.sessionVariables.GTK_THEME = "Catppuccin-Mocha-Compact-Mauve-Dark";
   home.sessionVariables.DEFAULT_BROWSER = "${pkgs.firefox}/bin/firefox";
-  programs.swaylock.enable = true;
 
   gtk = {
     enable = true;
@@ -100,10 +104,13 @@ in
     slurp
     grim
     wf-recorder
+    wtype
     zathura
     spotify
     filezilla
     libsForQt5.qtstyleplugin-kvantum
+    chromium
+    dbeaver
     (catppuccin-kvantum.override {
       accent = "Mauve";
       variant = "Mocha";
@@ -142,6 +149,15 @@ in
     MimeType=x-scheme-handler/spotify;
     Categories=Audio;Music;Player;AudioVideo;
     StartupWMClass=spotify
+  '';
+
+  home.file.".local/share/applications/notion.desktop".text = ''
+    [Desktop Entry]
+    Name=Notion
+    Exec=chromium --window-name="notion" --enable-features=UseOzonePlatform --ozone-platform=wayland https://notion.so
+    Icon=${notion-icon}
+    Type=Application
+    Categories=Office;
   '';
 
   home.sessionVariables = { QT_STYLE_OVERRIDE = "kvantum"; };

@@ -50,8 +50,10 @@
     git
     delta
     jq
-    fd
+    bat
     yq-go
+    dasel
+    fd
     ripgrep
     tmux
     pgcli
@@ -75,6 +77,8 @@
     du-dust
     findutils
     xdg-utils
+    dig
+    tcpdump
 
     # IaC/Cloud
     terraform
@@ -102,6 +106,8 @@
     kind
     stable.hadolint
     kubernetes-helm
+    helm-docs
+    kubernetes-helmPlugins.helm-diff
     kubetail
     k9s
     # kubie
@@ -122,6 +128,21 @@
     kotlin
     kotlin-native
     kotlin-language-server
+
+    # Python
+    (python3.withPackages (ps: with ps; [
+      flake8
+      ruamel-yaml
+      requests
+      toml
+      types-toml
+      sh
+    ]))
+    black
+    pdm
+    mypy
+    # python311Packages.virtualenv
+
 
     # Nix
     niv
