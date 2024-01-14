@@ -38,6 +38,9 @@
   };
   home.packages = [
     pkgs.kanshi
+    pkgs.buildah
+    pkgs.pdm
+    pkgs.vagrant
   ];
 
   services.kanshi.enable = false;

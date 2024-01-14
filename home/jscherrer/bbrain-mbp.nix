@@ -11,7 +11,7 @@
 
   home.packages = with pkgs; [
     # Others
-    unstable.mitmproxy
+    # unstable.mitmproxy
     wireshark
     youtube-dl
     inputs.kmonad.packages."${pkgs.system}".kmonad

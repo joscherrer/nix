@@ -83,7 +83,6 @@
     # IaC/Cloud
     terraform
     packer
-    vagrant
     ansible
     ansible-lint
     hcloud
@@ -100,7 +99,6 @@
     # Containers
     podman-compose
     dive
-    buildah
     kustomize
     kubectl
     kubectx
@@ -141,7 +139,6 @@
       sh
     ]))
     black
-    pdm
     mypy
     # python311Packages.virtualenv
 
