@@ -194,6 +194,7 @@ rec
         "$mainMod SHIFT, F, fakefullscreen,"
         "$mainMod, S, layoutmsg, swapwithmaster master"
         "$mainMod, V, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy && wtype -M ctrl -M shift v -m ctrl -m shift"
+        "$mainMod, period, exec, rofimoji --action clipboard --clipboarder wl-copy"
         "$mainMod, W, layoutmsg, toggle split"
         "$mainMod, Space, exec, rofi -show drun"
         "$mainMod SHIFT, R, exec, gather-windows"
@@ -282,6 +283,12 @@ rec
         "float,title:^(File Operation Progress)$"
         "float,title:^(Qalculate!)$"
         "float,class:^(.blueman-manager-wrapped)$"
+        # "nofullscreenrequest,class:^(firefox)$,title:^(Mozilla Firefox)$"
+        # "float,title:^(Mozilla Firefox)$"
+        # "move 50% 50%,class:^(firefox)$,floating:1"
+
+        # "nomaximizerequest,class:^(firefox)$"
+        
         "noshadow, floating:0"
 
         "tile, title:^(Spotify)$"

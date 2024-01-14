@@ -2,12 +2,15 @@
 {
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  boot.kernelParams = ["nvidia.NVreg_PreserveVideoMemoryAllocations=1"];
+  boot.kernelParams = [ "nvidia.NVreg_PreserveVideoMemoryAllocations=1" ];
   boot.kernelModules = [ "coretemp" ];
   boot.initrd.kernelModules = [
     "dm-raid"
     "raid1"
   ];
+  boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
+  boot.binfmt.registrations."aarch64-linux".fixBinary = true;
+  boot.binfmt.registrations."aarch64-linux".matchCredentials = true;
 
   environment.systemPackages = [
     pkgs.stable.jetbrains.jdk
@@ -39,26 +42,30 @@
   fonts.packages = [
     pkgs.nerdfonts
   ];
-  
+
   # Need to create /etc/nixos/smb-secrets with the following content:
   # username=<USERNAME>
   # password=<PASSWORD>
   fileSystems."/mnt/Freebox/Backup" = {
     device = "//192.168.1.254/Backup";
     fsType = "cifs";
-    options = let
-      user_opts = "uid=1000";
-      automount_opts = "x-systemd.automount,noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s";
-    in ["${automount_opts},credentials=/etc/nixos/smb-secrets,${user_opts}"];
+    options =
+      let
+        user_opts = "uid=1000";
+        automount_opts = "x-systemd.automount,noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s";
+      in
+      [ "${automount_opts},credentials=/etc/nixos/smb-secrets,${user_opts}" ];
   };
 
   fileSystems."/mnt/Freebox/HDD_2TiB" = {
     device = "//192.168.1.254/HDD 2TiB";
     fsType = "cifs";
-    options = let
-      user_opts = "uid=1000";
-      automount_opts = "x-systemd.automount,noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s";
-    in ["${automount_opts},credentials=/etc/nixos/smb-secrets,${user_opts}"];
+    options =
+      let
+        user_opts = "uid=1000";
+        automount_opts = "x-systemd.automount,noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s";
+      in
+      [ "${automount_opts},credentials=/etc/nixos/smb-secrets,${user_opts}" ];
   };
 
   nixpkgs.config.allowUnfree = true;
@@ -68,18 +75,18 @@
 
   # Local k8s cluster with direct access
   networking.search = [ "dns.podman" ];
-  networking.nameservers = ["127.0.0.1" "::1"];
+  networking.nameservers = [ "127.0.0.1" "::1" ];
   networking.hosts = {
-    "172.16.0.200" = ["kind-ingress.dns.podman"];
+    "172.16.0.200" = [ "kind-ingress.dns.podman" ];
   };
-  services.coredns = { 
+  services.coredns = {
     enable = true;
     config = ''
-    . {
-      bind 127.0.0.1 ::1
-      forward dns.podman 172.16.0.1
-      forward . 1.1.1.1 1.0.0.1 192.168.1.254 fd0f:ee:b0::1
-    }
+      . {
+        bind 127.0.0.1 ::1
+        forward dns.podman 172.16.0.1
+        forward . 1.1.1.1 1.0.0.1 192.168.1.254 fd0f:ee:b0::1
+      }
     '';
   };
   networking.interfaces.enp39s0.wakeOnLan.enable = true;

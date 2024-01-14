@@ -95,6 +95,7 @@ in
     qalculate-qt
     wlogout
     cliphist
+    rofimoji
     wl-clipboard
     pavucontrol
     imv

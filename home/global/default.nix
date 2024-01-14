@@ -90,6 +90,8 @@
     google-cloud-sdk
     gh
     scaleway-cli
+    s3cmd
+    awscli2
     fluxcd
     vault-bin
     stable.open-policy-agent
