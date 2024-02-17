@@ -24,7 +24,7 @@ let
     export SDL_IM_MODULE=ibus
     export GTK_IM_MODULE=ibus
     export GLFW_IM_MODULE=ibus
-    export XMODIFIERS=@im=ibus
+    export XMODIFIERS=""
 
     # Misc
     export GBM_BACKEND=nvidia-drm

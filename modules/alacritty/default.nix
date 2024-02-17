@@ -2,7 +2,6 @@
 {
   programs.alacritty.enable = true;
   programs.alacritty.settings = {
-    draw_bold_text_with_bright_colors = true;
     font = {
       normal = {
         family = lib.mkDefault "CaskaydiaCove Nerd Font";
@@ -22,7 +21,6 @@
       };
       size = 16.0;
     };
-    theme = "Snazzy";
     window = {
       opacity = 1;
       dynamic_padding = false;
@@ -33,6 +31,7 @@
     };
 
     colors = {
+      draw_bold_text_with_bright_colors = true;
       primary = {
         background = "#282a36";
         foreground = "#eff0eb";

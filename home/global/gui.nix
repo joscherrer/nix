@@ -112,6 +112,7 @@ in
     libsForQt5.qtstyleplugin-kvantum
     chromium
     dbeaver
+    bitwarden
     (catppuccin-kvantum.override {
       accent = "Mauve";
       variant = "Mocha";
@@ -156,6 +157,15 @@ in
     [Desktop Entry]
     Name=Notion
     Exec=chromium --window-name="notion" --enable-features=UseOzonePlatform --ozone-platform=wayland https://notion.so
+    Icon=${notion-icon}
+    Type=Application
+    Categories=Office;
+  '';
+
+  home.file.".local/share/applications/notion-calendar.desktop".text = ''
+    [Desktop Entry]
+    Name=Notion Calendar
+    Exec=chromium --window-name="notion-calendar" --enable-features=UseOzonePlatform --ozone-platform=wayland https://calendar.notion.so
     Icon=${notion-icon}
     Type=Application
     Categories=Office;

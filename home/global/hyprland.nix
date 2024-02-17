@@ -77,6 +77,7 @@ rec
         "__GLX_VENDOR_LIBRARY_NAME,nvidia"
         "WLR_NO_HARDWARE_CURSORS,1"
         "GTK_THEME,Catppuccin-Mocha-Compact-Mauve-Dark"
+        "XMODIFIERS=\"\""
       ];
 
       input = {
@@ -241,6 +242,7 @@ rec
 
       windowrulev2 = [
         "fakefullscreen, title:^(notion)$"
+        "fakefullscreen, title:^(notion-calendar)$"
         "opacity 0.90 0.90,class:^(org.wezfurlong.wezterm)$"
         "opacity 0.90 0.90,class:^(Alacritty)$"
         "opacity 0.90 0.90,class:^(Brave-browser)$"

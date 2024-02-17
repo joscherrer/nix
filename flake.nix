@@ -51,15 +51,37 @@
 
       overlay-terraform = final: prev: {
         terraform = prev.terraform.overrideAttrs (old: {
-          ldflags = old.ldflags ++ ["-X" "'github.com/hashicorp/terraform/version.dev=no'"];
+          ldflags = old.ldflags ++ [ "-X" "'github.com/hashicorp/terraform/version.dev=no'" ];
         });
       };
 
+      # overlay-pdm = final: prev: {
+      #   pdm = prev.pdm.overrideAttrs (old: {
+      #     python = (prev.python3.withPackages (ps: with ps; [ virtualenv ]));
+      #   });
+      # };
+
       overlay-pdm = final: prev: {
         pdm = prev.pdm.overrideAttrs (old: {
-          python = (prev.python3.withPackages (ps: with ps; [ virtualenv ]));
+          propagatedBuildInputs = old.propagatedBuildInputs ++ [ prev.python3.pkgs.truststore ];
         });
       };
+
+      overlay-jetbrains = final: prev:
+        let
+          tools = [ "goland" "idea-ultimate" ];
+          makeToolOverlay = tool: {
+            ${tool} = prev.jetbrains.${tool}.overrideAttrs (old: {
+              patches = (old.patches or [ ]) ++ [
+                ./patches/jetbrains/remote-dev-server-fontconfig.patch
+              ];
+            });
+          };
+        in
+        {
+          jetbrains = prev.jetbrains //
+            builtins.foldl' (acc: tool: acc // makeToolOverlay tool) { } tools;
+        };
 
       supportedSystems = [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" ];
       forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
@@ -73,6 +95,8 @@
         stable = overlay-stable;
         inherit overlay-kubectx;
         inherit overlay-terraform;
+        inherit overlay-jetbrains;
+        inherit overlay-pdm;
       };
 
       packages = forAllSystems (system:

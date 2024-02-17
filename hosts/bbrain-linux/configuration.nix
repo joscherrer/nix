@@ -13,11 +13,11 @@
   boot.binfmt.registrations."aarch64-linux".matchCredentials = true;
 
   environment.systemPackages = [
-    pkgs.stable.jetbrains.jdk
-    pkgs.stable.jetbrains.idea-community
-    # pkgs.unstable.jetbrains.gateway
+    pkgs.jetbrains.jdk
+    pkgs.jetbrains.idea-ultimate
+    pkgs.jetbrains.gateway
+    pkgs.jetbrains.goland
     pkgs.usbutils
-    pkgs.semeru-bin-8
     pkgs.qt6.qtwayland
     pkgs.qt5.qtwayland
     pkgs.libva
@@ -178,4 +178,9 @@
   services.udev.extraRules = ''
     ACTION=="add", ATTR{idProduct}=="0002", ATTR{idVendor}=="a103", RUN="${pkgs.bash}/bin/bash -c 'echo enabled > /sys%E{DEVPATH}/power/wakeup'"
   '';
+
+  networking.firewall = {
+    enable = true;
+    allowedUDPPorts = [ 8211 ];
+  };
 }
