@@ -90,7 +90,7 @@
     dig
     tcpdump
     pinentry-curses
-    bitwarden-cli
+    # bitwarden-cli
     cargo
 
     # IaC/Cloud

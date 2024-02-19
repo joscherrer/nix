@@ -84,6 +84,8 @@
     "teamviewer"
     "nrlquaker-winbox"
     "nightfall"
+    "kitty"
+    "bluesnooze"
   ];
 
   homebrew.brews = [

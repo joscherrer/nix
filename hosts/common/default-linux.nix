@@ -99,4 +99,10 @@ in
     { domain = "*"; type = "soft"; item = "nofile"; value = "131070"; }
   ];
   systemd.user.extraConfig = "DefaultLimitNOFILE=131070";
+
+  programs.gnupg.agent = {
+    enable = true;
+    pinentryFlavor = "gnome3";
+    enableSSHSupport = true;
+  };
 }

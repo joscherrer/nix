@@ -14,7 +14,7 @@
     # unstable.mitmproxy
     wireshark
     youtube-dl
-    inputs.kmonad.packages."${pkgs.system}".kmonad
+    # inputs.kmonad.packages."${pkgs.system}".kmonad
   ];
 
   programs.alacritty.settings = {

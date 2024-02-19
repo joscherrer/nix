@@ -32,12 +32,6 @@
   programs.zsh.enable = true;
   programs.zsh.promptInit = "autoload -U promptinit && promptinit";
 
-  programs.gnupg.agent = {
-    enable = true;
-    pinentryFlavor = "gnome3";
-    enableSSHSupport = true;
-  };
-
   users.users.jscherrer = {
     openssh.authorizedKeys.keys =
       let
