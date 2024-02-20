@@ -22,9 +22,11 @@
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
     vscode-server.url = "github:nix-community/nixos-vscode-server";
+
+    nil.url = "github:oxalica/nil";
   };
 
-  outputs = { self, nixpkgs, nixpkgs-stable, nixpkgs-unstable, home-manager, darwin, kmonad, hyprland, ... }@inputs:
+  outputs = { self, nixpkgs, nixpkgs-stable, nixpkgs-unstable, home-manager, darwin, kmonad, hyprland, nil, ... }@inputs:
     let
       inherit (self) outputs;
       overlay-unstable = final: prev: {

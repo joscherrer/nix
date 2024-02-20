@@ -3,6 +3,7 @@
   imports = [
     ./zsh.nix
     ./neovim.nix
+    ./tmux.nix
     ../../lib
   ];
 
@@ -158,6 +159,7 @@
     # Nix
     niv
     rnix-lsp
+    inputs.nil.packages.${pkgs.system}.nil
 
     # Dev misc
     openapi-generator-cli
