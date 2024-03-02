@@ -1,3 +1,19 @@
+-- TODO: remove this when updating to neovim 0.10
+-- function vim.list_contains(t, value)
+--     if not vim.version.lt(vim.version(), { 0, 10, 0 }) then
+--         vim.notify("Please remove the vim.list_contains() function in lua/bbrain/packer.lua")
+--     end
+--     vim.validate({ t = { t, 't' } })
+--     --- @cast t table<any,any>
+--
+--     for _, v in ipairs(t) do
+--         if v == value then
+--             return true
+--         end
+--     end
+--     return false
+-- end
+
 local ensure_packer = function()
     local fn = vim.fn
     local install_path = fn.stdpath('data') .. '/site/pack/packer/start/packer.nvim'
@@ -10,18 +26,6 @@ local ensure_packer = function()
 end
 
 local packer_bootstrap = ensure_packer()
-
-local save_condition = function(buf)
-    local fn = vim.fn
-    local utils = require("auto-save.utils.data")
-
-    if
-        fn.getbufvar(buf, "&modifiable") == 1 and
-        utils.not_int(fn.getbufvar(buf, "&filetype"), {}) then
-        return true
-    end
-    return false
-end
 
 vim.cmd [[packadd packer.nvim]]
 
@@ -57,6 +61,27 @@ return require('packer').startup(function(use)
     }
     use { 'nvim-tree/nvim-tree.lua', requires = { 'nvim-tree/nvim-web-devicons', }, }
     use { 'mbbill/undotree' }
+    use { 'rcarriga/nvim-notify' }
+
+    --    if list_contains({ "bbrain-mbp.local" }, vim.fn.hostname()) then
+    use {
+        "zbirenbaum/copilot.lua",
+        cmd = "Copilot",
+        event = "InsertEnter",
+        config = function()
+            vim.notify("Starting copilot.lua")
+            require("copilot").setup({})
+            vim.notify("copilot.lua started", vim.log.levels.INFO)
+        end,
+    }
+    use {
+        "zbirenbaum/copilot-cmp",
+        after = { "copilot.lua" },
+        config = function()
+            require("copilot_cmp").setup()
+        end
+    }
+    --    end
     -- Automatically set up your configuration after cloning packer.nvim
     -- Put this at the end after all plugins
     if packer_bootstrap then

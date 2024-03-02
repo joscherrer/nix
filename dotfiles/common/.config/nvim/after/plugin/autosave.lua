@@ -1,31 +1,45 @@
-vim.api.nvim_create_autocmd({ 'InsertLeave', 'TextChanged' }, {
-    callback = function(ev)
-        if not vim.api.nvim_buf_get_option(ev.buf, "modified") then
-            return
-        end
-        local success, mod = pcall(vim.api.nvim_buf_get_var, ev.buf, "next_save")
-        local next_save = 0.0
+-- local helpers = require('bbrain.helpers')
 
-        if success and mod then
-            next_save = vim.fn.eval(mod)
-        end
-
-        local now = vim.fn.reltime()
-        local now_float = vim.fn.reltimefloat(now)
-
-        if success and next_save - now_float > 0 then
-            return
-        end
-        next_save = now_float + 0.300
-
-        vim.api.nvim_buf_set_var(ev.buf, "next_save", tostring(next_save))
-
-        vim.defer_fn(function()
-            if vim.api.nvim_buf_is_valid(ev.buf) then
-                vim.api.nvim_buf_call(ev.buf, function() vim.cmd("silent! write") end)
-                vim.notify("Saved file " .. ev.file)
-            end
-        end, 300)
-    end,
-    pattern = "*",
-})
+-- vim.api.nvim_create_autocmd({ 'InsertLeave', 'TextChanged' }, {
+--     callback = function(ev)
+--         if not vim.api.nvim_buf_get_option(ev.buf, "modified") then
+--             return
+--         end
+--         local now = vim.fn.reltime()
+--         local nowf = vim.fn.reltimefloat(now)
+--         local mtime = helpers.buf_get_var_float(ev.buf, "mtime") or nowf
+--
+--         if ev.event == "TextChanged" then
+--             vim.api.nvim_buf_set_var(ev.buf, "mtime", nowf)
+--             vim.notify("Will be saved in 5s")
+--             vim.defer_fn(function()
+--                 if not vim.api.nvim_buf_is_valid(ev.buf) then return end
+--                 local new_mtime = helpers.buf_get_var_float(ev.buf, "mtime")
+--                 if new_mtime == mtime then
+--                     vim.api.nvim_buf_call(ev.buf, function() vim.cmd("silent! write") end)
+--                     vim.notify("Saved file " .. ev.file)
+--                 end
+--             end, 5000)
+--             return
+--         end
+--         -- local next_save = helpers.buf_get_var_float(ev.buf, "next_save") or 0.0
+--         -- if next_save - nowf > 0 then
+--         --     return
+--         -- end
+--         -- if ev.event == "InsertLeave" then
+--
+--         -- end
+--
+--         -- next_save = nowf + 0.300
+--
+--         -- vim.api.nvim_buf_set_var(ev.buf, "next_save", tostring(next_save))
+--
+--         -- vim.defer_fn(function()
+--         --     if vim.api.nvim_buf_is_valid(ev.buf) then
+--         --         vim.api.nvim_buf_call(ev.buf, function() vim.cmd("silent! write") end)
+--         --         vim.notify("Saved file " .. ev.file)
+--         --     end
+--         -- end, 300)
+--     end,
+--     pattern = "*",
+-- })

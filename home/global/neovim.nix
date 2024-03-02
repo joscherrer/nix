@@ -10,10 +10,10 @@
   #   recursive = true;
   # };
 
-  xdg.configFile.nvim = {
-    source = "${inputs.self}/dotfiles/common/.config/nvim";
-    recursive = true;
-  };
+  # xdg.configFile.nvim = {
+  #   source = "${inputs.self}/dotfiles/common/.config/nvim";
+  #   recursive = true;
+  # };
 
   home.packages = [
     # Needed for NvChad

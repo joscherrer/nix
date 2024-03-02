@@ -5,6 +5,7 @@
   environment.systemPackages = [
     pkgs.alacritty
     pkgs.discord
+    pkgs.skhd
   ];
 
   services.nix-daemon.enable = true;
@@ -21,6 +22,13 @@
     addresses = {
       test = "127.0.0.1";
     };
+  };
+
+  services.skhd = {
+      enable = true;
+      skhdConfig = ''
+        cmd + shift - p : if [ "$(yabai -m config layout)" = "float" ]; then yabai -m config layout bsp; else yabai -m config layout float; fi
+      '';
   };
 
   # services.yabai.enable = true;
@@ -93,6 +101,7 @@
     "koekeishiya/formulae/yabai"
     "openjdk@17"
   ];
+
   homebrew.onActivation.autoUpdate = true;
 
   home-manager = {
