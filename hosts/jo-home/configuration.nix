@@ -1,4 +1,4 @@
-{ self, inputs, outputs, config, pkgs, lib, ... }:
+{ self, inputs, outputs, config, pkgs, lib, modulesPath, ... }:
 with lib;
 let
   nixos-wsl = import /etc/nixos/nixos-wsl;
