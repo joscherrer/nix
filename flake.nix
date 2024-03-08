@@ -97,7 +97,7 @@
         stable = overlay-stable;
         inherit overlay-kubectx;
         inherit overlay-terraform;
-        inherit overlay-jetbrains;
+        # inherit overlay-jetbrains;
         inherit overlay-pdm;
       };
 

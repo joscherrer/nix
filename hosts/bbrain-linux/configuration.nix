@@ -24,11 +24,13 @@
     pkgs.unstable.xwaylandvideobridge
     pkgs.wineWowPackages.waylandFull
     pkgs.cifs-utils
+    pkgs.qmk
   ];
 
   hardware.bluetooth.enable = true;
   hardware.bluetooth.powerOnBoot = true;
   services.blueman.enable = true;
+  hardware.keyboard.qmk.enable = true;
 
   programs.thunar.enable = true;
   services.gvfs.enable = true;
@@ -108,9 +110,9 @@
     LC_TIME = "fr_FR.UTF-8";
   };
 
-  services.xserver = {
+  services.xserver.xkb = {
     layout = "us";
-    xkbVariant = "intl";
+    variant = "intl";
   };
 
   console.keyMap = "us-acentos";
@@ -177,6 +179,14 @@
 
   services.udev.extraRules = ''
     ACTION=="add", ATTR{idProduct}=="0002", ATTR{idVendor}=="a103", RUN="${pkgs.bash}/bin/bash -c 'echo enabled > /sys%E{DEVPATH}/power/wakeup'"
+    # Make an RP2040 in BOOTSEL mode writable by all users, so you can `picotool`
+    # without `sudo`. 
+    SUBSYSTEM=="usb", ATTRS{idVendor}=="2e8a", ATTRS{idProduct}=="0003", MODE="0666"
+
+    # Symlink an RP2040 running MicroPython from /dev/pico.
+    #
+    # Then you can `mpr connect $(realpath /dev/pico)`.
+    SUBSYSTEM=="tty", ATTRS{idVendor}=="2e8a", ATTRS{idProduct}=="0005", SYMLINK+="pico"
   '';
 
   networking.firewall = {
