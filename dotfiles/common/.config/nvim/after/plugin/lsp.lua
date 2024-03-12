@@ -34,10 +34,12 @@ require('mason-lspconfig').setup({
         lsp_zero.default_setup,
     },
 })
+local lspconfig = require('lspconfig')
+
 -- (Optional) Configure lua language server for neovim
-require('lspconfig').lua_ls.setup(lsp_zero.nvim_lua_ls())
-require('lspconfig').nil_ls.setup({})
-require('lspconfig').pyright.setup({})
+lspconfig.lua_ls.setup(lsp_zero.nvim_lua_ls())
+lspconfig.nil_ls.setup({})
+lspconfig.pyright.setup({})
 -- require('lspconfig').pylsp.setup({})
 
 

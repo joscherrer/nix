@@ -93,6 +93,7 @@
     pinentry-curses
     # bitwarden-cli
     cargo
+    lua
 
     # IaC/Cloud
     terraform

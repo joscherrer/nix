@@ -81,6 +81,13 @@ return require('packer').startup(function(use)
             require("copilot_cmp").setup()
         end
     }
+    use {
+        'numToStr/Comment.nvim',
+        config = function()
+            require('Comment').setup()
+        end
+    }
+
     --    end
     -- Automatically set up your configuration after cloning packer.nvim
     -- Put this at the end after all plugins
