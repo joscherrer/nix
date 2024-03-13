@@ -82,7 +82,7 @@ rec
 
       input = {
         kb_layout = "us";
-        kb_variant = "intl";
+        # kb_variant = "intl";
         repeat_rate = 60;
         repeat_delay = 250;
         follow_mouse = 1;

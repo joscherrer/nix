@@ -43,6 +43,18 @@
     pkgs.vagrant
   ];
 
+  programs.wezterm = {
+      enable = true;
+      extraConfig = ''
+      local wezterm = require 'wezterm'
+      local config = {}
+
+      config.color_scheme = "One Dark (Gogh)"
+      config.enable_wayland = true
+      config.front_end = "Software"
+      return config
+      '';
+  };
   services.kanshi.enable = false;
   # services.kanshi.systemdTarget = "hyprland-session.target";
   services.kanshi.profiles = {
