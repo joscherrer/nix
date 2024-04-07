@@ -55,6 +55,7 @@
       return config
       '';
   };
+
   services.kanshi.enable = false;
   # services.kanshi.systemdTarget = "hyprland-session.target";
   services.kanshi.profiles = {

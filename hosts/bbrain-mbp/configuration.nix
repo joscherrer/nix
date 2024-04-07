@@ -99,6 +99,7 @@
     "nightfall"
     "kitty"
     "bluesnooze"
+    "kitty"
   ];
 
   homebrew.brews = [
