@@ -92,6 +92,7 @@
     "hiddenbar"
     "google-chrome"
     "podman-desktop"
+    "docker"
     "alt-tab"
     "box-drive"
     "teamviewer"

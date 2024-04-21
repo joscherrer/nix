@@ -13,6 +13,14 @@ telescope.setup({
         live_grep = {
             hidden = true
         }
+    },
+    extensions = {
+        extensions = {
+            workspaces = {
+                -- keep insert mode after selection in the picker, default is false
+                keep_insert = true,
+            }
+        }
     }
 })
 vim.keymap.set('n', '<leader>pf', builtin.find_files, {})

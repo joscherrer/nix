@@ -8,9 +8,13 @@
         clock24 = true;
         mouse = true;
         prefix = "C-a";
-        terminal = "xterm-256color";
+        terminal = "tmux-256color";
         extraConfig = ''
-        set-option -ga terminal-overrides ",xterm-256color:Tc"
+        set-option -ga terminal-overrides ",xterm-kitty:Tc"
         '';
     };
+
+    home.packages = [
+        pkgs.tmux
+    ];
 }
