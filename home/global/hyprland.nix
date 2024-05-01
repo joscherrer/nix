@@ -82,6 +82,7 @@ rec
 
       input = {
         kb_layout = "us";
+        kb_options = "compose:ralt";
         # kb_variant = "intl";
         repeat_rate = 60;
         repeat_delay = 250;

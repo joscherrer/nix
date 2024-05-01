@@ -29,6 +29,7 @@ require('mason-lspconfig').setup({
         'tflint',
         'ansiblels',
         'yamlls',
+        'volar'
     },
     handlers = {
         lsp_zero.default_setup,
@@ -40,6 +41,9 @@ local lspconfig = require('lspconfig')
 lspconfig.lua_ls.setup(lsp_zero.nvim_lua_ls())
 lspconfig.nil_ls.setup({})
 lspconfig.pyright.setup({})
+lspconfig.volar.setup({
+    filetypes = {'vue'}
+})
 -- require('lspconfig').pylsp.setup({})
 
 
