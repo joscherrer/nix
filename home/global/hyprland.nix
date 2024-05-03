@@ -188,7 +188,7 @@ rec
       "$mainMod" = "SUPER";
 
       bind = [
-        "$mainMod, Q, exec, alacritty"
+        "$mainMod, Q, exec, kitty"
         "$mainMod, C, killactive,"
         "$mainMod, E, exec, dolphin"
         "$mainMod, F, fullscreen,"

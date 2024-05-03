@@ -3,6 +3,7 @@
   imports = [
     ../global
     ../../modules/alacritty
+    ../global/terminal.nix
   ];
 
   home.username = lib.mkDefault "jscherrer";
@@ -16,13 +17,6 @@
     youtube-dl
     # inputs.kmonad.packages."${pkgs.system}".kmonad
   ];
-
-  programs.kitty = {
-    enable = true;
-    theme = "One Dark";
-    font.name = "JetBrainsMono Nerd Font";
-    font.size = 15;
-  };
 
   programs.alacritty.settings = {
     font.normal.family = "JetBrainsMono Nerd Font";

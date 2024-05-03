@@ -19,5 +19,6 @@
     # Needed for NvChad
     pkgs.gcc
     pkgs.unzip
+    pkgs.lua-language-server
   ];
 }
