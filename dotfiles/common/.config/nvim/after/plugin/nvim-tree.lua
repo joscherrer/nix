@@ -2,6 +2,7 @@ local function get_nvim_tree_float_dimensions()
 end
 
 require("nvim-tree").setup({
+    sync_root_with_cwd = true,
     sort = { sorter = "case_sensitive", },
     renderer = { group_empty = true, },
     filters = { dotfiles = false, },

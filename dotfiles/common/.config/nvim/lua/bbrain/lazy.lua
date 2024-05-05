@@ -66,20 +66,6 @@ local plugins = {
                     ['<C-Space>'] = cmp.mapping.complete(),
                     ['<C-e>'] = cmp.mapping.abort(),
                     ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
-                    -- ['<C-p>'] = cmp.mapping(function()
-                    --     if cmp.visible() then
-                    --         cmp.select_prev_item({ behavior = 'insert' })
-                    --     else
-                    --         cmp.complete()
-                    --     end
-                    -- end),
-                    -- ['<C-n>'] = cmp.mapping(function()
-                    --     if cmp.visible() then
-                    --         cmp.select_next_item({ behavior = 'insert' })
-                    --     else
-                    --         cmp.complete()
-                    --     end
-                    -- end),
                 }),
                 sources = cmp.config.sources({
                     { name = 'nvim_lsp' },
@@ -217,7 +203,11 @@ local plugins = {
         lazy = true,
         config = function()
             vim.notify("Starting copilot.lua")
-            require("copilot").setup({})
+            require("copilot").setup({
+                suggestion = {
+                    auto_trigger = true,
+                },
+            })
             vim.notify("copilot.lua started", vim.log.levels.INFO)
         end,
     },
@@ -233,7 +223,32 @@ local plugins = {
             require('Comment').setup()
         end
     },
-    'natecraddock/workspaces.nvim',
+    {
+        'natecraddock/sessions.nvim',
+        config = function()
+            require('sessions').setup({
+                events = { "BufEnter", "VimLeavePre", "DirChangedPre" },
+                session_filepath = vim.fn.stdpath('data') .. '/sessions/',
+                absolute = true,
+            })
+        end,
+    },
+    {
+        'natecraddock/workspaces.nvim',
+        config = function()
+            require('workspaces').setup({
+                hooks = {
+                    open_pre = {
+                        "SessionsStop",
+                        "silent %bdelete!",
+                    },
+                    open = function()
+                        require('sessions').load(nil, { silent = true })
+                    end,
+                },
+            })
+        end
+    },
 }
 
 local opts = {}
