@@ -159,7 +159,6 @@
 
     # Nix
     niv
-    rnix-lsp
     inputs.nil.packages.${pkgs.system}.nil
 
     # Dev misc

@@ -15,7 +15,7 @@
   environment.systemPackages = [
     pkgs.jetbrains.jdk
     pkgs.jetbrains.idea-ultimate
-    pkgs.jetbrains.gateway
+    # pkgs.jetbrains.gateway
     pkgs.jetbrains.goland
     pkgs.usbutils
     pkgs.qt6.qtwayland
@@ -122,6 +122,11 @@
     description = "Jonathan Scherrer";
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [ ];
+  };
+
+  users.users.greeter = {
+      home = "/home/greeter";
+      createHome = true;
   };
 
   system.stateVersion = "23.05"; # Did you read the comment?

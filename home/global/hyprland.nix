@@ -43,9 +43,6 @@ rec
   ];
   wayland.windowManager.hyprland = {
     enable = true;
-    # package = pkgs.hyprland;
-    # package = hyprland-flake.packages.${pkgs.system}.hyprland;
-    package = inputs.hyprland.packages.${pkgs.system}.hyprland;
     xwayland.enable = true;
     settings = {
       exec-once = [
@@ -125,6 +122,9 @@ rec
       group = {
         "col.border_active" = "rgb(${colors.color5})";
         "col.border_inactive" = "rgb(${colors.contrast})";
+      };
+      debug = {
+          disable_logs = false;
       };
 
       misc = {

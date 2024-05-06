@@ -92,6 +92,7 @@ in
       KUBECTL_EXTERNAL_DIFF = "diff --color=always";
       EDITOR = "nvim";
       HELM_PLUGINS = "${config.xdg.dataHome}/helm/plugins:${pkgs.kubernetes-helmPlugins.helm-diff}";
+      LESS = "-R --mouse --quit-if-one-screen";
     };
   };
 

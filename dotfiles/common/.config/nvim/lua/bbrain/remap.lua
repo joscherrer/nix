@@ -13,6 +13,9 @@ vim.keymap.set("n", "<leader>ss", '<C-w>s')
 -- close split
 vim.keymap.set("n", "<leader>qq", '<C-w>q')
 
+-- maximize split
+vim.keymap.set("n", "<leader>mm", vim.cmd.Maximize)
+
 -- move lines up/down
 vim.keymap.set("n", "<A-Down>", ":m .+1<CR>==")     -- move line up(n)
 vim.keymap.set("n", "<A-Up>", ":m .-2<CR>==")       -- move line down(n)
@@ -51,3 +54,15 @@ vim.keymap.set("n", "<C-s>", ":w<CR>")
 vim.keymap.set("i", "<C-s>", "<Esc>:w<CR>a")
 
 vim.keymap.set("n", "<C-A-r>", ":so<CR>")
+
+-- Invert vaquote and vi2quote
+vim.keymap.set("o", "a'", "2i'", { noremap = true })
+vim.keymap.set("o", "2i'", "a'", { noremap = true })
+vim.keymap.set("o", 'a"', '2i"', { noremap = true })
+vim.keymap.set("o", '2i"', 'a"', { noremap = true })
+
+vim.keymap.set("x", "a'", "2i'", { noremap = true })
+vim.keymap.set("x", "2i'", "a'", { noremap = true })
+vim.keymap.set("x", 'a"', '2i"', { noremap = true })
+vim.keymap.set("x", '2i"', 'a"', { noremap = true })
+

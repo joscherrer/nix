@@ -27,7 +27,6 @@ local plugins = {
         lazy = false,
         config = true,
     },
-    'saadparwaiz1/cmp_luasnip',
     {
         'L3MON4D3/LuaSnip',
         lazy = false,
@@ -63,8 +62,16 @@ local plugins = {
             require('bbrain.lsp')
         end
     },
-    'mbbill/undotree',
-    'rcarriga/nvim-notify',
+    { 'natecraddock/workspaces.nvim' },
+    { 'mbbill/undotree' },
+    { 'saadparwaiz1/cmp_luasnip' },
+    { 'rcarriga/nvim-notify' },
+    {
+        'kylechui/nvim-surround',
+        config = function()
+            require('nvim-surround').setup({})
+        end,
+    },
     {
         "ThePrimeagen/harpoon",
         branch = "harpoon2",
@@ -114,22 +121,6 @@ local plugins = {
                 absolute = true,
             })
         end,
-    },
-    {
-        'natecraddock/workspaces.nvim',
-        config = function()
-            require('workspaces').setup({
-                hooks = {
-                    open_pre = {
-                        "SessionsStop",
-                        "silent %bdelete!",
-                    },
-                    open = function()
-                        require('sessions').load(nil, { silent = true })
-                    end,
-                },
-            })
-        end
     },
 }
 

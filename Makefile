@@ -2,10 +2,10 @@
 TMPDIR := $(shell mktemp -d -p /tmp)
 OS_NAME := $(shell uname -s | tr A-Z a-z)
 
-all: $(OS_NAME)
+all: $(OS_NAME) gh-copilot
 
 fresh: EXTRA_ARGS += --recreate-lock-file
-fresh: $(OS_NAME) commit-lockfile
+fresh: $(OS_NAME) gh-copilot commit-lockfile
 
 ifeq ($(OS_NAME), linux)
 linux: linux-local
@@ -32,3 +32,7 @@ commit-lockfile:
 	git add flake.lock
 	git diff-index --quiet HEAD flake.lock || git commit --only flake.lock -m "Update flake.lock"
 	git push
+
+gh-copilot:
+	gh auth status --hostname github.com || gh auth login --hostname github.com
+	gh extension install github/gh-copilot

@@ -26,9 +26,14 @@ telescope.setup({
 })
 vim.keymap.set('n', '<leader>pf', builtin.find_files, {})
 vim.keymap.set('n', '<C-p>', builtin.git_files, {})
--- vim.keymap.set('n', '<leader>ps', function() builtin.grep_string({ search = vim.fn.input("Grep > ") }); end)
+vim.keymap.set('n', "<C-S-f>", builtin.live_grep, {})
+vim.keymap.set('n', '<C-S-p>', builtin.commands, {})
+vim.keymap.set('n', "<C-S-x>", builtin.command_history, {})
+
 vim.keymap.set('n', '<leader>ps', builtin.grep_string, {})
 vim.keymap.set('n', '<leader>pg', builtin.live_grep, {})
 vim.keymap.set('n', '<leader>pc', builtin.commands, {})
 vim.keymap.set('n', '<leader>pb', builtin.buffers, {})
 vim.keymap.set('n', '<leader>pw', telescope.extensions.workspaces.workspaces, {})
+
+vim.api.nvim_create_user_command('Keymap', builtin.keymaps, {})

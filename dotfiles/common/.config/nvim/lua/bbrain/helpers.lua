@@ -8,6 +8,29 @@ end
 
 vim.api.nvim_create_user_command('ToggleTheme', ToggleTheme, {})
 
+MaxTabs = {}
+
+function Maximize()
+    local win = vim.api.nvim_get_current_win()
+    local cursor = vim.api.nvim_win_get_cursor(0)
+    if MaxTabs[win] then
+        vim.cmd("tabclose")
+        local main_win = vim.api.nvim_get_current_win()
+        vim.api.nvim_win_set_cursor(main_win, cursor)
+        MaxTabs[win] = nil
+        return
+    end
+
+    local buf = vim.api.nvim_get_current_buf()
+    vim.cmd("tabnew")
+    win = vim.api.nvim_get_current_win()
+    vim.api.nvim_win_set_buf(win, buf)
+    vim.api.nvim_win_set_cursor(win, cursor)
+    MaxTabs[win] = true
+end
+
+vim.api.nvim_create_user_command('Maximize', Maximize, {})
+
 local M = {}
 
 function M.buf_get_var(buf, var)

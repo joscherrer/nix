@@ -51,7 +51,6 @@ in
 {
   imports = [
     ./greetd.nix
-    inputs.hyprland.nixosModules.default
   ];
 
   nix.settings = {
@@ -65,7 +64,6 @@ in
       xwayland = {
         enable = true;
       };
-      package = inputs.hyprland.packages.${pkgs.system}.hyprland;
     };
   };
 

@@ -8,7 +8,6 @@
     nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     nixpkgs-darwin-stable.url = "github:nixos/nixpkgs/nixpkgs-23.11-darwin";
     nixpkgs-unstable.url = "nixpkgs/nixos-unstable";
-    hyprland.url = "github:hyprwm/Hyprland";
 
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
@@ -26,7 +25,7 @@
     nil.url = "github:oxalica/nil";
   };
 
-  outputs = { self, nixpkgs, nixpkgs-stable, nixpkgs-unstable, home-manager, darwin, kmonad, hyprland, nil, ... }@inputs:
+  outputs = { self, nixpkgs, nixpkgs-stable, nixpkgs-unstable, home-manager, darwin, kmonad, nil, ... }@inputs:
     let
       inherit (self) outputs;
       overlay-unstable = final: prev: {
