@@ -113,6 +113,7 @@ in
     chromium
     dbeaver
     bitwarden
+    telegram-desktop
     (catppuccin-kvantum.override {
       accent = "Mauve";
       variant = "Mocha";

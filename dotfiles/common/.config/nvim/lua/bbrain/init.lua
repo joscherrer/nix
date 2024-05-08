@@ -25,6 +25,7 @@ vim.api.nvim_create_autocmd('VimResized', {
     desc = 'Automatically resize windows when the host window size changes.',
 })
 
+vim.opt.termguicolors = true -- required before starting nvim-notify
 require("bbrain.lazy")
 require("bbrain.helpers")
 require("bbrain.set")

@@ -65,7 +65,6 @@ local plugins = {
     { 'natecraddock/workspaces.nvim' },
     { 'mbbill/undotree' },
     { 'saadparwaiz1/cmp_luasnip' },
-    { 'rcarriga/nvim-notify' },
     {
         'kylechui/nvim-surround',
         config = function()
@@ -91,13 +90,11 @@ local plugins = {
         event = { "InsertEnter" },
         lazy = true,
         config = function()
-            vim.notify("Starting copilot.lua")
             require("copilot").setup({
                 suggestion = {
                     auto_trigger = true,
                 },
             })
-            vim.notify("copilot.lua started", vim.log.levels.INFO)
         end,
     },
     {
@@ -119,6 +116,55 @@ local plugins = {
                 events = { "BufEnter", "VimLeavePre", "DirChangedPre" },
                 session_filepath = vim.fn.stdpath('data') .. '/sessions/',
                 absolute = true,
+            })
+        end,
+    },
+    {
+        'stevearc/overseer.nvim',
+        opts = {},
+        config = function()
+            require('overseer').setup()
+        end,
+    },
+    {
+        'stevearc/dressing.nvim',
+        config = function()
+            require('dressing').setup()
+        end,
+    },
+    {
+        'rcarriga/nvim-notify',
+        config = function()
+            require('notify').setup({
+                render = "wrapped-compact",
+            })
+            vim.notify = require('notify')
+        end,
+    },
+    {
+        'nvim-lualine/lualine.nvim',
+        dependencies = { 'nvim-tree/nvim-web-devicons' },
+        config = function()
+            local overseer = require('overseer')
+            require('lualine').setup({
+                sections = {
+                    lualine_x = { {
+                        "overseer",
+                        label = '',
+                        colored = true,
+                        symbols = {
+                            [overseer.STATUS.FAILURE] = "🔴",
+                            [overseer.STATUS.CANCELED] = "🔵",
+                            [overseer.STATUS.SUCCESS] = "🟢",
+                            [overseer.STATUS.RUNNING] = "🟡",
+                        },
+                        unique = false,
+                        name = nil,
+                        name_not = false,
+                        status = nil,
+                        status_not = false,
+                    } },
+                },
             })
         end,
     },
