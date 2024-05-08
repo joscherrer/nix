@@ -65,3 +65,4 @@ require('mason-lspconfig').setup({
     }
 })
 
+require('lspconfig').nil_ls.setup({})

@@ -159,7 +159,7 @@
 
     # Nix
     niv
-    inputs.nil.packages.${pkgs.system}.nil
+    nil
 
     # Dev misc
     openapi-generator-cli

@@ -1,6 +1,9 @@
 { self, inputs, outputs, config, pkgs, lib, ... }:
 {
   networking.localHostName = "bbrain-mbp";
+  networking.hosts = {
+    "192.168.1.254" = "freebox_server.local";
+  };
 
   environment.systemPackages = [
     pkgs.alacritty
