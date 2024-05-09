@@ -1,4 +1,7 @@
 { self, inputs, lib, pkgs, config, outputs, ... }:
+let
+    sqlite-lib = if pkgs.stdenv.isDarwin then "libsqlite3.dylib" else "libsqlite3.so";
+in
 {
   programs.neovim = {
     enable = true;
@@ -15,7 +18,7 @@
   #   recursive = true;
   # };
   xdg.configFile."nvim/lua/nix/sqlite.lua" = {
-      text = "vim.g.sqlite_clib_path = '${pkgs.sqlite.out}/lib/libsqlite3.so'";
+      text = "vim.g.sqlite_clib_path = '${pkgs.sqlite.out}/lib/${sqlite-lib}'";
   };
 
   home.packages = [
