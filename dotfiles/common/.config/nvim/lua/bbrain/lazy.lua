@@ -128,7 +128,11 @@ local plugins = {
         'stevearc/overseer.nvim',
         opts = {},
         config = function()
-            require('overseer').setup()
+            require('overseer').setup({
+                task_list = {
+                    direction = "bottom",
+                },
+            })
         end,
     },
     {
@@ -150,6 +154,17 @@ local plugins = {
         'nvim-lualine/lualine.nvim',
         dependencies = { 'nvim-tree/nvim-web-devicons' },
         config = require('bbrain.config.lualine')
+    },
+    {
+        'danielfalk/smart-open.nvim',
+        branch = "0.2.x",
+        config = function()
+            if vim.fn.filereadable(vim.fn.stdpath('config') .. '/lua/nix/sqlite.lua') then
+                require('nix.sqlite')
+            end
+            require('telescope').load_extension('smart_open')
+        end,
+        dependencies = { "kkharji/sqlite.lua" },
     },
 }
 

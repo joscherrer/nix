@@ -1,5 +1,19 @@
 -- local helpers = require('bbrain.helpers')
 
+
+-- FocusLost, InsertLeave,
+vim.api.nvim_create_autocmd({ 'FocusLost', 'InsertLeave' }, {
+    callback = function(ev)
+        if not vim.api.nvim_buf_get_option(ev.buf, "modified") then
+            return
+        end
+        if not vim.api.nvim_buf_is_valid(ev.buf) then
+            return
+        end
+        vim.api.nvim_buf_call(ev.buf, function() vim.cmd("silent! write") end)
+    end,
+})
+
 -- vim.api.nvim_create_autocmd({ 'InsertLeave', 'TextChanged' }, {
 --     callback = function(ev)
 --         if not vim.api.nvim_buf_get_option(ev.buf, "modified") then

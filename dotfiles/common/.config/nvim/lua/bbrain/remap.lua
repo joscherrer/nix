@@ -69,3 +69,8 @@ vim.keymap.set("x", '2i"', 'a"', { noremap = true })
 -- Indent/Dedent but keep selection
 vim.keymap.set('v', '<', '<gv', { noremap = true })
 vim.keymap.set('v', '>', '>gv', { noremap = true })
+
+
+-- Overseer
+vim.keymap.set("n", "<leader>or", ":OverseerRun<CR>")
+vim.keymap.set("n", "<leader>ot", ":OverseerToggle<CR>")

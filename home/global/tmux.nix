@@ -8,6 +8,7 @@
         mouse = true;
         shortcut = "a";
         terminal = "tmux-256color";
+        escapeTime = 0;
         extraConfig = ''
         set-option -ga terminal-overrides ",xterm-kitty:Tc"
         if-shell "test -f ~/.config/tmux/local.tmux.conf" "source-file ~/.config/tmux/local.tmux.conf"

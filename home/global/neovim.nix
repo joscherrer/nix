@@ -14,11 +14,16 @@
   #   source = "${inputs.self}/dotfiles/common/.config/nvim";
   #   recursive = true;
   # };
+  xdg.configFile."nvim/lua/nix/sqlite.lua" = {
+      text = "vim.g.sqlite_clib_path = '${pkgs.sqlite.out}/lib/libsqlite3.so'";
+  };
 
   home.packages = [
     # Needed for NvChad
     pkgs.gcc
     pkgs.unzip
     pkgs.lua-language-server
+    # Needed for smart-open plugin
+    pkgs.sqlite
   ];
 }

@@ -15,6 +15,13 @@ lsp_zero.on_attach(function(client, bufnr)
     vim.keymap.set('n', 'gr', '<cmd>Telescope lsp_references<cr>', { buffer = bufnr })
 end)
 
+require('mason').setup({
+    providers = {
+        "mason.providers.client",
+        "mason.providers.registry-api",
+    }
+})
+
 require('mason-lspconfig').setup({
     ensure_installed = {
         'pyright',
@@ -65,7 +72,9 @@ require('mason-lspconfig').setup({
     }
 })
 
-require('lspconfig').nil_ls.setup({
+local lspconfig = require('lspconfig')
+
+lspconfig.nil_ls.setup({
     settings = {
         ['nil'] = {
             nix = {
@@ -76,3 +85,37 @@ require('lspconfig').nil_ls.setup({
         },
     },
 })
+
+lspconfig.lua_ls.setup({
+    on_init = function(client)
+        local path = client.workspace_folders[1].name
+        if vim.loop.fs_stat(path .. '/.luarc.json') or vim.loop.fs_stat(path .. '/.luarc.jsonc') then
+            return
+        end
+
+        client.config.settings.Lua = vim.tbl_deep_extend('force', client.config.settings.Lua, {
+            runtime = {
+                version = 'LuaJIT'
+            },
+            workspace = {
+                checkThirdParty = false,
+                library = {
+                    vim.env.VIMRUNTIME
+                }
+            }
+        })
+    end,
+    settings = {
+        Lua = {}
+    }
+})
+
+lspconfig.volar.setup({
+    filetypes = { 'vue' }
+})
+
+lspconfig.terraformls.setup({})
+
+vim.api.nvim_set_hl(0, "@odp.function.builtin.python", { link = "pythonBuiltin" })
+vim.api.nvim_set_hl(0, "@odp.import_module.python", { link = "Type" })
+vim.api.nvim_set_hl(0, "@keyword.operator.lua", { link = "Keyword" })

@@ -35,5 +35,6 @@ vim.keymap.set('n', '<leader>pg', builtin.live_grep, {})
 vim.keymap.set('n', '<leader>pc', builtin.commands, {})
 vim.keymap.set('n', '<leader>pb', builtin.buffers, {})
 vim.keymap.set('n', '<leader>pw', telescope.extensions.workspaces.workspaces, {})
+vim.keymap.set('n', '<leader><leader>', telescope.extensions.smart_open.smart_open, { noremap = true, silent = true })
 
 vim.api.nvim_create_user_command('Keymap', builtin.keymaps, {})

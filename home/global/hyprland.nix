@@ -20,27 +20,26 @@ let
       sleep 1
     done
   '';
-  # gather-windows = pkgs.writeShellScriptBin "gather-windows" ''
-  #   for client in $(hyprctl clients -j | jq -r '.[] | @base64'); do
-  #     data=$(printf '%s' "$client" | base64 --decode)
-  #     title=$(printf '%s' "$data" | jq -r '.title')
-  #     [ -z "$title" ] && continue
-  #     address=$(printf '%s' "$data" | jq -r '.address')
-  #     hyprctl dispatch movetoworkspace "1,address:$address"
-  #   done
-  # '';
 
   gather-windows = pkgs.writeScriptBin "gather-windows" (builtins.readFile "${inputs.self}/scripts/hyprdispatch");
   hyprdispatch = pkgs.writeScriptBin "hyprdispatch" (builtins.readFile "${inputs.self}/scripts/hyprdispatch");
 in
 rec
 {
-  # home.file.".config/hypr/hyprland.conf".source = "${common-root}/.config/hypr/hyprland.conf";
   home.packages = [
     screenshot-handler
     gather-windows
     hyprdispatch
+    pkgs.hyprpaper
   ];
+
+  xdg.configFile."hypr/hyprpaper.conf" = {
+      text = ''
+      preload = ${default.wallpaper}
+      wallpaper = ,${default.wallpaper}
+      '';
+  };
+
   wayland.windowManager.hyprland = {
     enable = true;
     xwayland.enable = true;
@@ -50,13 +49,14 @@ rec
         "${pkgs.wl-clipboard}/bin/wl-paste --type text --watch cliphist store"
         "${pkgs.wl-clipboard}/bin/wl-paste --type image --watch cliphist store"
         "${waybar-wrapper}/bin/waybar-wrapper"
+        "hyprpaper"
       ];
 
       exec = [
         # "pkill waybar-wrapper; systemd-cat -t waybar ${waybar-wrapper}/bin/waybar-wrapper --log-level trace"
         # "pkill hyprdispatch; systemd-cat --identifier=hyprdispatch ${hyprdispatch}/bin/hyprdispatch start"
         # "pkill kanshi; systemd-cat --identifier=kanshi kanshi"
-        "pkill swaybg; ${pkgs.swaybg}/bin/swaybg -i ${default.wallpaper} -m fill"
+        # "pkill swaybg; ${pkgs.swaybg}/bin/swaybg -i ${default.wallpaper} -m fill"
       ];
 
       monitor = [
