@@ -66,3 +66,6 @@ vim.keymap.set("x", "2i'", "a'", { noremap = true })
 vim.keymap.set("x", 'a"', '2i"', { noremap = true })
 vim.keymap.set("x", '2i"', 'a"', { noremap = true })
 
+-- Indent/Dedent but keep selection
+vim.keymap.set('v', '<', '<gv', { noremap = true })
+vim.keymap.set('v', '>', '>gv', { noremap = true })

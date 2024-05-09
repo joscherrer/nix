@@ -65,4 +65,14 @@ require('mason-lspconfig').setup({
     }
 })
 
-require('lspconfig').nil_ls.setup({})
+require('lspconfig').nil_ls.setup({
+    settings = {
+        ['nil'] = {
+            nix = {
+                flake = {
+                    autoArchive = true,
+                }
+            },
+        },
+    },
+})

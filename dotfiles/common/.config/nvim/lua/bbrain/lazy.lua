@@ -47,7 +47,7 @@ local plugins = {
             { 'hrsh7th/cmp-path' },
         },
         config = function()
-            require('bbrain.cmp')
+            require('bbrain.config.cmp')
         end,
     },
     {
@@ -59,11 +59,16 @@ local plugins = {
             { 'williamboman/mason-lspconfig.nvim' },
         },
         config = function()
-            require('bbrain.lsp')
+            require('bbrain.config.lsp')
         end
     },
     { 'natecraddock/workspaces.nvim' },
-    { 'mbbill/undotree' },
+    {
+        'mbbill/undotree',
+        config = function()
+            vim.g.undotree_SetFocusWhenToggle = 1
+        end,
+    },
     { 'saadparwaiz1/cmp_luasnip' },
     {
         'kylechui/nvim-surround',
@@ -144,29 +149,7 @@ local plugins = {
     {
         'nvim-lualine/lualine.nvim',
         dependencies = { 'nvim-tree/nvim-web-devicons' },
-        config = function()
-            local overseer = require('overseer')
-            require('lualine').setup({
-                sections = {
-                    lualine_x = { {
-                        "overseer",
-                        label = '',
-                        colored = true,
-                        symbols = {
-                            [overseer.STATUS.FAILURE] = "🔴",
-                            [overseer.STATUS.CANCELED] = "🔵",
-                            [overseer.STATUS.SUCCESS] = "🟢",
-                            [overseer.STATUS.RUNNING] = "🟡",
-                        },
-                        unique = false,
-                        name = nil,
-                        name_not = false,
-                        status = nil,
-                        status_not = false,
-                    } },
-                },
-            })
-        end,
+        config = require('bbrain.config.lualine')
     },
 }
 
