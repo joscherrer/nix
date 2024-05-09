@@ -74,3 +74,6 @@ vim.keymap.set('v', '>', '>gv', { noremap = true })
 -- Overseer
 vim.keymap.set("n", "<leader>or", ":OverseerRun<CR>")
 vim.keymap.set("n", "<leader>ot", ":OverseerToggle<CR>")
+
+-- UndoTree
+vim.keymap.set("n", "<leader>u", vim.cmd.UndotreeToggle)
