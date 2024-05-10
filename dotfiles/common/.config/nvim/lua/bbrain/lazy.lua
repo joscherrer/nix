@@ -1,8 +1,5 @@
 local plugins = {
-    {
-        "olimorris/onedarkpro.nvim",
-        priority = 1000, -- Ensure it loads first
-    },
+    { import = "plugins" },
     {
         'mbbill/undotree',
         config = function()
@@ -14,30 +11,6 @@ local plugins = {
         config = function()
             require('nvim-surround').setup({})
         end,
-    },
-    {
-        "ThePrimeagen/harpoon",
-        branch = "harpoon2",
-        dependencies = { "nvim-lua/plenary.nvim" }
-    },
-    {
-        "zbirenbaum/copilot.lua",
-        cmd = { "Copilot" },
-        event = { "InsertEnter" },
-        lazy = true,
-        config = function()
-            require("copilot").setup({
-                suggestion = {
-                    auto_trigger = true,
-                },
-            })
-        end,
-    },
-    {
-        "zbirenbaum/copilot-cmp",
-        config = function()
-            require("copilot_cmp").setup()
-        end
     },
     {
         'numToStr/Comment.nvim',
@@ -67,22 +40,6 @@ local plugins = {
         end,
     },
     {
-        'stevearc/dressing.nvim',
-        config = function()
-            require('dressing').setup()
-        end,
-    },
-    {
-        'rcarriga/nvim-notify',
-        priority = 999,
-        config = function()
-            require('notify').setup({
-                render = "wrapped-compact",
-            })
-            vim.notify = require('notify')
-        end,
-    },
-    {
         'danielfalk/smart-open.nvim',
         branch = "0.2.x",
         config = function()
@@ -93,7 +50,6 @@ local plugins = {
         end,
         dependencies = { "kkharji/sqlite.lua" },
     },
-    { import = "plugins" },
 }
 
 local opts = {}
