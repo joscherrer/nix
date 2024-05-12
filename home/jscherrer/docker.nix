@@ -5,6 +5,8 @@
     ../global/terminal.nix
   ];
 
+  nixpkgs.overlays = builtins.attrValues outputs.overlays;
+
   home.username = lib.mkDefault "jscherrer";
   home.homeDirectory = lib.mkDefault "/home/jscherrer";
 
