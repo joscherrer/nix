@@ -4,7 +4,7 @@
     enable = true;
     theme = "Snazzy";
     font.name = "CaskaydiaCove Nerd Font";
-    font.size = 15;
+    font.size = 13;
     settings = {
         clear_all_shortcuts = "yes";
     };
