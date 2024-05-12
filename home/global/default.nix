@@ -110,6 +110,8 @@
     vault-bin
     stable.open-policy-agent
     ibmcloud-cli
+    minio-client
+    natscli
 
     # Containers
     podman-compose
@@ -165,6 +167,11 @@
     openapi-generator-cli
     caddy
     termscp
+
+    # Video
+    ffmpeg
+    x264
+    x265
 
   ];
 }

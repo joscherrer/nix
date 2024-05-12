@@ -7,15 +7,14 @@ return {
         config = function()
             require("copilot").setup({
                 suggestion = {
+                    enable = true,
                     auto_trigger = true,
                 },
+                filestypes = {
+                    yaml = true,
+                    markdown = true,
+                }
             })
         end,
-    },
-    {
-        "zbirenbaum/copilot-cmp",
-        config = function()
-            require("copilot_cmp").setup()
-        end
     },
 }

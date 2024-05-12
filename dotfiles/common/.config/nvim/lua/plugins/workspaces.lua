@@ -6,6 +6,7 @@ return {
             hooks = {
                 open_pre = {
                     "NvimTreeClose",
+                    "OverseerClose",
                     "SessionsStop",
                     "silent %bdelete!",
                 },

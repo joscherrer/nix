@@ -14,6 +14,21 @@ local function lspconfig_config()
         vim.keymap.set({ 'n', 'x' }, 'gq',
             function() vim.lsp.buf.format({ async = false, timeout_ms = 10000 }) end, opts)
         vim.keymap.set('n', 'gr', '<cmd>Telescope lsp_references<cr>', { buffer = bufnr })
+
+        vim.api.nvim_create_autocmd("CursorHold", {
+            buffer = bufnr,
+            callback = function()
+                local opts = {
+                    focusable = false,
+                    close_events = { "BufLeave", "CursorMoved", "InsertEnter", "FocusLost" },
+                    border = 'rounded',
+                    source = 'always',
+                    prefix = ' ',
+                    scope = 'cursor',
+                }
+                vim.diagnostic.open_float(nil, opts)
+            end
+        })
     end)
 
     require('mason-lspconfig').setup({
@@ -48,7 +63,6 @@ local function lspconfig_config()
 
     lspconfig.gopls.setup({
         cmd = { 'gopls' },
-        -- on_attach = on_attach,
         capabilities = require('cmp_nvim_lsp').default_capabilities(),
         settings = {
             gopls = {
@@ -58,6 +72,7 @@ local function lspconfig_config()
                     shadow = true,
                 },
                 staticcheck = true,
+                gofumpt = true,
             },
         },
         init_options = {
@@ -110,6 +125,8 @@ local function lspconfig_config()
     vim.api.nvim_set_hl(0, "@odp.function.builtin.python", { link = "pythonBuiltin" })
     vim.api.nvim_set_hl(0, "@odp.import_module.python", { link = "Type" })
     vim.api.nvim_set_hl(0, "@keyword.operator.lua", { link = "Keyword" })
+
+    vim.diagnostic.config({ virtual_text = false })
 end
 
 return {
@@ -178,14 +195,14 @@ return {
                     ['<C-d>'] = cmp.mapping.scroll_docs(4),
                     ['<C-Space>'] = cmp.mapping.complete(),
                     ['<C-e>'] = cmp.mapping.abort(),
-                    ['<CR>'] = cmp.mapping.confirm({ select = false }),
+                    ['<C-y>'] = cmp.mapping.confirm({ select = true }),
                 }),
                 sources = cmp.config.sources({
                     { name = 'nvim_lsp' },
                     { name = 'path' },
                     { name = 'luasnip' },
                 }, {
-                    { name = 'copilot' },
+                    -- { name = 'copilot' },
                     { name = 'buffer' },
                 }),
                 snippet = {

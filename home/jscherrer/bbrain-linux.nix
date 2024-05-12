@@ -42,6 +42,7 @@
     pkgs.buildah
     pkgs.pdm
     pkgs.vagrant
+    pkgs.obsidian
   ];
 
   services.kanshi.enable = false;
