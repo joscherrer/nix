@@ -101,6 +101,7 @@
     "kitty"
     "bluesnooze"
     "kitty"
+    "obsidian"
   ];
 
   homebrew.brews = [
