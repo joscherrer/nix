@@ -11,6 +11,7 @@ in
     firewall = {
       enable = true;
       trustedInterfaces = [ "kind" "kindrl" "kindrf" "podman0" "podman1" "enp39s0" ];
+      interfaces."podman+".allowedUDPPorts = [53 5353];
     };
     networkmanager.enable = true;
   };

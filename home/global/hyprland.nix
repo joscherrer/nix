@@ -83,7 +83,7 @@ rec
         # kb_variant = "intl";
         repeat_rate = 60;
         repeat_delay = 250;
-        follow_mouse = 1;
+        follow_mouse = 2;
 
         touchpad = {
           natural_scroll = false;

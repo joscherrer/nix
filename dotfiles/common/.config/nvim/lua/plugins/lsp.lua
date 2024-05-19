@@ -1,36 +1,72 @@
 local function lspconfig_config()
     -- This is where all the LSP shenanigans will live
-    local lsp_zero = require('lsp-zero')
-    lsp_zero.extend_lspconfig()
+    -- local lsp_zero = require('lsp-zero')
+    -- lsp_zero.extend_lspconfig()
 
     --- if you want to know more about lsp-zero and mason.nvim
     --- read this: https://github.com/VonHeikemen/lsp-zero.nvim/blob/v3.x/doc/md/guides/integrate-with-mason-nvim.md
-    lsp_zero.on_attach(function(client, bufnr)
-        lsp_zero.default_keymaps({
-            buffer = bufnr,
-        })
-        lsp_zero.buffer_autoformat()
-        local opts = { buffer = bufnr }
-        vim.keymap.set({ 'n', 'x' }, 'gq',
-            function() vim.lsp.buf.format({ async = false, timeout_ms = 10000 }) end, opts)
-        vim.keymap.set('n', 'gr', '<cmd>Telescope lsp_references<cr>', { buffer = bufnr })
+    -- lsp_zero.on_attach(function(client, bufnr)
+    --     bufpath = vim.api.nvim_buf_get_name(bufnr)
+    --     vim.notify('LSP started: ' .. bufpath .. ' ' .. bufnr, vim.log.levels.INFO)
+    --     lsp_zero.default_keymaps({
+    --         buffer = bufnr,
+    --     })
+    --     lsp_zero.buffer_autoformat()
+    --     local opts = { buffer = bufnr }
+    --     vim.keymap.set({ 'n', 'x' }, 'gq',
+    --         function() vim.lsp.buf.format({ async = false, timeout_ms = 10000 }) end, opts)
+    --     vim.keymap.set('n', 'gr', '<cmd>Telescope lsp_references<cr>', { buffer = bufnr })
+    --
+    --     vim.api.nvim_create_autocmd("CursorHold", {
+    --         buffer = bufnr,
+    --         callback = function()
+    --             opts = {
+    --                 focusable = false,
+    --                 close_events = { "BufLeave", "CursorMoved", "InsertEnter", "FocusLost" },
+    --                 border = 'rounded',
+    --                 source = 'always',
+    --                 prefix = ' ',
+    --                 scope = 'cursor',
+    --             }
+    --             vim.diagnostic.open_float(nil, opts)
+    --         end
+    --     })
+    -- end)
+    vim.keymap.set('n', 'gl', '<cmd>lua vim.diagnostic.open_float()<cr>')
+    vim.keymap.set('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<cr>')
+    vim.keymap.set('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<cr>')
 
-        vim.api.nvim_create_autocmd("CursorHold", {
-            buffer = bufnr,
-            callback = function()
-                local opts = {
-                    focusable = false,
-                    close_events = { "BufLeave", "CursorMoved", "InsertEnter", "FocusLost" },
-                    border = 'rounded',
-                    source = 'always',
-                    prefix = ' ',
-                    scope = 'cursor',
-                }
-                vim.diagnostic.open_float(nil, opts)
-            end
-        })
-    end)
+    vim.api.nvim_create_autocmd('LspAttach', {
+      desc = 'LSP actions',
+      callback = function(event)
+        local opts = {buffer = event.buf}
 
+        -- these will be buffer-local keybindings
+        -- because they only work if you have an active language server
+
+        vim.keymap.set('n', 'K', '<cmd>lua vim.lsp.buf.hover()<cr>', opts)
+        vim.keymap.set('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<cr>', opts)
+        vim.keymap.set('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<cr>', opts)
+        vim.keymap.set('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<cr>', opts)
+        vim.keymap.set('n', 'go', '<cmd>lua vim.lsp.buf.type_definition()<cr>', opts)
+        vim.keymap.set('n', 'gr', '<cmd>lua vim.lsp.buf.references()<cr>', opts)
+        vim.keymap.set('n', 'gs', '<cmd>lua vim.lsp.buf.signature_help()<cr>', opts)
+        vim.keymap.set('n', '<F2>', '<cmd>lua vim.lsp.buf.rename()<cr>', opts)
+        vim.keymap.set({'n', 'x'}, '<F3>', '<cmd>lua vim.lsp.buf.format({async = true})<cr>', opts)
+        vim.keymap.set('n', '<F4>', '<cmd>lua vim.lsp.buf.code_action()<cr>', opts)
+        vim.keymap.set({ 'n', 'x' }, 'gq', function() vim.lsp.buf.format({ async = false, timeout_ms = 10000 }) end, opts)
+        vim.keymap.set('n', 'gr', '<cmd>Telescope lsp_references<cr>', { buffer = event.buf })
+      end
+    })
+
+    local lsp_capabilities = require('cmp_nvim_lsp').default_capabilities()
+
+    local default_setup = function(server)
+      require('lspconfig')[server].setup({
+        capabilities = lsp_capabilities,
+      })
+    end
+    require('mason').setup({})
     require('mason-lspconfig').setup({
         ensure_installed = {
             'pyright',
@@ -44,18 +80,19 @@ local function lspconfig_config()
             'volar'
         },
         handlers = {
+            default_setup,
             -- this first function is the "default handler"
             -- it applies to every language server without a "custom handler"
-            function(server_name)
-                require('lspconfig')[server_name].setup({})
-            end,
-
-            -- this is the "custom handler" for `lua_ls`
-            lua_ls = function()
-                -- (Optional) Configure lua language server for neovim
-                local lua_opts = lsp_zero.nvim_lua_ls()
-                require('lspconfig').lua_ls.setup(lua_opts)
-            end,
+            -- function(server_name)
+            --     require('lspconfig')[server_name].setup({})
+            -- end,
+            --
+            -- -- this is the "custom handler" for `lua_ls`
+            -- lua_ls = function()
+            --     -- (Optional) Configure lua language server for neovim
+            --     local lua_opts = lsp_zero.nvim_lua_ls()
+            --     require('lspconfig').lua_ls.setup(lua_opts)
+            -- end,
         }
     })
 
@@ -63,7 +100,7 @@ local function lspconfig_config()
 
     lspconfig.gopls.setup({
         cmd = { 'gopls' },
-        capabilities = require('cmp_nvim_lsp').default_capabilities(),
+        capabilities = lsp_capabilities,
         settings = {
             gopls = {
                 experimentalPostfixCompletions = true,
@@ -81,6 +118,7 @@ local function lspconfig_config()
     })
 
     lspconfig.nil_ls.setup({
+        capabilities = lsp_capabilities,
         settings = {
             ['nil'] = {
                 nix = {
@@ -130,16 +168,16 @@ local function lspconfig_config()
 end
 
 return {
-    {
-        'VonHeikemen/lsp-zero.nvim',
-        branch = 'v3.x',
-        lazy = true,
-        config = false,
-        init = function()
-            vim.g.lsp_zero_extend_cmp = 0
-            vim.g.lsp_zero_extend_lspconfig = 0
-        end,
-    },
+    -- {
+    --     'VonHeikemen/lsp-zero.nvim',
+    --     branch = 'v3.x',
+    --     lazy = true,
+    --     config = false,
+    --     init = function()
+    --         vim.g.lsp_zero_extend_cmp = 0
+    --         vim.g.lsp_zero_extend_lspconfig = 0
+    --     end,
+    -- },
     {
         'williamboman/mason.nvim',
         lazy = false,
@@ -183,13 +221,13 @@ return {
             { 'hrsh7th/cmp-path' },
         },
         config = function()
-            local lsp_zero = require('lsp-zero')
-            lsp_zero.extend_cmp()
+            -- local lsp_zero = require('lsp-zero')
+            -- lsp_zero.extend_cmp()
 
             local cmp = require('cmp')
 
             cmp.setup({
-                formatting = lsp_zero.cmp_format({ details = true }),
+                -- formatting = lsp_zero.cmp_format({ details = true }),
                 mapping = cmp.mapping.preset.insert({
                     ['<C-u>'] = cmp.mapping.scroll_docs(-4),
                     ['<C-d>'] = cmp.mapping.scroll_docs(4),

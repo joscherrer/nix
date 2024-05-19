@@ -1,5 +1,6 @@
 return {
     'natecraddock/workspaces.nvim',
+    priority = 10,
     config = function()
         require("workspaces").setup({
             auto_open = true,
@@ -12,6 +13,7 @@ return {
                 },
                 open = function()
                     require('sessions').load(nil, { silent = true })
+                    vim.cmd("silent LspStart")
                 end,
             },
         })
