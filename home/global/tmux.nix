@@ -12,6 +12,8 @@
         extraConfig = ''
         set-option -ga terminal-overrides ",xterm-kitty:Tc"
         if-shell "test -f ~/.config/tmux/local.tmux.conf" "source-file ~/.config/tmux/local.tmux.conf"
+        set-option -g automatic-rename on
+        set-option -g automatic-rename-format '#{b:pane_current_command} #{b:pane_current_path}'
 
         set -g status-justify left
         set -g status-style "bg=black,fg=white"
