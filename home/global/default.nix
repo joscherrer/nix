@@ -97,6 +97,7 @@
 
     # IaC/Cloud
     terraform
+    terraform-ls
     packer
     ansible
     ansible-lint

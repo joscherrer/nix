@@ -28,6 +28,10 @@
 
   programs.keychain.enable = true;
   services.gnome-keyring.enable = true;
+  # security.pam.services = {
+  #     login.u2fAuth = true;
+  #     sudo.u2fAuth = true;
+  # };
 
   xdg.mimeApps.enable = true;
   xdg.mimeApps.defaultApplications = {
@@ -43,6 +47,7 @@
     pkgs.pdm
     pkgs.vagrant
     pkgs.obsidian
+    pkgs.yubikey-manager-qt
   ];
 
   services.kanshi.enable = false;

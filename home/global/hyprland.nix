@@ -190,7 +190,7 @@ rec
       bind = [
         "$mainMod, Q, exec, kitty"
         "$mainMod, C, killactive,"
-        "$mainMod, E, exec, ${pkgs.thunar}/bin/thunar"
+        "$mainMod, E, exec, ${pkgs.xfce.thunar}/bin/thunar"
         "$mainMod, F, fullscreen,"
         "$mainMod, M, fullscreen, 1"
         "$mainMod SHIFT, F, fakefullscreen,"
