@@ -10,7 +10,7 @@ return {
                     enable = true,
                     auto_trigger = true,
                 },
-                filestypes = {
+                filetypes = {
                     yaml = true,
                     markdown = true,
                 }

@@ -113,6 +113,7 @@
     ibmcloud-cli
     minio-client
     natscli
+    postgresql
 
     # Containers
     podman-compose
@@ -168,6 +169,7 @@
     openapi-generator-cli
     caddy
     termscp
+    marksman
 
     # Video
     ffmpeg

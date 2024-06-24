@@ -51,7 +51,6 @@ local function lspconfig_config()
             'bashls',
             'gopls',
             'helm_ls',
-            'marksman',
             'tflint',
             'ansiblels',
             'yamlls',
@@ -125,6 +124,7 @@ local function lspconfig_config()
     })
 
     lspconfig.terraformls.setup({})
+    lspconfig.marksman.setup({})
 
     vim.api.nvim_set_hl(0, "@odp.function.builtin.python", { link = "pythonBuiltin" })
     vim.api.nvim_set_hl(0, "@odp.import_module.python", { link = "Type" })
