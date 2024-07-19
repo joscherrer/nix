@@ -43,8 +43,10 @@ local plugins = {
         'danielfalk/smart-open.nvim',
         branch = "0.2.x",
         config = function()
-            if vim.fn.filereadable(vim.fn.stdpath('config') .. '/lua/nix/sqlite.lua') then
+            if vim.fn.filereadable(vim.fn.stdpath('config') .. '/lua/nix/sqlite.lua') ~= 0 then
                 require('nix.sqlite')
+            elseif vim.fn.filereadable('/usr/lib/x86_64-linux-gnu/libsqlite3.so') ~= 0 then
+                vim.g.sqlite_clib_path = '/usr/lib/x86_64-linux-gnu/libsqlite3.so'
             end
             require('telescope').load_extension('smart_open')
         end,

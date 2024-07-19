@@ -44,18 +44,26 @@ local function lspconfig_config()
         capabilities = lsp_capabilities,
       })
     end
+
+    local lsp_server_list = {
+        'pyright',
+        'bashls',
+        'helm_ls',
+        'tflint',
+        'ansiblels',
+        'yamlls',
+    }
+
+    if not vim.env.JFROG_IDE_URL then
+        table.insert(lsp_server_list, 'gopls')
+        table.insert(lsp_server_list, 'volar')
+    else
+        table.insert(lsp_server_list, 'marksman')
+    end
+
     require('mason').setup({})
     require('mason-lspconfig').setup({
-        ensure_installed = {
-            'pyright',
-            'bashls',
-            'gopls',
-            'helm_ls',
-            'tflint',
-            'ansiblels',
-            'yamlls',
-            'volar'
-        },
+        ensure_installed = lsp_server_list,
         handlers = {
             default_setup,
         }
@@ -63,24 +71,26 @@ local function lspconfig_config()
 
     local lspconfig = require('lspconfig')
 
-    lspconfig.gopls.setup({
-        cmd = { 'gopls' },
-        capabilities = lsp_capabilities,
-        settings = {
-            gopls = {
-                experimentalPostfixCompletions = true,
-                analyses = {
-                    unusedparams = true,
-                    shadow = true,
+    if not vim.env.JFROG_IDE_URL then
+        lspconfig.gopls.setup({
+            cmd = { 'gopls' },
+            capabilities = lsp_capabilities,
+            settings = {
+                gopls = {
+                    experimentalPostfixCompletions = true,
+                    analyses = {
+                        unusedparams = true,
+                        shadow = true,
+                    },
+                    staticcheck = true,
+                    gofumpt = true,
                 },
-                staticcheck = true,
-                gofumpt = true,
             },
-        },
-        init_options = {
-            usePlaceholders = true,
-        }
-    })
+            init_options = {
+                usePlaceholders = true,
+            }
+        })
+    end
 
     lspconfig.nil_ls.setup({
         capabilities = lsp_capabilities,
@@ -138,11 +148,20 @@ return {
         'williamboman/mason.nvim',
         lazy = false,
         config = function()
+            local download_url_template
+            if vim.env.JFROG_IDE_URL then
+                download_url_template = vim.env.JFROG_IDE_URL .. "/artifactory/github/%s/releases/download/%s/%s"
+            else
+                download_url_template = "https://github.com/%s/releases/download/%s/%s"
+            end
             require('mason').setup({
                 providers = {
                     "mason.providers.client",
                     "mason.providers.registry-api",
-                }
+                },
+                github = {
+                    download_url_template = download_url_template,
+                },
             })
         end,
     },

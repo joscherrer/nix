@@ -1,3 +1,7 @@
+if vim.env.JFROG_IDE_URL then
+    return {}
+end
+
 return {
     {
         "zbirenbaum/copilot.lua",
