@@ -8,7 +8,7 @@ let
 in
 {
   imports = [
-    ../../modules/alacritty
+    ../../../modules/alacritty
     ./hyprland.nix
     ./waybar.nix
     ./rofi.nix

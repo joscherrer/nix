@@ -2,8 +2,8 @@
 {
   imports = [
     ../global
+    ../global/gui/terminal.nix
     ../../modules/alacritty
-    ../global/terminal.nix
   ];
 
   home.username = lib.mkDefault "jscherrer";

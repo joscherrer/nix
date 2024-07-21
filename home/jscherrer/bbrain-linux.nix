@@ -2,8 +2,7 @@
 {
   imports = [
     ../global
-    ../global/gui.nix
-    ../global/terminal.nix
+    ../global/gui
   ];
 
   # Needed to fix non-working dead-keys

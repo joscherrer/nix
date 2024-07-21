@@ -36,3 +36,6 @@ commit-lockfile:
 gh-copilot:
 	gh auth status --hostname github.com || gh auth login --hostname github.com
 	gh extension install github/gh-copilot
+
+image:
+	podman build -t nix-bbrain .

@@ -16,7 +16,8 @@ local function config()
             "vimdoc",
             "query",
             "vue",
-            "javascript"
+            "javascript",
+            "dockerfile"
         },
 
         -- Install parsers synchronously (only applied to `ensure_installed`)
@@ -28,6 +29,7 @@ local function config()
 
         highlight = {
             enable = true,
+            disable = {"dockerfile"},
             additional_vim_regex_highlighting = false,
         },
     })

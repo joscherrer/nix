@@ -2,7 +2,6 @@
 {
   imports = [
     ../global
-    ../global/terminal.nix
   ];
 
   nixpkgs.overlays = builtins.attrValues outputs.overlays;
@@ -13,7 +12,7 @@
   programs.keychain.enable = true;
   services.gnome-keyring.enable = true;
 
-  home.packages = [
-    pkgs.buildah
-  ];
+  # home.packages = [
+  #   pkgs.buildah
+  # ];
 }
