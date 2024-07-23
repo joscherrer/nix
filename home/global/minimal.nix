@@ -24,6 +24,10 @@
 
   xdg.enable = true;
 
+  news.display = "silent";
+  news.json = lib.mkForce { };
+  news.entries = lib.mkForce [ ];
+
   programs.home-manager.enable = true;
   programs.lsd.enable = true;
   programs.direnv.enable = true;

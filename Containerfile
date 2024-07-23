@@ -13,9 +13,7 @@ COPY --chown=jscherrer:jscherrer . /home/jscherrer/.config/home-manager
 
 RUN mkdir -p ~/.config/nix && \
     . /home/jscherrer/.nix-profile/etc/profile.d/nix.sh && \
-    echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf && \
-    nix-env -e man-db && \
-    nix run home-manager/release-24.05 -- init --switch
+    nix --extra-experimental-features "nix-command flakes" run home-manager/master -- init --switch
 #
 # USER jscherrer
 # RUN mkdir -p ~/.config/nix && \

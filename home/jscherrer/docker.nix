@@ -1,7 +1,7 @@
 { inputs, outputs, config, pkgs, lib, ... }:
 {
   imports = [
-    ../global
+    ../global/minimal.nix
   ];
 
   nixpkgs.overlays = builtins.attrValues outputs.overlays;

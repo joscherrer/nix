@@ -9,13 +9,14 @@ in
 {
   imports = [
     ../../../modules/alacritty
-    ./hyprland.nix
-    ./waybar.nix
-    ./rofi.nix
-    ./vscode.nix
-    ./swaylock.nix
-    ./swayidle.nix
     ./dunst.nix
+    ./hyprland.nix
+    ./rofi.nix
+    ./swayidle.nix
+    ./swaylock.nix
+    ./terminal.nix
+    ./vscode.nix
+    ./waybar.nix
   ];
 
 

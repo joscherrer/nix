@@ -54,6 +54,7 @@
     ]))
     black
     mypy
+    unstable.basedpyright
     # python311Packages.virtualenv
 
 
