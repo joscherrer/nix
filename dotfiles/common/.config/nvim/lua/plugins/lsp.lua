@@ -3,6 +3,18 @@ local function lspconfig_config()
     vim.keymap.set('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<cr>')
     vim.keymap.set('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<cr>')
 
+    -- local function format(buffer)
+    --   local filetype = vim.api.nvim_get_option_value('filetype', { buf = buffer })
+    --   if filetype == 'python' then
+    --     vim.cmd('silent! black %')
+    --     return
+    --   end
+    --   vim.lsp.buf.format({ async = true })
+    -- end
+
+    local helpers = require('bbrain.helpers')
+
+
     vim.api.nvim_create_autocmd('LspAttach', {
       desc = 'LSP actions',
       callback = function(event)
@@ -15,9 +27,9 @@ local function lspconfig_config()
         vim.keymap.set('n', 'gr', '<cmd>lua vim.lsp.buf.references()<cr>', opts)
         vim.keymap.set('n', 'gs', '<cmd>lua vim.lsp.buf.signature_help()<cr>', opts)
         vim.keymap.set('n', '<F2>', '<cmd>lua vim.lsp.buf.rename()<cr>', opts)
-        vim.keymap.set({'n', 'x'}, '<F3>', '<cmd>lua vim.lsp.buf.format({async = true})<cr>', opts)
+        vim.keymap.set({'n', 'x'}, '<F3>', function() helpers.format(event.buf) end, opts)
+        vim.keymap.set({'n', 'x'}, 'gq', function() helpers.format(event.buf) end, opts)
         vim.keymap.set('n', '<F4>', '<cmd>lua vim.lsp.buf.code_action()<cr>', opts)
-        vim.keymap.set({ 'n', 'x' }, 'gq', function() vim.lsp.buf.format({ async = false, timeout_ms = 10000 }) end, opts)
         vim.keymap.set('n', 'gr', '<cmd>Telescope lsp_references<cr>', { buffer = event.buf })
 
         vim.api.nvim_create_autocmd("CursorHold", {

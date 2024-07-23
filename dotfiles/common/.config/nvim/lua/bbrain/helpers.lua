@@ -49,4 +49,17 @@ function M.buf_get_var_float(buf, var)
     return data[vim.val_idx]
 end
 
+function M.format(buffer, opts)
+  opts = opts or {async = false}
+
+  local filetype = vim.api.nvim_get_option_value('filetype', { buf = buffer })
+
+  if filetype == 'python' then
+    vim.cmd('silent! black %')
+    return
+  end
+  vim.lsp.buf.format(opts)
+end
+
+
 return M

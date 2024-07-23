@@ -1,4 +1,9 @@
+local helpers = require('bbrain.helpers')
+
 local wr_group = vim.api.nvim_create_augroup('WinResize', { clear = true })
+local af_group = vim.api.nvim_create_augroup("AutoFormat", {})
+
+
 vim.api.nvim_create_autocmd('VimResized', {
     group = wr_group,
     pattern = '*',
@@ -15,8 +20,21 @@ vim.api.nvim_create_autocmd({ 'FocusLost', 'InsertLeave' }, {
         if not vim.api.nvim_buf_is_valid(ev.buf) then
             return
         end
-        vim.api.nvim_buf_call(ev.buf, function() vim.cmd("silent! write") end)
+        vim.api.nvim_buf_call(ev.buf, function()
+          helpers.format(ev.buf, {async = false})
+          vim.cmd('silent! write')
+        end)
     end,
+})
+
+vim.api.nvim_create_autocmd('BufWritePost', {
+  pattern = '*',
+  group = af_group,
+  desc = 'Auto format on save',
+  callback = function()
+    helpers.format(0, {async = false})
+    vim.cmd('silent! write')
+  end
 })
 
 -- vim.api.nvim_create_autocmd({ 'InsertLeave', 'TextChanged' }, {
