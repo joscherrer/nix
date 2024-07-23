@@ -32,6 +32,9 @@ local function config()
             disable = {"dockerfile"},
             additional_vim_regex_highlighting = false,
         },
+        indent = {
+            enable = true,
+        },
     })
 end
 

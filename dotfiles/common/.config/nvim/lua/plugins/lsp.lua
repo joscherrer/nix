@@ -46,7 +46,6 @@ local function lspconfig_config()
     end
 
     local lsp_server_list = {
-        'pyright',
         'bashls',
         'helm_ls',
         'tflint',
@@ -58,7 +57,9 @@ local function lspconfig_config()
         table.insert(lsp_server_list, 'gopls')
         table.insert(lsp_server_list, 'volar')
     else
+        table.insert(lsp_server_list, 'basedpyright')
         table.insert(lsp_server_list, 'marksman')
+        table.insert(lsp_server_list, 'terraformls')
     end
 
     require('mason').setup({})
@@ -135,6 +136,7 @@ local function lspconfig_config()
 
     lspconfig.terraformls.setup({})
     lspconfig.marksman.setup({})
+    lspconfig.basedpyright.setup({})
 
     vim.api.nvim_set_hl(0, "@odp.function.builtin.python", { link = "pythonBuiltin" })
     vim.api.nvim_set_hl(0, "@odp.import_module.python", { link = "Type" })
