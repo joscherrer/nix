@@ -21,20 +21,20 @@ vim.api.nvim_create_autocmd({ 'FocusLost', 'InsertLeave' }, {
             return
         end
         vim.api.nvim_buf_call(ev.buf, function()
-          helpers.format(ev.buf, {async = false})
-          vim.cmd('silent! write')
+            helpers.format(ev.buf, { async = false })
+            vim.cmd('silent! write')
         end)
     end,
 })
 
 vim.api.nvim_create_autocmd('BufWritePost', {
-  pattern = '*',
-  group = af_group,
-  desc = 'Auto format on save',
-  callback = function()
-    helpers.format(0, {async = false})
-    vim.cmd('silent! write')
-  end
+    pattern = '*',
+    group = af_group,
+    desc = 'Auto format on save',
+    callback = function()
+        helpers.format(0, { async = false })
+        vim.cmd('silent! write')
+    end
 })
 
 -- vim.api.nvim_create_autocmd({ 'InsertLeave', 'TextChanged' }, {
