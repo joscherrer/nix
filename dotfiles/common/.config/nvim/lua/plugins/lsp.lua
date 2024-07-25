@@ -138,7 +138,11 @@ local function lspconfig_config()
 
     lspconfig.terraformls.setup({})
     lspconfig.marksman.setup({})
-    lspconfig.basedpyright.setup({})
+    lspconfig.basedpyright.setup({
+        on_init = function(client, _)
+            client.server_capabilities.semanticTokensProvider = nil
+        end,
+    })
 
     vim.api.nvim_set_hl(0, "@odp.function.builtin.python", { link = "pythonBuiltin" })
     vim.api.nvim_set_hl(0, "@odp.import_module.python", { link = "Type" })
