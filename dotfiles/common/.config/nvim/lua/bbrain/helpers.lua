@@ -50,16 +50,16 @@ function M.buf_get_var_float(buf, var)
 end
 
 function M.format(buffer, opts)
-  opts = opts or {async = false}
+    opts = opts or { async = false }
 
-  local filetype = vim.api.nvim_get_option_value('filetype', { buf = buffer })
+    local filetype = vim.api.nvim_get_option_value('filetype', { buf = buffer })
 
-  if filetype == 'python' then
-    vim.cmd('silent! black %')
-    return
-  end
-  vim.lsp.buf.format(opts)
+    if filetype == 'python' then
+        vim.cmd('silent! black %')
+        return
+    end
+    vim.lsp.buf.format(opts)
+    vim.cmd('silent! write')
 end
-
 
 return M

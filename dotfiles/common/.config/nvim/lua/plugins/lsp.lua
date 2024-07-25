@@ -22,20 +22,20 @@ local function lspconfig_config()
             vim.keymap.set('n', '<F4>', '<cmd>lua vim.lsp.buf.code_action()<cr>', opts)
             vim.keymap.set('n', 'gr', '<cmd>Telescope lsp_references<cr>', { buffer = event.buf })
 
-            vim.api.nvim_create_autocmd("CursorHold", {
-                buffer = event.buf,
-                callback = function()
-                    opts = {
-                        focusable = false,
-                        close_events = { "BufLeave", "CursorMoved", "InsertEnter", "FocusLost" },
-                        border = 'rounded',
-                        source = 'always',
-                        prefix = ' ',
-                        scope = 'cursor',
-                    }
-                    vim.diagnostic.open_float(nil, opts)
-                end
-            })
+            -- vim.api.nvim_create_autocmd("CursorHold", {
+            --     buffer = event.buf,
+            --     callback = function()
+            --         opts = {
+            --             focusable = false,
+            --             close_events = { "BufLeave", "CursorMoved", "InsertEnter", "FocusLost" },
+            --             border = 'rounded',
+            --             source = 'always',
+            --             prefix = ' ',
+            --             scope = 'cursor',
+            --         }
+            --         vim.diagnostic.open_float(nil, opts)
+            --     end
+            -- })
         end
     })
 
