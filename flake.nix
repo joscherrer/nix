@@ -97,7 +97,7 @@
         inherit overlay-kubectx;
         inherit overlay-terraform;
         # inherit overlay-jetbrains;
-        inherit overlay-pdm;
+        # inherit overlay-pdm;
       };
 
       packages = forAllSystems (system:

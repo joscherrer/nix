@@ -44,14 +44,16 @@
     k9s
 
     # Python
-    (python3.withPackages (ps: with ps; [
-      flake8
-      ruamel-yaml
-      requests
-      toml
-      types-toml
-      sh
-    ]))
+    # (python311.withPackages (ps: with ps; [
+    #   flake8
+    #   ruamel-yaml
+    #   requests
+    #   toml
+    #   types-toml
+    #   sh
+    #   debugpy
+    # ]))
+    tmuxp
     black
     mypy
     unstable.basedpyright

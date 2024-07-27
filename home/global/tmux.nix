@@ -35,7 +35,7 @@
         set -g window-status-current-format "#[fg=black,bg=cyan,nobold,noitalics,nounderscore] #[fg=black,bg=cyan]#I #[fg=black,bg=cyan,nobold,noitalics,nounderscore] #[fg=black,bg=cyan]#W #F #[fg=cyan,bg=black,nobold,noitalics,nounderscore]"
         set -g window-status-separator ""
         '';
-        tmuxp.enable = true;
+        tmuxp.enable = false;
     };
 
     home.packages = [

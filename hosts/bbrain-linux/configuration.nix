@@ -26,6 +26,15 @@
     pkgs.wineWowPackages.waylandFull
     pkgs.cifs-utils
     pkgs.qmk
+    (pkgs.python3.withPackages (ps: with ps; [
+      flake8
+      ruamel-yaml
+      requests
+      toml
+      types-toml
+      sh
+      debugpy
+    ]))
   ];
 
   hardware.bluetooth.enable = true;

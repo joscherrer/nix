@@ -29,17 +29,6 @@ local plugins = {
         end,
     },
     {
-        'stevearc/overseer.nvim',
-        opts = {},
-        config = function()
-            require('overseer').setup({
-                task_list = {
-                    direction = "bottom",
-                },
-            })
-        end,
-    },
-    {
         'danielfalk/smart-open.nvim',
         branch = "0.2.x",
         config = function()
