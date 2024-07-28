@@ -40,6 +40,32 @@ rec
       '';
   };
 
+  # services.hyprlock = {
+  #   enable = true;
+  # };
+  #
+  # services.hypridle = {
+  #   enable = true;
+  #   settings = {
+  #     general = {
+  #       lock_cmd = "pidof hyprlock || hyprlock";
+  #       before_sleep_cmd = "loginctl lock-session";
+  #       after_sleep_cmd = "hyprctl dispatch dpms on";
+  #     };
+  #
+  #     listener = [
+  #       {
+  #         timeout = 300;
+  #         on-timeout = "loginctl lock-session";
+  #       }
+  #       {
+  #         timeout = 600;
+  #         on-timeout = "systemctl suspend";
+  #       }
+  #     ];
+  #   };
+  # };
+
   wayland.windowManager.hyprland = {
     enable = true;
     xwayland.enable = true;
@@ -116,7 +142,7 @@ rec
         # group borders
         "no_border_on_floating" = false;
         layout = "master";
-        no_cursor_warps = true;
+        # no_cursor_warps = true;
       };
 
       group = {
@@ -181,7 +207,7 @@ rec
       };
 
       master = {
-        new_is_master = false;
+        new_status = "inherit";
         mfact = 0.66;
       };
 

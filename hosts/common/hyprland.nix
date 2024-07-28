@@ -79,7 +79,7 @@ in
     hyprland-log
   ];
 
-  services.xserver.displayManager.sessionPackages = [ hyprland-log ];
+  services.displayManager.sessionPackages = [ hyprland-log ];
 
   environment.etc."greetd/environments".text = "hyprland";
   environment.etc."hypr/default.conf".text = ''

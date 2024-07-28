@@ -12,7 +12,11 @@
     kitty
   ];
 
-  i18n.inputMethod.enabled = "ibus";
+  i18n.inputMethod = {
+    enable = true;
+    type = "ibus";
+  };
+
   security.pam.services.swaylock = {
     text = "auth include login";
   };

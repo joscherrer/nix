@@ -112,7 +112,7 @@ in
     filezilla
     libsForQt5.qtstyleplugin-kvantum
     chromium
-    dbeaver
+    dbeaver-bin
     bitwarden
     telegram-desktop
     (catppuccin-kvantum.override {
