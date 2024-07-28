@@ -10,7 +10,7 @@ let
   exec kubectx "$@"
   '';
   initExtra = ''
-  # prompt pure
+  prompt pure
 
   for config_file (~/.config/zsh/*.zsh(N)); do
     custom_config_file="''$HOME/.config/zsh/''${config_file:t}"
