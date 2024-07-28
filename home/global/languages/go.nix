@@ -4,7 +4,7 @@
   programs.go.package = pkgs.go;
 
   home.packages = with pkgs; [
-    unstable.gopls
-    unstable.go-outline
+    gopls
+    go-outline
   ];
 }

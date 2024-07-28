@@ -30,41 +30,77 @@ rec
     screenshot-handler
     gather-windows
     hyprdispatch
-    pkgs.hyprpaper
   ];
 
-  xdg.configFile."hypr/hyprpaper.conf" = {
-      text = ''
-      preload = ${default.wallpaper}
-      wallpaper = ,${default.wallpaper}
-      '';
+  services.hyprpaper = {
+    enable = true;
+    settings = {
+      preload = [
+        "${default.wallpaper}"
+      ];
+      wallpaper = [
+        ",${default.wallpaper}"
+      ];
+    };
   };
 
-  # services.hyprlock = {
-  #   enable = true;
-  # };
-  #
-  # services.hypridle = {
-  #   enable = true;
-  #   settings = {
-  #     general = {
-  #       lock_cmd = "pidof hyprlock || hyprlock";
-  #       before_sleep_cmd = "loginctl lock-session";
-  #       after_sleep_cmd = "hyprctl dispatch dpms on";
-  #     };
-  #
-  #     listener = [
-  #       {
-  #         timeout = 300;
-  #         on-timeout = "loginctl lock-session";
-  #       }
-  #       {
-  #         timeout = 600;
-  #         on-timeout = "systemctl suspend";
-  #       }
-  #     ];
-  #   };
-  # };
+  programs.hyprlock = {
+    enable = true;
+    settings = {
+      general = {
+        disable_loading_bar = true;
+        grace = 0;
+        hide_cursor = true;
+        no_fade_in = false;
+      };
+
+      background = [
+        {
+          path = "screenshot";
+          blur_passes = 3;
+          blur_size = 8;
+        }
+      ];
+
+      input-field = [
+        {
+          size = "200, 50";
+          position = "0, -80";
+          monitor = "";
+          dots_center = true;
+          fade_on_empty = false;
+          font_color = "rgb(202, 211, 245)";
+          inner_color = "rgb(91, 96, 120)";
+          outer_color = "rgb(24, 25, 38)";
+          outline_thickness = 5;
+          placeholder_text = ''<span foreground="##cad3f5">Password...</span>'';
+          shadow_passes = 2;
+        }
+      ];
+    };
+  };
+
+  services.hypridle = {
+    enable = true;
+    settings = {
+      general = {
+        lock_cmd = "pidof hyprlock || hyprlock";
+        before_sleep_cmd = "loginctl lock-session";
+        after_sleep_cmd = "hyprctl dispatch dpms on";
+      };
+
+      listener = [
+        {
+          timeout = 300;
+          on-timeout = "loginctl lock-session";
+        }
+        {
+          timeout = 600;
+          on-timeout = "systemctl suspend";
+        }
+      ];
+    };
+  };
 
   wayland.windowManager.hyprland = {
     enable = true;
@@ -75,14 +111,6 @@ rec
         "${pkgs.wl-clipboard}/bin/wl-paste --type text --watch cliphist store"
         "${pkgs.wl-clipboard}/bin/wl-paste --type image --watch cliphist store"
         "${waybar-wrapper}/bin/waybar-wrapper"
-        "hyprpaper"
-      ];
-
-      exec = [
-        # "pkill waybar-wrapper; systemd-cat -t waybar ${waybar-wrapper}/bin/waybar-wrapper --log-level trace"
-        # "pkill hyprdispatch; systemd-cat --identifier=hyprdispatch ${hyprdispatch}/bin/hyprdispatch start"
-        # "pkill kanshi; systemd-cat --identifier=kanshi kanshi"
-        # "pkill swaybg; ${pkgs.swaybg}/bin/swaybg -i ${default.wallpaper} -m fill"
       ];
 
       monitor = [

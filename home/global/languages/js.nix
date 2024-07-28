@@ -2,7 +2,7 @@
 {
     home.packages = with pkgs; [
         # JS/TS
-        unstable.nodejs
+        nodejs
         nodePackages.typescript
         yarn
     ];

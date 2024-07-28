@@ -56,7 +56,7 @@
     tmuxp
     black
     mypy
-    unstable.basedpyright
+    basedpyright
     # python311Packages.virtualenv
 
 

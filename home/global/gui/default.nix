@@ -91,10 +91,12 @@ in
     "x-scheme-handler/tg" = ["telegramdesktop.desktop"];
   };
 
+  programs.wlogout = {
+    enable = true;
+  };
 
   home.packages = with pkgs; [
     qalculate-qt
-    wlogout
     cliphist
     rofimoji
     wl-clipboard
