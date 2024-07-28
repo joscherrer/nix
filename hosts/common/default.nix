@@ -32,6 +32,11 @@
   programs.zsh.enable = true;
   programs.zsh.promptInit = "autoload -U promptinit && promptinit";
 
+  programs.starship = {
+    enable = true;
+    presets = ["pure-preset"];
+  };
+
   users.users.jscherrer = {
     openssh.authorizedKeys.keys =
       let
