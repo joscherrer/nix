@@ -55,7 +55,7 @@ function M.format(buffer, opts)
     local filetype = vim.api.nvim_get_option_value('filetype', { buf = buffer })
 
     if filetype == 'python' then
-        vim.cmd('silent! black %')
+        vim.cmd('silent !black %')
         return
     end
     vim.lsp.buf.format(opts)

@@ -6,27 +6,15 @@ local plugins = {
             vim.g.undotree_SetFocusWhenToggle = 1
         end,
     },
-    {
-        'kylechui/nvim-surround',
-        config = function()
-            require('nvim-surround').setup({})
-        end,
-    },
-    {
-        'numToStr/Comment.nvim',
-        config = function()
-            require('Comment').setup()
-        end
-    },
+    { 'kylechui/nvim-surround', opts = {} },
+    { 'numToStr/Comment.nvim',  opts = {} },
     {
         'natecraddock/sessions.nvim',
-        config = function()
-            require('sessions').setup({
-                events = { "BufEnter", "VimLeavePre", "DirChangedPre" },
-                session_filepath = vim.fn.stdpath('data') .. '/sessions/',
-                absolute = true,
-            })
-        end,
+        opts = {
+            events = { "BufEnter", "VimLeavePre", "DirChangedPre" },
+            session_filepath = vim.fn.stdpath('data') .. '/sessions/',
+            absolute = true,
+        },
     },
     {
         'danielfalk/smart-open.nvim',
@@ -41,6 +29,59 @@ local plugins = {
         end,
         dependencies = { "kkharji/sqlite.lua" },
     },
+    {
+        'folke/trouble.nvim',
+        opts = {}, -- for default options, refer to the configuration section for custom setup.
+        cmd = "Trouble",
+        keys = {
+            {
+                "<leader>xx",
+                "<cmd>Trouble diagnostics toggle<cr>",
+                desc = "Diagnostics (Trouble)",
+            },
+            {
+                "<leader>xX",
+                "<cmd>Trouble diagnostics toggle filter.buf=0<cr>",
+                desc = "Buffer Diagnostics (Trouble)",
+            },
+            {
+                "<leader>cs",
+                "<cmd>Trouble symbols toggle focus=false<cr>",
+                desc = "Symbols (Trouble)",
+            },
+            {
+                "<leader>cl",
+                "<cmd>Trouble lsp toggle focus=false win.position=right<cr>",
+                desc = "LSP Definitions / references / ... (Trouble)",
+            },
+            {
+                "<leader>xL",
+                "<cmd>Trouble loclist toggle<cr>",
+                desc = "Location List (Trouble)",
+            },
+            {
+                "<leader>xQ",
+                "<cmd>Trouble qflist toggle<cr>",
+                desc = "Quickfix List (Trouble)",
+            },
+        },
+    },
+    {
+        'nvim-pack/nvim-spectre',
+        dependencies = {
+            { "nvim-lua/plenary.nvim", lazy = false },
+        },
+        keys = {
+            { "<leader>S",  "<cmd>lua require('spectre').toggle()<CR>",                             mode = "n", desc = "Toggle Spectre" },
+            { "<leader>sw", "<cmd>lua require('spectre').open_visual({select_word=true})<CR>",      mode = "n", desc = "Search current word" },
+            { "<leader>sw", "<esc><cmd>lua require('spectre').open_visual()<CR>",                   mode = "v", desc = "Search current word" },
+            { "<leader>sp", "<cmd>lua require('spectre').open_file_search({select_word=true})<CR>", mode = "n", desc = "Search on current file" },
+        },
+        opts = {
+            use_trouble_qf = true,
+            live_update = true,
+        },
+    }
 }
 
 local opts = {}

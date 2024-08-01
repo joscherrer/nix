@@ -1,26 +1,39 @@
 local function lspconfig_config()
-    vim.keymap.set('n', 'gl', '<cmd>lua vim.diagnostic.open_float()<cr>')
-    vim.keymap.set('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<cr>')
-    vim.keymap.set('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<cr>')
+    vim.keymap.set('n', 'gl', '<cmd>lua vim.diagnostic.open_float()<cr>', { desc = "LSP: Open diagnostics" })
+    vim.keymap.set('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<cr>', { desc = "LSP: Go to previous diagnostic" })
+    vim.keymap.set('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<cr>', { desc = "LSP: Go to next diagnostic" })
 
     local helpers = require('bbrain.helpers')
 
     vim.api.nvim_create_autocmd('LspAttach', {
         desc = 'LSP actions',
         callback = function(event)
-            local opts = { buffer = event.buf }
-            vim.keymap.set('n', 'K', '<cmd>lua vim.lsp.buf.hover()<cr>', opts)
-            vim.keymap.set('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<cr>', opts)
-            vim.keymap.set('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<cr>', opts)
-            vim.keymap.set('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<cr>', opts)
-            vim.keymap.set('n', 'go', '<cmd>lua vim.lsp.buf.type_definition()<cr>', opts)
-            vim.keymap.set('n', 'gr', '<cmd>lua vim.lsp.buf.references()<cr>', opts)
-            vim.keymap.set('n', 'gs', '<cmd>lua vim.lsp.buf.signature_help()<cr>', opts)
-            vim.keymap.set('n', '<F2>', '<cmd>lua vim.lsp.buf.rename()<cr>', opts)
-            vim.keymap.set({ 'n', 'x' }, '<F3>', function() helpers.format(event.buf) end, opts)
-            vim.keymap.set({ 'n', 'x' }, 'gq', function() helpers.format(event.buf) end, opts)
-            vim.keymap.set('n', '<F4>', '<cmd>lua vim.lsp.buf.code_action()<cr>', opts)
-            vim.keymap.set('n', 'gr', '<cmd>Telescope lsp_references<cr>', { buffer = event.buf })
+            vim.keymap.set('n', 'K', '<cmd>lua vim.lsp.buf.hover()<cr>',
+                { buffer = event.buf, desc = "Open hover" })
+            vim.keymap.set('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<cr>',
+                { buffer = event.buf, desc = "LSP: Show definition" })
+            vim.keymap.set('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<cr>',
+                { buffer = event.buf, desc = "LSP: Show declaration" })
+            vim.keymap.set('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<cr>',
+                { buffer = event.buf, desc = "LSP: Show implementation" })
+            vim.keymap.set('n', 'go', '<cmd>lua vim.lsp.buf.type_definition()<cr>',
+                { buffer = event.buf, desc = "LSP: Show type definition" })
+            vim.keymap.set('n', 'gr', '<cmd>lua vim.lsp.buf.references()<cr>',
+                { buffer = event.buf, desc = "LSP: Show references" })
+            vim.keymap.set('n', 'gs', '<cmd>lua vim.lsp.buf.signature_help()<cr>',
+                { buffer = event.buf, desc = "LSP: Show signature help" })
+            vim.keymap.set('n', '<C-k>', function() vim.lsp.buf.signature_help() end,
+                { buffer = event.buf, desc = "LSP: Show signature help" })
+            vim.keymap.set('n', '<F2>', '<cmd>lua vim.lsp.buf.rename()<cr>',
+                { buffer = event.buf, desc = "LSP: Rename" })
+            vim.keymap.set({ 'n', 'x' }, '<F3>', function() helpers.format(event.buf) end,
+                { buffer = event.buf, desc = "Format document" })
+            vim.keymap.set({ 'n', 'x' }, 'gq', function() helpers.format(event.buf) end,
+                { buffer = event.buf, desc = "Format document" })
+            vim.keymap.set('n', '<F4>', '<cmd>lua vim.lsp.buf.code_action()<cr>',
+                { buffer = event.buf, desc = "LSP: Code action" })
+            vim.keymap.set('n', 'gr', '<cmd>Trouble lsp_references<cr>',
+                { buffer = event.buf, desc = "LSP: Show references (Telescope)" })
 
             -- vim.api.nvim_create_autocmd("CursorHold", {
             --     buffer = event.buf,
@@ -195,6 +208,7 @@ return {
     { 'hrsh7th/cmp-cmdline' },
     { 'hrsh7th/cmp-buffer' },
     { 'hrsh7th/cmp-path' },
+    { 'hrsh7th/cmp-nvim-lsp-signature-help' },
     {
         'hrsh7th/nvim-cmp',
         event = 'InsertEnter',
@@ -202,6 +216,7 @@ return {
             { 'hrsh7th/cmp-cmdline' },
             { 'hrsh7th/cmp-buffer' },
             { 'hrsh7th/cmp-path' },
+            { 'hrsh7th/cmp-nvim-lsp-signature-help' },
         },
         config = function()
             -- local lsp_zero = require('lsp-zero')
@@ -222,6 +237,7 @@ return {
                     { name = 'nvim_lsp' },
                     { name = 'path' },
                     { name = 'luasnip' },
+                    { name = 'nvim_lsp_signature_help' },
                 }, {
                     -- { name = 'copilot' },
                     { name = 'buffer' },

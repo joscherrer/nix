@@ -1,3 +1,3 @@
 from pathlib import Path
 
-oui = Path('ok')
+oui = Path("ok")

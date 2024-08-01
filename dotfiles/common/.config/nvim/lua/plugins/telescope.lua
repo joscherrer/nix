@@ -1,51 +1,52 @@
-local function config()
-    local telescope = require('telescope')
-    local builtin = require('telescope.builtin')
-    telescope.setup({
-        defaults = {
-            file_ignore_patterns = {
-                ".git/"
-            }
-        },
-        pickers = {
-            find_files = {
-                hidden = true
-            },
-            live_grep = {
-                hidden = true,
-                additional_args = { "--hidden", "--iglob", "!.git" },
-            }
-        },
-        extensions = {
-            extensions = {
-                workspaces = {
-                    -- keep insert mode after selection in the picker, default is false
-                    keep_insert = true,
-                }
-            }
-        }
-    })
-    vim.keymap.set('n', '<leader>pf', builtin.find_files, {})
-    vim.keymap.set('n', '<C-p>', builtin.git_files, {})
-    vim.keymap.set('n', "<C-S-f>", builtin.live_grep, {})
-    vim.keymap.set('n', '<C-S-p>', builtin.commands, {})
-    vim.keymap.set('n', "<C-S-x>", builtin.command_history, {})
-
-    vim.keymap.set('n', '<leader>ps', builtin.grep_string, {})
-    vim.keymap.set('n', '<leader>pg', builtin.live_grep, {})
-    vim.keymap.set('n', '<leader>pc', builtin.commands, {})
-    vim.keymap.set('n', '<leader>pb', builtin.buffers, {})
-    vim.keymap.set('n', '<leader>pw', telescope.extensions.workspaces.workspaces, {})
-    vim.keymap.set('n', '<leader><leader>', telescope.extensions.smart_open.smart_open, { noremap = true, silent = true })
-
-    vim.api.nvim_create_user_command('Keymap', builtin.keymaps, {})
-end
-
 return {
     {
         'nvim-telescope/telescope.nvim',
         tag = '0.1.6',
         dependencies = { 'nvim-lua/plenary.nvim' },
-        config = config
+        opts = {
+            defaults = {
+                file_ignore_patterns = {
+                    ".git/"
+                },
+            },
+            pickers = {
+                find_files = {
+                    hidden = true
+                },
+                live_grep = {
+                    hidden = true,
+                    additional_args = { "--hidden", "--iglob", "!.git" },
+                }
+            },
+            extensions = {
+                extensions = {
+                    workspaces = {
+                        -- keep insert mode after selection in the picker, default is false
+                        keep_insert = true,
+                    }
+                }
+            }
+        },
+        keys = {
+            { "<leader>pf", function() require("telescope.builtin").find_files() end, mode = "n", desc = "Telescope: find_files" },
+            { "<leader>pg", function() require("telescope.builtin").live_grep() end,  mode = "n", desc = "Telescope: live_grep" },
+            { "<leader>pc", function() require("telescope.builtin").commands() end,   mode = "n", desc = "Telescope: commands" },
+            { "<leader>pb", function() require("telescope.builtin").buffers() end,    mode = "n", desc = "Telescope: buffers" },
+            { "<leader>pk", function() require("telescope.builtin").keymaps() end,    mode = "n", desc = "Telescope: keymaps" },
+            {
+                "<leader><leader>",
+                function() require("telescope").extensions.smart_open.smart_open() end,
+                mode = "n",
+                noremap = true,
+                silent = true,
+                desc = "Telescope: smart_open"
+            },
+            {
+                "<leader>pw",
+                function() require("telescope").extensions.workspaces.workspaces() end,
+                mode = "n",
+                desc = "Telescope: workspaces"
+            },
+        },
     },
 }

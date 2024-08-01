@@ -28,20 +28,16 @@ return {
             vim.api.nvim_set_hl(0, "StatusLineNC", { fg = "#abb2bf", bg = "#313640" })
         end
     },
-    {
-        'stevearc/dressing.nvim',
-        config = function()
-            require('dressing').setup()
-        end,
-    },
+    { 'stevearc/dressing.nvim',      opts = {} },
     {
         'rcarriga/nvim-notify',
         priority = 999,
+        opts = {
+            render = "wrapped-compact",
+        },
         config = function()
-            require('notify').setup({
-                render = "wrapped-compact",
-            })
             vim.notify = require('notify')
         end,
     },
+    { "norcalli/nvim-colorizer.lua", opts = {} }
 }
