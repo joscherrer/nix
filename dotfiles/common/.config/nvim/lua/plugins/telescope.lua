@@ -3,6 +3,7 @@ return {
         'nvim-telescope/telescope.nvim',
         tag = '0.1.6',
         dependencies = { 'nvim-lua/plenary.nvim' },
+        lazy = false,
         opts = {
             defaults = {
                 file_ignore_patterns = {
@@ -41,12 +42,12 @@ return {
                 silent = true,
                 desc = "Telescope: smart_open"
             },
-            {
-                "<leader>pw",
-                function() require("telescope").extensions.workspaces.workspaces() end,
-                mode = "n",
-                desc = "Telescope: workspaces"
-            },
+            -- {
+            --     "<leader>pw",
+            --     function() require("telescope").extensions.workspaces.workspaces() end,
+            --     mode = "n",
+            --     desc = "Telescope: workspaces"
+            -- },
         },
     },
 }

@@ -8,14 +8,7 @@ local plugins = {
     },
     { 'kylechui/nvim-surround', opts = {} },
     { 'numToStr/Comment.nvim',  opts = {} },
-    {
-        'natecraddock/sessions.nvim',
-        opts = {
-            events = { "BufEnter", "VimLeavePre", "DirChangedPre" },
-            session_filepath = vim.fn.stdpath('data') .. '/sessions/',
-            absolute = true,
-        },
-    },
+    { 'windwp/nvim-autopairs',  event = "InsertEnter", opts = {} },
     {
         'danielfalk/smart-open.nvim',
         branch = "0.2.x",

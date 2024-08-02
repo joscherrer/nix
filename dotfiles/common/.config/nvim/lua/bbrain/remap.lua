@@ -75,3 +75,16 @@ vim.keymap.set("n", "<leader>ot", ":OverseerToggle<CR>", { desc = "Toggle overse
 
 -- UndoTree
 vim.keymap.set("n", "<leader>u", vim.cmd.UndotreeToggle, { desc = "Toggle undo tree" })
+
+
+-- Home/End
+vim.keymap.set("n", "<Home>", function()
+    local current_col = vim.api.nvim_win_get_cursor(0)[2]
+    if current_col == 0 then
+        return
+    end
+    vim.cmd("normal! ^")
+    if current_col == vim.api.nvim_win_get_cursor(0)[2] then
+        vim.cmd("normal! 0")
+    end
+end, { desc = "Go to first non-whitespace character or beginning of line" })

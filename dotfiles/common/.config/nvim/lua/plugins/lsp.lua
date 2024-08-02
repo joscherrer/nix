@@ -34,21 +34,6 @@ local function lspconfig_config()
                 { buffer = event.buf, desc = "LSP: Code action" })
             vim.keymap.set('n', 'gr', '<cmd>Trouble lsp_references<cr>',
                 { buffer = event.buf, desc = "LSP: Show references (Telescope)" })
-
-            -- vim.api.nvim_create_autocmd("CursorHold", {
-            --     buffer = event.buf,
-            --     callback = function()
-            --         opts = {
-            --             focusable = false,
-            --             close_events = { "BufLeave", "CursorMoved", "InsertEnter", "FocusLost" },
-            --             border = 'rounded',
-            --             source = 'always',
-            --             prefix = ' ',
-            --             scope = 'cursor',
-            --         }
-            --         vim.diagnostic.open_float(nil, opts)
-            --     end
-            -- })
         end
     })
 
@@ -162,6 +147,32 @@ local function lspconfig_config()
     vim.api.nvim_set_hl(0, "@keyword.operator.lua", { link = "Keyword" })
 
     vim.diagnostic.config({ virtual_text = false })
+    local signs = {
+        DiagnosticSignError = {
+            texthl = "DiagnosticSignError",
+            text = ''
+        },
+        DiagnosticSignWarn = {
+            texthl = "DiagnosticSignWarn",
+            text = " ",
+        },
+
+        DiagnosticSignHint = {
+            texthl = "DiagnosticSignHint",
+            text = " "
+        },
+        DiagnosticSignInformation = {
+            texthl = "DiagnosticSignInformation",
+            text = " "
+        },
+        DapBreakpoint = {
+            texthl = "DiagnosticSignError",
+            text = "⬤"
+        }
+    }
+    for hl, sign in pairs(signs) do
+        vim.fn.sign_define(hl, sign)
+    end
 end
 
 return {
@@ -266,6 +277,7 @@ return {
                 }),
                 matching = { disallow_symbol_nonprefix_matching = false }
             })
+            vim.keymap.set('c', '<C-y>', cmp.mapping.confirm({ select = true }))
         end
     },
 }

@@ -37,6 +37,11 @@ return {
         },
         config = function()
             vim.notify = require('notify')
+            vim.notify(
+                "Reminder to check if issue #335 has been resolved upstream.",
+                vim.log.levels.WARN,
+                { title = "rmagatti/auto-session" }
+            )
         end,
     },
     { "norcalli/nvim-colorizer.lua", opts = {} }
