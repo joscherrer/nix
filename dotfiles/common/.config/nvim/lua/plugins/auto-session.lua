@@ -14,7 +14,9 @@ return {
         },
         no_restore_cmds = {
             function()
-                require("auto-session").RestoreSession()
+                if #vim.fn.argv() == 0 then
+                    require("auto-session").RestoreSession()
+                end
             end,
         }
     },
