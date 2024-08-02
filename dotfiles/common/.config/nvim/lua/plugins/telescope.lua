@@ -35,6 +35,15 @@ return {
             { "<leader>pb", function() require("telescope.builtin").buffers() end,    mode = "n", desc = "Telescope: buffers" },
             { "<leader>pk", function() require("telescope.builtin").keymaps() end,    mode = "n", desc = "Telescope: keymaps" },
             {
+                "<leader>ps",
+                function()
+                    local theme = require("telescope.themes").get_dropdown({ winblend = 10 })
+                    require("telescope.builtin").lsp_workspace_symbols(theme)
+                end,
+                mode = "n",
+                desc = "Telescope: LSP workspace symbols"
+            },
+            {
                 "<leader><leader>",
                 function() require("telescope").extensions.smart_open.smart_open() end,
                 mode = "n",

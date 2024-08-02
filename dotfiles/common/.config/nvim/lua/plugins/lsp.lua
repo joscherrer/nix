@@ -1,5 +1,5 @@
 local function lspconfig_config()
-    vim.keymap.set('n', 'gl', '<cmd>lua vim.diagnostic.open_float()<cr>', { desc = "LSP: Open diagnostics" })
+    vim.keymap.set('n', 'gl', '<cmd>lua vim.diagnostic.open_float()<cr>', { desc = "LSP: Open floating diagnostics" })
     vim.keymap.set('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<cr>', { desc = "LSP: Go to previous diagnostic" })
     vim.keymap.set('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<cr>', { desc = "LSP: Go to next diagnostic" })
 
@@ -9,7 +9,7 @@ local function lspconfig_config()
         desc = 'LSP actions',
         callback = function(event)
             vim.keymap.set('n', 'K', '<cmd>lua vim.lsp.buf.hover()<cr>',
-                { buffer = event.buf, desc = "Open hover" })
+                { buffer = event.buf, desc = "LSP: Display hover information about symbol" })
             vim.keymap.set('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<cr>',
                 { buffer = event.buf, desc = "LSP: Show definition" })
             vim.keymap.set('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<cr>',
@@ -18,8 +18,6 @@ local function lspconfig_config()
                 { buffer = event.buf, desc = "LSP: Show implementation" })
             vim.keymap.set('n', 'go', '<cmd>lua vim.lsp.buf.type_definition()<cr>',
                 { buffer = event.buf, desc = "LSP: Show type definition" })
-            vim.keymap.set('n', 'gr', '<cmd>lua vim.lsp.buf.references()<cr>',
-                { buffer = event.buf, desc = "LSP: Show references" })
             vim.keymap.set('n', 'gs', '<cmd>lua vim.lsp.buf.signature_help()<cr>',
                 { buffer = event.buf, desc = "LSP: Show signature help" })
             vim.keymap.set('n', '<C-k>', function() vim.lsp.buf.signature_help() end,
@@ -33,7 +31,7 @@ local function lspconfig_config()
             vim.keymap.set('n', '<F4>', '<cmd>lua vim.lsp.buf.code_action()<cr>',
                 { buffer = event.buf, desc = "LSP: Code action" })
             vim.keymap.set('n', 'gr', '<cmd>Trouble lsp_references<cr>',
-                { buffer = event.buf, desc = "LSP: Show references (Telescope)" })
+                { buffer = event.buf, desc = "LSP: Show references" })
         end
     })
 
@@ -156,7 +154,6 @@ local function lspconfig_config()
             texthl = "DiagnosticSignWarn",
             text = " ",
         },
-
         DiagnosticSignHint = {
             texthl = "DiagnosticSignHint",
             text = " "
@@ -166,8 +163,8 @@ local function lspconfig_config()
             text = " "
         },
         DapBreakpoint = {
-            texthl = "DiagnosticSignError",
-            text = "⬤"
+            texthl = "DebugBreakpoint",
+            text = ""
         }
     }
     for hl, sign in pairs(signs) do

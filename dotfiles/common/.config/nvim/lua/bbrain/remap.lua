@@ -78,7 +78,7 @@ vim.keymap.set("n", "<leader>u", vim.cmd.UndotreeToggle, { desc = "Toggle undo t
 
 
 -- Home/End
-vim.keymap.set("n", "<Home>", function()
+vim.keymap.set({ "n", "i", "v", "x", "o" }, "<Home>", function()
     local current_col = vim.api.nvim_win_get_cursor(0)[2]
     if current_col == 0 then
         return
