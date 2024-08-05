@@ -1,3 +1,6 @@
+local function map_picker()
+
+end
 return {
     {
         'nvim-telescope/telescope.nvim',
@@ -6,6 +9,7 @@ return {
         lazy = false,
         opts = {
             defaults = {
+                winblend = 80,
                 file_ignore_patterns = {
                     ".git/"
                 },

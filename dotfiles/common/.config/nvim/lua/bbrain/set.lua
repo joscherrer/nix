@@ -20,7 +20,6 @@ vim.opt.undofile = true
 vim.opt.hlsearch = false
 vim.opt.incsearch = true
 
--- vim.opt.termguicolors = true
 
 vim.opt.scrolloff = 8
 vim.opt.signcolumn = "yes"
@@ -32,4 +31,12 @@ vim.opt.colorcolumn = "100"
 
 vim.opt.clipboard = "unnamedplus"
 
+vim.o.pumheight = 12
+
 vim.o.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
+
+if vim.g.neovide then
+    vim.g.neovide_cursor_trail_size = 0
+    vim.g.neovide_refresh_rate = 120
+    -- vim.g.neovide_transparency = 0
+end

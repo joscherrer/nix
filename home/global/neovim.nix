@@ -7,6 +7,7 @@ in
     enable = true;
   };
 
+
   # xdg.configFile.nvim = {
   #   enable = false;
   #   source = pkgs.nvchad;
@@ -22,7 +23,7 @@ in
   };
 
   home.packages = [
-    # Needed for NvChad
+    pkgs.neovide
     pkgs.gcc
     pkgs.unzip
     pkgs.lua-language-server

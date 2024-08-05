@@ -30,6 +30,7 @@ rec
     screenshot-handler
     gather-windows
     hyprdispatch
+    pkgs.bibata-cursors
   ];
 
   services.hyprpaper = {
@@ -120,7 +121,6 @@ rec
       ];
 
       env = [
-        "XCURSOR_SIZE,24"
         "LIBVA_DRIVER_NAME,nvidia"
         "XDG_SESSION_TYPE,wayland"
         "GBM_BACKEND,nvidia-drm"
@@ -128,6 +128,10 @@ rec
         "WLR_NO_HARDWARE_CURSORS,1"
         "GTK_THEME,Catppuccin-Mocha-Compact-Mauve-Dark"
         "XMODIFIERS=\"\""
+        "XCURSOR_SIZE,24"
+        "XCURSOR_THEME,Bibata-Modern-Classic"
+        "HYPRCURSOR_SIZE,24"
+        "HYPRCURSOR_THEME,Bibata-Modern-Classic"
       ];
 
       input = {

@@ -1,6 +1,6 @@
 return {
-    'cameronr/auto-session',
-    -- 'rmagatti/auto-session',
+    -- 'cameronr/auto-session',
+    'rmagatti/auto-session',
     lazy = false,
     dependencies = {
         'nvim-telescope/telescope.nvim', -- Only needed if you want to use sesssion lens
@@ -8,7 +8,7 @@ return {
     opts = {
         auto_session_suppress_dirs = { '~/', '~/Projects', '~/Downloads', '/' },
         auto_session_allowed_dirs = { '~/dev/*' },
-        auto_session_enable_last_session = false,
+        auto_session_enable_last_session = vim.g.neovide,
         session_lens = {
             load_on_setup = true,
         },

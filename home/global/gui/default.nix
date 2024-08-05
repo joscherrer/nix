@@ -25,6 +25,14 @@ in
   home.sessionVariables.GTK_THEME = "Catppuccin-Mocha-Compact-Mauve-Dark";
   home.sessionVariables.DEFAULT_BROWSER = "${pkgs.firefox}/bin/firefox";
 
+  home.pointerCursor = {
+    gtk.enable = true;
+    x11.enable = true;
+    package = pkgs.bibata-cursors;
+    name = "Bibata-Modern-Classic";
+    size = 24;
+  };
+
   gtk = {
     enable = true;
     font = {
@@ -35,8 +43,8 @@ in
     gtk2.configLocation = "${config.xdg.configHome}/gtk-2.0/gtkrc";
 
     iconTheme = {
-      name = "WhiteSur";
-      package = pkgs.whitesur-icon-theme;
+      name = "Bibata-Modern-Classic";
+      package = pkgs.bibata-cursors;
     };
 
     theme = {
