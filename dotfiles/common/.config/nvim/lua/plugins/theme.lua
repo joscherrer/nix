@@ -24,16 +24,15 @@ return {
 
             vim.cmd("colorscheme onedark")
 
-            vim.o.winblend = 100
-            -- vim.api.nvim_set_hl(0, "NotifyBackground", { bg = "" })
-            -- vim.api.nvim_set_hl(0, "NotifyBorder", { bg = "" })
-            -- vim.api.nvim_set_hl(0, "NotifyINFOBorder", { bg = "none" })
-            -- vim.api.nvim_set_hl(0, "NotifyINFOBody", { bg = "" })
+            -- vim.o.winblend = 100
             vim.api.nvim_set_hl(0, "StatusLine", { bg = "#abb2bf", fg = "#313640", cterm = { bold = true }, bold = true })
             vim.api.nvim_set_hl(0, "StatusLineNC", { fg = "#abb2bf", bg = "#313640" })
         end
     },
-    { 'stevearc/dressing.nvim',      opts = {} },
+    {
+        'stevearc/dressing.nvim',
+        opts = {}
+    },
     {
         'rcarriga/nvim-notify',
         priority = 999,
@@ -41,63 +40,33 @@ return {
             vim.notify = require('notify')
             require('notify').setup({
                 fps = 120,
-                stages = "static",
-                -- on_open = function(win)
-                --     local ns = vim.api.nvim_create_namespace("nvim-notify")
-                --     vim.api.nvim_set_hl(ns, "Normal", { bg = "#ff0000" })
-                --     vim.api.nvim_win_set_hl_ns(win, ns)
-                -- end,
-                -- render = function(bufnr, notif, highlights, config)
-                --     local left_icon = notif.icon .. " "
-                --     local max_message_width = math.max(math.max(unpack(vim.tbl_map(function(line)
-                --         return vim.fn.strchars(line)
-                --     end, notif.message))))
-                --     local right_title = notif.title[2]
-                --     local left_title = notif.title[1]
-                --     local title_accum = vim.str_utfindex(left_icon)
-                --         + vim.str_utfindex(right_title)
-                --         + vim.str_utfindex(left_title)
-                --
-                --     local left_buffer = string.rep(" ", math.max(0, max_message_width - title_accum))
-                --
-                --     local namespace = require("notify.render.base").namespace()
-                --     vim.api.nvim_buf_set_lines(bufnr, 0, 1, false, { "", "" })
-                --     vim.api.nvim_buf_set_extmark(bufnr, namespace, 0, 0, {
-                --         virt_text = {
-                --             { " " },
-                --             { left_icon,                 highlights.icon },
-                --             { left_title .. left_buffer, highlights.title },
-                --         },
-                --         virt_text_win_col = 0,
-                --         priority = 10,
-                --     })
-                --     vim.api.nvim_buf_set_extmark(bufnr, namespace, 0, 0, {
-                --         virt_text = { { " " }, { right_title, highlights.title }, { " " } },
-                --         virt_text_pos = "right_align",
-                --         priority = 10,
-                --     })
-                --     vim.api.nvim_buf_set_extmark(bufnr, namespace, 1, 0, {
-                --         virt_text = {
-                --             {
-                --                 string.rep(
-                --                     "━",
-                --                     math.max(vim.str_utfindex(left_buffer) + title_accum + 2, config.minimum_width())
-                --                 ),
-                --                 highlights.border,
-                --             },
-                --         },
-                --         virt_text_win_col = 0,
-                --         priority = 10,
-                --     })
-                --     vim.api.nvim_buf_set_lines(bufnr, 2, -1, false, notif.message)
-                --
-                --     vim.api.nvim_buf_set_extmark(bufnr, namespace, 2, 0, {
-                --         hl_group = highlights.body,
-                --         end_line = 1 + #notif.message,
-                --         end_col = #notif.message[#notif.message],
-                --         priority = 50, -- Allow treesitter to override
-                --     })
-                -- end,
+                stages = {
+                    function(state)
+                        local next_height = state.message.height + 2
+                        local util = require("notify.stages.util")
+                        local direction = util.DIRECTION.TOP_DOWN
+                        local next_row = util.available_slot(state.open_windows, next_height, direction)
+                        if not next_row then
+                            return nil
+                        end
+                        return {
+                            relative = "editor",
+                            anchor = "NE",
+                            width = state.message.width,
+                            height = state.message.height,
+                            col = vim.opt.columns:get() - 1,
+                            row = next_row + 1,
+                            border = "solid",
+                            style = "minimal",
+                        }
+                    end,
+                    function()
+                        return {
+                            col = vim.opt.columns:get() - 1,
+                            time = true,
+                        }
+                    end,
+                }
             })
         end,
     },

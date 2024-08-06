@@ -31,8 +31,8 @@ return {
                 -- delete
                 d = {
                     winhl = {
-                        CursorLine = { bg = '#350808' },
-                        CursorLineNr = { fg = '#fca5a5', bg = '#350808' },
+                        CursorLine = { bg = '#56303B' },
+                        CursorLineNr = { fg = '#fca5a5', bg = '#56303B' },
                     },
                 },
                 -- yank
@@ -45,9 +45,10 @@ return {
             },
         },
         i = {
+            -- green #273B39
             winhl = {
-                CursorLine = { bg = '#012828' },
-                CursorLineNr = { fg = '#5eead4', bg = '#012828' },
+                CursorLine = { bg = '#2F3F59' },
+                CursorLineNr = { fg = '#5eead4', bg = '#2F3F59' },
             },
         },
         c = {
@@ -59,14 +60,15 @@ return {
         n = {
             winhl = {
                 CursorLine = { bg = '#2d303d' },
-                CursorLineNr = { fg = '#ffffff', bg = '#21202e' },
+                CursorLineNr = { fg = '#ffffff', bg = '#2d303d' },
             },
         },
         -- visual
         [{ 'v', 'V', '\x16' }] = {
             winhl = {
                 CursorLineNr = { fg = '#d8b4fe' },
-                Visual = { bg = '#3b0764' },
+                Visual = { bg = '#412F26' },
+                -- Visual = { bg = '#3b0764' },
             },
         },
         -- select

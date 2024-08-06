@@ -1,15 +1,25 @@
-local function map_picker()
-
-end
+local picker_opts = { preview_title = false }
 return {
     {
         'nvim-telescope/telescope.nvim',
         tag = '0.1.6',
         dependencies = { 'nvim-lua/plenary.nvim' },
         lazy = false,
+        priority = 55,
         opts = {
             defaults = {
-                winblend = 80,
+                winblend = 20,
+                borderchars = {
+                    prompt = { "─", " ", " ", " ", "─", "─", " ", " " },
+                    results = { " " },
+                    preview = { " " }
+                },
+                layout_strategy = "center",
+                layout_config = {
+                    width = 0.7,
+                },
+                results_title = false,
+                preview_title = false,
                 file_ignore_patterns = {
                     ".git/"
                 },
@@ -33,34 +43,20 @@ return {
             }
         },
         keys = {
-            { "<leader>pf", function() require("telescope.builtin").find_files() end, mode = "n", desc = "Telescope: find_files" },
-            { "<leader>pg", function() require("telescope.builtin").live_grep() end,  mode = "n", desc = "Telescope: live_grep" },
-            { "<leader>pc", function() require("telescope.builtin").commands() end,   mode = "n", desc = "Telescope: commands" },
-            { "<leader>pb", function() require("telescope.builtin").buffers() end,    mode = "n", desc = "Telescope: buffers" },
-            { "<leader>pk", function() require("telescope.builtin").keymaps() end,    mode = "n", desc = "Telescope: keymaps" },
-            {
-                "<leader>ps",
-                function()
-                    local theme = require("telescope.themes").get_dropdown({ winblend = 10 })
-                    require("telescope.builtin").lsp_workspace_symbols(theme)
-                end,
-                mode = "n",
-                desc = "Telescope: LSP workspace symbols"
-            },
+            { "<leader>pf", function() require("telescope.builtin").find_files(picker_opts) end,            mode = "n", desc = "Telescope: find_files" },
+            { "<leader>pg", function() require("telescope.builtin").live_grep(picker_opts) end,             mode = "n", desc = "Telescope: live_grep" },
+            { "<leader>pc", function() require("telescope.builtin").commands(picker_opts) end,              mode = "n", desc = "Telescope: commands" },
+            { "<leader>pb", function() require("telescope.builtin").buffers(picker_opts) end,               mode = "n", desc = "Telescope: buffers" },
+            { "<leader>pk", function() require("telescope.builtin").keymaps(picker_opts) end,               mode = "n", desc = "Telescope: keymaps" },
+            { "<leader>ps", function() require("telescope.builtin").lsp_workspace_symbols(picker_opts) end, mode = "n", desc = "Telescope: LSP workspace symbols" },
             {
                 "<leader><leader>",
-                function() require("telescope").extensions.smart_open.smart_open() end,
+                function() require("telescope").extensions.smart_open.smart_open({ preview_title = false }) end,
                 mode = "n",
                 noremap = true,
                 silent = true,
                 desc = "Telescope: smart_open"
             },
-            -- {
-            --     "<leader>pw",
-            --     function() require("telescope").extensions.workspaces.workspaces() end,
-            --     mode = "n",
-            --     desc = "Telescope: workspaces"
-            -- },
         },
     },
 }

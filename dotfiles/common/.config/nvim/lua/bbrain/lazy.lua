@@ -78,6 +78,22 @@ local plugins = {
             use_trouble_qf = true,
             live_update = true,
         },
+    },
+    {
+        "akinsho/toggleterm.nvim",
+        opts = {},
+        keys = {
+            { "<C-`>", function() require("toggleterm").toggle() end, mode = { "n", "v", "i", "t" }, desc = "Toggle Terminal" }
+        }
+    },
+    {
+        "ryanmsnyder/toggleterm-manager.nvim",
+        dependencies = {
+            "akinsho/nvim-toggleterm.lua",
+            "nvim-telescope/telescope.nvim",
+            "nvim-lua/plenary.nvim"
+        },
+        opts = {},
     }
 }
 

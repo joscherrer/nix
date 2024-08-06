@@ -44,12 +44,18 @@ vim.keymap.set("v", "<leader>y", "\"+y", { desc = "Yank to system clipboard (vis
 vim.keymap.set("n", "<leader>Y", "\"+Y", { desc = "Yank to system clipboard (normal)" })
 
 -- Quit all
-vim.keymap.set("n", "QQ", ":wqall<CR>", { desc = "Save and quit all" })
+vim.keymap.set("n", "QQ", function()
+    for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+        if vim.api.nvim_get_option_value("buftype", { buf = buf }) == "terminal" then
+            vim.api.nvim_buf_delete(buf, { force = true })
+        end
+    end
+    vim.cmd(":wqall<CR>")
+end, { desc = "Save and quit all" })
 
 
 -- Save
-vim.keymap.set("n", "<C-s>", ":w<CR>", { desc = "Save" })
-vim.keymap.set("i", "<C-s>", "<Esc>:w<CR>a", { desc = "Save" })
+vim.keymap.set({ "n", "i" }, "<C-s>", "<Cmd>w<CR>", { desc = "Save" })
 
 vim.keymap.set("n", "<C-A-r>", ":so<CR>", { desc = "Reload config" })
 
@@ -88,3 +94,7 @@ vim.keymap.set({ "n", "i", "v", "x", "o" }, "<Home>", function()
         vim.cmd("normal! 0")
     end
 end, { desc = "Go to first non-whitespace character or beginning of line" })
+
+
+-- Terminal
+vim.keymap.set("t", "<Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode", noremap = true, silent = true })
