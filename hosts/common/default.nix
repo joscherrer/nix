@@ -19,6 +19,7 @@
       auto-optimise-store = true;
       experimental-features = [ "nix-command" "flakes" "repl-flake" ];
       warn-dirty = false;
+      substituters = ["https://cache.nixos.org/"]; 
     };
   };
 
