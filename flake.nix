@@ -4,9 +4,9 @@
     # nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-23.05-darwin";
 
     nixpkgs.url = "nixpkgs/nixos-unstable";
-    nixpkgs-stable.url = "nixpkgs/nixos-23.11";
+    nixpkgs-stable.url = "nixpkgs/nixos-24.05";
     nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-unstable";
-    nixpkgs-darwin-stable.url = "github:nixos/nixpkgs/nixpkgs-23.11-darwin";
+    nixpkgs-darwin-stable.url = "github:nixos/nixpkgs/nixpkgs-24.05-darwin";
     nixpkgs-unstable.url = "nixpkgs/nixos-unstable";
 
     home-manager.url = "github:nix-community/home-manager";

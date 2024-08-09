@@ -22,7 +22,7 @@
     awscli2
     fluxcd
     vault-bin
-    stable.open-policy-agent
+    open-policy-agent
     ibmcloud-cli
     minio-client
     natscli
