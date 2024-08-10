@@ -98,3 +98,17 @@ end, { desc = "Go to first non-whitespace character or beginning of line" })
 
 -- Terminal
 vim.keymap.set("t", "<Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode", noremap = true, silent = true })
+
+-- Search, and replace
+vim.keymap.set("n", "<C-f>", "/\\V", { desc = "Search" })
+vim.keymap.set("n", "<C-h>", ":s/\\v", { desc = "Search and replace" })
+
+-- Use <Esc> in normal mode
+vim.keymap.set("n", "<Esc>",
+    function()
+        vim.api.nvim_set_option_value("hlsearch", false, {})
+        require("notify").dismiss()
+        vim.cmd.echo()
+    end,
+    { desc = "Clear search highlights, dismiss notifications" }
+)

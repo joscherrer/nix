@@ -62,4 +62,14 @@ function M.format(buffer, opts)
     vim.cmd('silent! write')
 end
 
+M.telescope = { config = {} }
+
+if vim.g.neovide then
+    M.telescope.config.borderchars = {
+        prompt = { "─", " ", " ", " ", "─", "─", " ", " " },
+        results = { " " },
+        preview = { " " }
+    }
+end
+
 return M

@@ -1,4 +1,6 @@
 local picker_opts = { preview_title = false }
+
+
 return {
     {
         'nvim-telescope/telescope.nvim',
@@ -9,11 +11,7 @@ return {
         opts = {
             defaults = {
                 winblend = 20,
-                borderchars = {
-                    prompt = { "─", " ", " ", " ", "─", "─", " ", " " },
-                    results = { " " },
-                    preview = { " " }
-                },
+                borderchars = require('bbrain.helpers').telescope.config.borderchars,
                 layout_strategy = "center",
                 layout_config = {
                     width = 0.7,

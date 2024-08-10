@@ -31,7 +31,11 @@ return {
     },
     {
         'stevearc/dressing.nvim',
-        opts = {}
+        opts = {
+            select = {
+                telescope = require('bbrain.helpers').telescope.config
+            }
+        }
     },
     {
         'rcarriga/nvim-notify',

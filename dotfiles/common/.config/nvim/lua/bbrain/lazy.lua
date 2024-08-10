@@ -77,11 +77,47 @@ local plugins = {
         opts = {
             use_trouble_qf = true,
             live_update = true,
+            find_engine = {
+                ['rg'] = {
+                    cmd = "rg",
+                    args = {
+                        '--color=never',
+                        '--no-heading',
+                        '--with-filename',
+                        '--line-number',
+                        '--column',
+                        '--no-ignore-dot'
+                    }
+                }
+            },
         },
     },
     {
+        "grapp-dev/nui-components.nvim",
+        dependencies = {
+            "MunifTanjim/nui.nvim"
+        }
+    },
+    {
         "akinsho/toggleterm.nvim",
-        opts = {},
+        opts = {
+            direction = "horizontal",
+            shading_factor = 10,
+            float_opts = {
+                border = "solid",
+                row = 1,
+                col = function()
+                    return math.ceil(vim.o.columns * 0.05)
+                end,
+                height = function()
+                    return math.ceil(vim.o.lines * 0.5)
+                end,
+                width = function()
+                    return math.ceil(vim.o.columns * 0.9)
+                end,
+                winblend = 20,
+            }
+        },
         keys = {
             { "<C-`>", function() require("toggleterm").toggle() end, mode = { "n", "v", "i", "t" }, desc = "Toggle Terminal" }
         }
@@ -93,7 +129,8 @@ local plugins = {
             "nvim-telescope/telescope.nvim",
             "nvim-lua/plenary.nvim"
         },
-        opts = {},
+        opts = {
+        },
     }
 }
 
