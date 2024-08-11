@@ -1,9 +1,15 @@
 local M = {}
 
-local has_telescope, telescope = pcall(require, "telescope")
+local has_telescope, _ = pcall(require, "telescope")
 if not has_telescope then
     error("The command palette requires telescope.nvim")
 end
+
+vim.api.nvim_set_hl(0, "PaletteMapMode", { bg = "#00ff00", fg = "#000000" })
+vim.api.nvim_set_hl(0, "PaletteMapInsert", { fg = '#ffffff', bg = '#2F3F59' })
+vim.api.nvim_set_hl(0, "PaletteMapVisual", { fg = '#ffffff', bg = '#412F26' })
+vim.api.nvim_set_hl(0, "PaletteMapNormal", { fg = '#2d303d', bg = '#ffffff' })
+vim.api.nvim_set_hl(0, "PaletteMapTerminal", { fg = '#ffffff', bg = '#56303B' })
 
 local pickers = require("telescope.pickers")
 local finders = require("telescope.finders")
@@ -14,15 +20,15 @@ local entry_display = require("telescope.pickers.entry_display")
 
 local separator = " │ "
 
-local kc_symbols = {
-    C = "󰘴",
-    S = "󰘶",
-    A = "󰘵",
-    M = "󰘵",
-    D = "󰘳",
-}
+local commands = {}
+local command_ids = {}
 
 local kc_map = {
+    -- ["C"] = "󰘴",
+    -- ["S"] = "󰘶",
+    -- ["A"] = "󰘵",
+    -- ["M"] = "󰘵",
+    -- ["D"] = "󰘳",
     ["C"] = "Ctrl",
     ["S"] = "Shift",
     ["A"] = "Alt",
@@ -30,6 +36,21 @@ local kc_map = {
     ["D"] = "Super",
     ["leader"] = "󱁐"
 }
+
+local mode_icons = {
+    n = " N ",
+    i = " I ",
+    v = " V ",
+    t = " T "
+}
+
+local mode_highlights = {
+    n = "PaletteMapNormal",
+    i = "PaletteMapInsert",
+    v = "PaletteMapVisual",
+    t = "PaletteMapTerminal",
+}
+
 
 local function parse_lhs(lhs)
     local parts = {}
@@ -64,11 +85,11 @@ local function parse_lhs(lhs)
     return mods, kc, parts
 end
 
-local function picker_action(prompt_bufnr, map)
+local function picker_action(prompt_bufnr, _)
     actions.select_default:replace(function()
         actions.close(prompt_bufnr)
         local selection = action_state.get_selected_entry()
-        vim.notify("Running " .. selection.value.desc)
+
         if type(selection.value.cmd.cmd) == "function" then
             selection.value.cmd.cmd()
         else
@@ -80,23 +101,95 @@ end
 
 
 M.picker = function(opts)
-    opts = opts or {}
-    local displayer = entry_display.create({
-        separator = separator,
-        items = {
-            { width = 20 },
-            { width = 20 },
-            { width = 20 },
-        }
-    })
+    opts          = opts or {}
+    local results = M.list()
+    local columns = {
+        category = { width = 0 },
+        desc = { width = 30 },
+    }
+
+    for _, entry in ipairs(results) do
+        columns.category.width = math.min(math.max(columns.category.width, #entry.category + 1), 15)
+        columns.desc.width = math.min(math.max(columns.desc.width, #entry.desc + 1), 30)
+        for mode, key in pairs(entry.keys_display) do
+            local mode_icon = mode_icons[mode] or ("[" .. string.upper(mode) .. "]")
+
+            if not columns[mode] then
+                columns[mode] = { width = 0 }
+            end
+            columns[mode] = {
+                width = math.min(math.max(columns[mode].width, #key + 1 + #mode_icon), 20)
+            }
+        end
+    end
+
+    local modes = {}
+    for key, _ in pairs(columns) do
+        if key ~= "desc" and key ~= "category" then
+            table.insert(modes, key)
+        end
+    end
+
+    table.sort(modes)
+
+    local items = {
+        columns.category,
+        columns.desc
+    }
+    for _, mode in ipairs(modes) do
+        table.insert(items, columns[mode])
+    end
+    vim.print(items)
+
+    local displayer    = entry_display.create({ separator = separator, items = items })
     local make_display = function(entry)
-        local final_str, highlights = displayer({
-            { entry.value.cmd.name },
+        local display_columns = {
+            { entry.value.category },
             { entry.value.desc },
-            { table.concat(entry.value.keys_display, "  ") or "" },
-        })
-        -- vim.print(final_str)
-        -- vim.print(highlights)
+        }
+
+        local mode_hl = {}
+        local col_index = columns.category.width + #separator + columns.desc.width + #separator
+        if #entry.value.desc > 40 then
+            col_index = col_index + string.len("…") - 1
+        end
+        if #entry.value.category > 20 then
+            col_index = col_index + string.len("…") - 1
+        end
+
+        vim.print(columns)
+        vim.print(entry.value.keys_display2)
+        vim.print(display_columns)
+        for _, mode in ipairs(modes) do
+            local lhs = entry.value.keys_display2[mode]
+            local offset = 0
+            if lhs then
+                table.insert(mode_hl, { { col_index, col_index + lhs.icon_size }, lhs.hl_name })
+                table.insert(display_columns, { lhs.repr })
+                offset = lhs.width_offset
+            else
+                table.insert(display_columns, { " " })
+            end
+            col_index = columns[mode].width + #separator + col_index + offset
+            -- local lhs = entry.value.keys_display[mode]
+            -- local utf8_offset = 0
+            -- if lhs then
+            --     local mode_icon = mode_icons[mode] or ("[" .. string.upper(mode) .. "]")
+            --     local key_repr = mode_icon .. " " .. lhs
+            --     utf8_offset = #key_repr - vim.fn.strdisplaywidth(key_repr)
+            --     local mode_hl_name = mode_highlights[mode] or "PaletteMapNormal"
+            --     table.insert(mode_hl, { { col_index, col_index + #mode_icon }, mode_hl_name })
+            --     table.insert(display_columns, { key_repr })
+            -- else
+            --     table.insert(display_columns, { " " })
+            -- end
+            -- col_index = columns[mode].width + #separator + col_index + utf8_offset
+        end
+
+        vim.print("display columns: ", display_columns)
+        local final_str, highlights = displayer(display_columns)
+        vim.list_extend(highlights, mode_hl)
+
         return final_str, highlights
     end
     pickers.new(opts, {
@@ -107,7 +200,7 @@ M.picker = function(opts)
                 return {
                     value = entry,
                     display = make_display,
-                    ordinal = entry.cmd.name
+                    ordinal = entry.desc
                 }
             end
         }),
@@ -116,8 +209,6 @@ M.picker = function(opts)
     }):find()
 end
 
-local commands = {}
-local keys_cache = {}
 
 
 --- @class bbrain.palette.cmd
@@ -131,56 +222,136 @@ local keys_cache = {}
 --- @field lhs string
 --- @field opts vim.keymap.set.Opts
 
-
+--- @class bbrain.palette.item.Opts
+--- @field cmd bbrain.palette.cmd
+--- @field keys bbrain.keymap.key[]
+--- @field desc string
+--- @field category string?
 
 --- Add an item to the command palette.
 ---
---- @param cmd bbrain.palette.cmd
---- @param keys bbrain.keymap.key[]
---- @param desc string
-function M.add(cmd, keys, desc)
-    if cmd.create then
-        vim.api.nvim_create_user_command(cmd.name, cmd.cmd, cmd.opts)
+--- @param category string
+--- @param name string
+--- @param opts bbrain.palette.item.Opts
+function M.add(category, name, opts)
+    local id = category .. "::" .. name
+    if command_ids[id] then
+        return
+    end
+
+    if not category then
+        category = "Misc"
+    end
+
+    if opts.cmd.create then
+        vim.api.nvim_create_user_command(opts.cmd.name, opts.cmd.cmd, opts.cmd.opts)
     end
 
     local keys_display = {}
+    local keys_display2 = {}
 
-    for _, key in ipairs(keys) do
-        local rhs = cmd.cmd or ("<Cmd>" .. cmd.name .. "<CR>")
+    for _, key in ipairs(opts.keys) do
+        local rhs = opts.cmd.cmd or ("<Cmd>" .. opts.cmd.name .. "<CR>")
         vim.keymap.set(key.mode, key.lhs, rhs, key.opts)
 
         local mods, kc, parts = parse_lhs(key.lhs)
-        local display = ""
+        local keybind = ""
         for _, mod in ipairs(mods) do
-            display = display .. mod .. "+"
+            keybind = keybind .. mod .. "+"
         end
-        display = display .. kc .. " "
+        keybind = keybind .. kc .. " "
         if #parts ~= 0 then
-            display = display .. table.concat(parts, "")
+            keybind = keybind .. table.concat(parts, "")
         end
-        table.insert(keys_display, display)
-    end
-    if next(keys_display) == nil then
-        table.insert(keys_display, "Unbound")
+
+        if type(key.mode) == "string" then
+            ---@diagnostic disable-next-line: assign-type-mismatch
+            key.mode = { key.mode }
+        end
+
+        ---@diagnostic disable-next-line: param-type-mismatch
+        for _, mode in ipairs(key.mode) do
+            keys_display[mode] = keybind
+            local mode_icon = mode_icons[mode] or ("[" .. string.upper(mode) .. "]")
+            local key_repr = mode_icon .. " " .. keybind
+            keys_display2[mode] = {
+                repr = key_repr,
+                icon_size = #mode_icon,
+                hl_name = mode_highlights[mode] or "PaletteMapNormal",
+                width = #key_repr,
+                width_offset = #key_repr - vim.fn.strdisplaywidth(key_repr)
+            }
+        end
     end
 
-    table.insert(commands, { cmd = cmd, keys = keys, desc = desc, keys_display = keys_display })
+    command_ids[id] = true
+    table.insert(commands, {
+        cmd = opts.cmd,
+        keys = opts.keys,
+        desc = opts.desc,
+        category = category,
+        keys_display = keys_display,
+        keys_display2 = keys_display2
+    })
 end
 
 function M.list()
+    table.sort(commands, function(a, b) return a.category > b.category end)
     return commands
 end
 
-M.add(
-    { name = "Palette", cmd = function() require('bbrain.palette').picker() end },
-    { { mode = "n", lhs = "<C-S-p>", opts = {} } },
-    "Palette: Open"
-)
-M.add({ name = "ColorizerToggle" }, { { mode = "n", lhs = "<leader>tc", opts = {} } }, "Colorizer: Toggle")
-M.add({ name = "Trouble" }, {}, "Trouble: Toggle")
+function M.reload()
+    commands = {}
+    command_ids = {}
+    package.loaded["bbrain.palette"] = nil
+end
 
--- vim.highlight.create("PaletteDescription")
--- vim.highlight.create("PaletteCommand")
--- vim.highlight.create("PaletteKeys")
+M.add("Palette", "PaletteOpen", {
+    cmd = { name = "PaletteOpen", cmd = function() require('bbrain.palette').picker() end },
+    keys = { { mode = { "n", "t", "v", "i" }, lhs = "<C-S-p>", opts = {} } },
+    desc = "Open command palette",
+})
+M.add("Palette", "PaletteReload", {
+    cmd = { name = "PaletteReload", cmd = function() require('bbrain.palette').reload() end },
+    keys = { { mode = "n", lhs = "<leader>rp", opts = {} } },
+    desc = "Reload command palette",
+})
+M.add("Colorizer", "ColorizerToggle", {
+    cmd = { name = "ColorizerToggle" },
+    keys = { { mode = { "n" }, lhs = "<leader>tc", opts = {} } },
+    desc = "Toggle hex colors highlight",
+})
+M.add("Trouble", "TroubleDiagnostics", {
+    cmd = { name = "Trouble diagnostics" },
+    keys = {},
+    desc = "Open Diagnostics",
+})
+-- M.add({ name = "Telescope find_files" })
+M.add("Git", "GitBranches", {
+    cmd = { name = "Telescope git_branches" },
+    keys = {},
+    desc = "Checkout branch",
+})
+M.add("Picker", "PickerHighlights", {
+    cmd = { name = "Telescope highlights" },
+    keys = {},
+    desc = "Misc: Show highlights"
+})
+
+M.add("Overseer", "OverseerOpen", {
+    cmd = { name = "OverseerOpen" },
+    keys = {},
+    desc = "Overseer: Open UI"
+})
+M.add("Overseer", "OverseerRun", {
+    cmd = { name = "OverseerRun" },
+    keys = {},
+    desc = "Overseer: Run Task"
+})
+M.add("View", "MaximizePane", {
+    cmd = { name = "Maximize pane", cmd = "Maximize" },
+    keys = { { mode = { "n" }, lhs = "<leader>mm", opts = {} } },
+    desc = "View: Toggle maximize"
+})
 
 return M
