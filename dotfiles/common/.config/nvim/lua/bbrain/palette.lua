@@ -5,6 +5,10 @@ if not has_telescope then
     error("The command palette requires telescope.nvim")
 end
 
+vim.api.nvim_set_hl(0, "palette.category.palette", { fg = "#6492e3" })
+vim.api.nvim_set_hl(0, "palette.category.git", { fg = "#64e364" })
+vim.api.nvim_set_hl(0, "palette.category.default", {})
+vim.api.nvim_set_hl(0, "PaletteItemDescription", {})
 vim.api.nvim_set_hl(0, "PaletteMapMode", { bg = "#00ff00", fg = "#000000" })
 vim.api.nvim_set_hl(0, "PaletteMapInsert", { fg = '#ffffff', bg = '#2F3F59' })
 vim.api.nvim_set_hl(0, "PaletteMapVisual", { fg = '#ffffff', bg = '#412F26' })
@@ -49,6 +53,16 @@ local mode_highlights = {
     i = "PaletteMapInsert",
     v = "PaletteMapVisual",
     t = "PaletteMapTerminal",
+}
+
+local category_highlights = {
+    ["Palette"] = "palette.category.palette",
+    ["Colorizer"] = "palette.category.colorizer",
+    ["Trouble"] = "palette.category.trouble",
+    ["Git"] = "palette.category.git",
+    ["Picker"] = "palette.category.picker",
+    ["Overseer"] = "palette.category.overseer",
+    ["View"] = "palette.category.view",
 }
 
 
@@ -112,14 +126,8 @@ M.picker = function(opts)
         columns.category.width = math.min(math.max(columns.category.width, #entry.category + 1), 15)
         columns.desc.width = math.min(math.max(columns.desc.width, #entry.desc + 1), 30)
         for mode, key in pairs(entry.keys_display) do
-            local mode_icon = mode_icons[mode] or ("[" .. string.upper(mode) .. "]")
-
-            if not columns[mode] then
-                columns[mode] = { width = 0 }
-            end
-            columns[mode] = {
-                width = math.min(math.max(columns[mode].width, #key + 1 + #mode_icon), 20)
-            }
+            local mopts = columns[mode] or {}
+            columns[mode] = { width = math.min(math.max(mopts.width or 0, key.width), 20) }
         end
     end
 
@@ -139,13 +147,12 @@ M.picker = function(opts)
     for _, mode in ipairs(modes) do
         table.insert(items, columns[mode])
     end
-    vim.print(items)
 
     local displayer    = entry_display.create({ separator = separator, items = items })
     local make_display = function(entry)
         local display_columns = {
-            { entry.value.category },
-            { entry.value.desc },
+            { entry.value.category, category_highlights[entry.value.category] or "palette.category.default" },
+            { entry.value.desc,     "PaletteItemDescription" },
         }
 
         local mode_hl = {}
@@ -157,11 +164,8 @@ M.picker = function(opts)
             col_index = col_index + string.len("…") - 1
         end
 
-        vim.print(columns)
-        vim.print(entry.value.keys_display2)
-        vim.print(display_columns)
         for _, mode in ipairs(modes) do
-            local lhs = entry.value.keys_display2[mode]
+            local lhs = entry.value.keys_display[mode]
             local offset = 0
             if lhs then
                 table.insert(mode_hl, { { col_index, col_index + lhs.icon_size }, lhs.hl_name })
@@ -171,22 +175,8 @@ M.picker = function(opts)
                 table.insert(display_columns, { " " })
             end
             col_index = columns[mode].width + #separator + col_index + offset
-            -- local lhs = entry.value.keys_display[mode]
-            -- local utf8_offset = 0
-            -- if lhs then
-            --     local mode_icon = mode_icons[mode] or ("[" .. string.upper(mode) .. "]")
-            --     local key_repr = mode_icon .. " " .. lhs
-            --     utf8_offset = #key_repr - vim.fn.strdisplaywidth(key_repr)
-            --     local mode_hl_name = mode_highlights[mode] or "PaletteMapNormal"
-            --     table.insert(mode_hl, { { col_index, col_index + #mode_icon }, mode_hl_name })
-            --     table.insert(display_columns, { key_repr })
-            -- else
-            --     table.insert(display_columns, { " " })
-            -- end
-            -- col_index = columns[mode].width + #separator + col_index + utf8_offset
         end
 
-        vim.print("display columns: ", display_columns)
         local final_str, highlights = displayer(display_columns)
         vim.list_extend(highlights, mode_hl)
 
@@ -248,7 +238,6 @@ function M.add(category, name, opts)
     end
 
     local keys_display = {}
-    local keys_display2 = {}
 
     for _, key in ipairs(opts.keys) do
         local rhs = opts.cmd.cmd or ("<Cmd>" .. opts.cmd.name .. "<CR>")
@@ -271,10 +260,9 @@ function M.add(category, name, opts)
 
         ---@diagnostic disable-next-line: param-type-mismatch
         for _, mode in ipairs(key.mode) do
-            keys_display[mode] = keybind
             local mode_icon = mode_icons[mode] or ("[" .. string.upper(mode) .. "]")
             local key_repr = mode_icon .. " " .. keybind
-            keys_display2[mode] = {
+            keys_display[mode] = {
                 repr = key_repr,
                 icon_size = #mode_icon,
                 hl_name = mode_highlights[mode] or "PaletteMapNormal",
@@ -290,8 +278,7 @@ function M.add(category, name, opts)
         keys = opts.keys,
         desc = opts.desc,
         category = category,
-        keys_display = keys_display,
-        keys_display2 = keys_display2
+        keys_display = keys_display
     })
 end
 

@@ -8,6 +8,12 @@ local function lspconfig_config()
     vim.api.nvim_create_autocmd('LspAttach', {
         desc = 'LSP actions',
         callback = function(event)
+            local palette = require('bbrain.palette')
+            palette.add("LSP", "LSPHover", {
+                cmd = { name = "vim.lsp.buf.hover()", cmd = function() vim.lsp.buf.hover() end },
+                keys = { { mode = "n", lhs = "<S-k>", opts = { buffer = event.buf } } },
+                desc = "LSP: Display hover information about symbol"
+            })
             vim.keymap.set('n', 'K', '<cmd>lua vim.lsp.buf.hover()<cr>',
                 { buffer = event.buf, desc = "LSP: Display hover information about symbol" })
             vim.keymap.set('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<cr>',
