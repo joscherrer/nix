@@ -23,9 +23,11 @@
     vscode-server.url = "github:nix-community/nixos-vscode-server";
 
     nil.url = "github:oxalica/nil";
+
+    catppuccin.url = "github:catppuccin/nix";
   };
 
-  outputs = { self, nixpkgs, nixpkgs-stable, nixpkgs-unstable, home-manager, darwin, kmonad, nil, ... }@inputs:
+  outputs = { self, nixpkgs, nixpkgs-stable, nixpkgs-unstable, home-manager, darwin, kmonad, nil, catppuccin, ... }@inputs:
     let
       inherit (self) outputs;
       overlay-unstable = final: prev: {
@@ -115,6 +117,7 @@
           };
           modules = [
             ./hosts/bbrain-linux
+            catppuccin.nixosModules.catppuccin
           ];
         };
         jo-home = nixpkgs.lib.nixosSystem {

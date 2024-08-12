@@ -35,6 +35,8 @@ vim.o.pumheight = 12
 
 vim.o.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
 
+-- vim.opt.shortmess = "ltToOCFW"
+
 if vim.g.neovide then
     vim.g.neovide_cursor_trail_size = 0
     vim.g.neovide_refresh_rate = 120

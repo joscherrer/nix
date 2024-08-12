@@ -41,9 +41,12 @@ return {
         'rcarriga/nvim-notify',
         priority = 999,
         config = function()
-            vim.notify = require('notify')
+            -- notify handled by noice.nvim
+            -- vim.notify = require('notify')
             require('notify').setup({
                 fps = 120,
+                max_width = function() return math.ceil(vim.api.nvim_win_get_width(0) * 0.3) end,
+                render = "wrapped-compact",
                 stages = {
                     function(state)
                         local next_height = state.message.height + 2
@@ -61,6 +64,7 @@ return {
                             col = vim.opt.columns:get() - 1,
                             row = next_row + 1,
                             border = "solid",
+                            -- border = "none",
                             style = "minimal",
                         }
                     end,
@@ -70,9 +74,54 @@ return {
                             time = true,
                         }
                     end,
-                }
+                },
             })
         end,
     },
-    { "norcalli/nvim-colorizer.lua", opts = {} }
+    { "norcalli/nvim-colorizer.lua", opts = {} },
+    {
+        "folke/noice.nvim",
+        version = "4.4.7",
+        pin = true,
+        event = "VeryLazy",
+        opts = {
+            lsp = {
+                -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
+                override = {
+                    ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+                    ["vim.lsp.util.stylize_markdown"] = true,
+                    ["cmp.entry.get_documentation"] = true, -- requires hrsh7th/nvim-cmp
+                },
+            },
+            -- you can enable a preset for easier configuration
+            presets = {
+                bottom_search = true,         -- use a classic bottom cmdline for search
+                command_palette = true,       -- position the cmdline and popupmenu together
+                long_message_to_split = true, -- long messages will be sent to a split
+                inc_rename = false,           -- enables an input dialog for inc-rename.nvim
+                lsp_doc_border = false,       -- add a border to hover docs and signature help
+            },
+            routes = {
+                { filter = { event = "msg_show", kind = "search_count" },         opts = { skip = true } },
+                { filter = { event = "msg_show", kind = "", find = "wiped out" }, opts = { skip = true } },
+                { filter = { event = "msg_show", kind = "", find = "written" },   view = "mini" },
+            },
+            views = {
+                cmdline_popup = {
+                    border = {
+                        style = "none",
+                        padding = { 1, 1 },
+                    },
+                    filter_options = {},
+                    win_options = {
+                        winhighlight = "NormalFloat:NormalFloat,FloatBorder:FloatBorder",
+                    },
+                }
+            }
+        },
+        dependencies = {
+            "MunifTanjim/nui.nvim",
+            "rcarriga/nvim-notify",
+        }
+    }
 }

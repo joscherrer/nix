@@ -14,15 +14,15 @@ vim.keymap.set("n", "<leader>qq", '<C-w>q', { desc = "Close split" })
 vim.keymap.set("n", "<leader>mm", vim.cmd.Maximize, { desc = "Maximize split" })
 
 -- move lines up/down
-vim.keymap.set("n", "<A-Down>", ":m .+1<CR>==", { desc = "Move line up(n)" })
-vim.keymap.set("n", "<A-Up>", ":m .-2<CR>==", { desc = "Move line down(n)" })
-vim.keymap.set("v", "<A-Down>", ":m '>+1<CR>gv=gv", { desc = "Move line up(v)" })
-vim.keymap.set("v", "<A-Up>", ":m '<-2<CR>gv=gv", { desc = "Move line down(v)" })
+vim.keymap.set("n", "<A-Down>", "<Cmd>m .+1<CR>==", { desc = "Move line up(n)" })
+vim.keymap.set("n", "<A-Up>", "<Cmd>m .-2<CR>==", { desc = "Move line down(n)" })
+vim.keymap.set("v", "<A-Down>", "<Cmd>m '>+1<CR>gv=gv", { desc = "Move line up(v)" })
+vim.keymap.set("v", "<A-Up>", "<Cmd>m '<-2<CR>gv=gv", { desc = "Move line down(v)" })
 
-vim.keymap.set("n", "<A-j>", ":m .+1<CR>==", { desc = "move line up(n)}" })
-vim.keymap.set("n", "<A-k>", ":m .-2<CR>==", { desc = "move line down(n)" })
-vim.keymap.set("v", "<A-j>", ":m '>+1<CR>gv=gv", { desc = "move line up(v)" })
-vim.keymap.set("v", "<A-k>", ":m '<-2<CR>gv=gv", { desc = "move line down(v)" })
+vim.keymap.set("n", "<A-j>", "<Cmd>m .+1<CR>==", { desc = "move line up(n)}" })
+vim.keymap.set("n", "<A-k>", "<Cmd>m .-2<CR>==", { desc = "move line down(n)" })
+vim.keymap.set("v", "<A-j>", "<Cmd>m '>+1<CR>gv=gv", { desc = "move line up(v)" })
+vim.keymap.set("v", "<A-k>", "<Cmd>m '<-2<CR>gv=gv", { desc = "move line down(v)" })
 
 -- page up/down keep centered
 vim.keymap.set("n", "<C-d>", "<C-d>zz", { desc = "Page down (centered)" })

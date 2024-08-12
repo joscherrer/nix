@@ -17,12 +17,14 @@ in
     ./terminal.nix
     ./vscode.nix
     ./waybar.nix
+    ./thunderbird.nix
+    inputs.catppuccin.homeManagerModules.catppuccin
   ];
 
 
   programs.firefox.enable = true;
   home.sessionVariables.BROWSER = "${pkgs.firefox}/bin/firefox";
-  home.sessionVariables.GTK_THEME = "Catppuccin-Mocha-Compact-Mauve-Dark";
+  home.sessionVariables.GTK_THEME = "catppuccin-mocha-mauve-compact+normal";
   home.sessionVariables.DEFAULT_BROWSER = "${pkgs.firefox}/bin/firefox";
 
   home.pointerCursor = {
@@ -47,13 +49,11 @@ in
       package = pkgs.bibata-cursors;
     };
 
-    theme = {
-      name = "Catppuccin-Mocha-Compact-Mauve-Dark";
-      package = pkgs.catppuccin-gtk.override {
-        accents = [ "mauve" ];
-        size = "compact";
-        variant = "mocha";
-      };
+    catppuccin = {
+      enable = true;
+      accent = "mauve";
+      flavor = "mocha";
+      size = "compact";
     };
 
     gtk2.extraConfig = ''
@@ -62,6 +62,14 @@ in
     gtk3.extraConfig = { gtk-application-prefer-dark-theme = 1; };
     gtk4.extraConfig = { gtk-application-prefer-dark-theme = 1; };
   };
+
+  qt = {
+    style = {
+      catppuccin.enable = true;
+    };
+  };
+
+  # catppuccin.enable = true;
 
   dconf = {
     enable = true;

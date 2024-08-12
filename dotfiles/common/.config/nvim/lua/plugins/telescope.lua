@@ -32,11 +32,8 @@ return {
                 }
             },
             extensions = {
-                extensions = {
-                    workspaces = {
-                        -- keep insert mode after selection in the picker, default is false
-                        keep_insert = true,
-                    }
+                smart_open = {
+                    match_algorithm = "fzf",
                 }
             }
         },
@@ -56,5 +53,10 @@ return {
                 desc = "Telescope: smart_open"
             },
         },
+        config = function(_, opts)
+            require('telescope').setup(opts)
+            require('telescope').load_extension('fzf')
+        end
     },
+    { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
 }

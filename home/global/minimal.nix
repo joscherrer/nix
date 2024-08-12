@@ -88,6 +88,6 @@
     pinentry-curses
     cargo
     lua
-
+    htop
   ];
 }

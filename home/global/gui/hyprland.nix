@@ -127,7 +127,7 @@ rec
         "GBM_BACKEND,nvidia-drm"
         "__GLX_VENDOR_LIBRARY_NAME,nvidia"
         "WLR_NO_HARDWARE_CURSORS,1"
-        "GTK_THEME,Catppuccin-Mocha-Compact-Mauve-Dark"
+        "GTK_THEME,catppuccin-mocha-mauve-compact+normal"
         "XMODIFIERS=\"\""
         "XCURSOR_SIZE,24"
         "XCURSOR_THEME,Bibata-Modern-Classic"

@@ -1,6 +1,6 @@
 local group = vim.api.nvim_create_augroup("bbrain.hlsearch", {})
 
-vim.api.nvim_create_autocmd("CmdlineEnter", {
+vim.api.nvim_create_autocmd({ "CmdlineEnter", "CmdwinEnter" }, {
     group = group,
     pattern = '*',
     callback = function(ev)
