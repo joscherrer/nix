@@ -25,9 +25,11 @@
     nil.url = "github:oxalica/nil";
 
     catppuccin.url = "github:catppuccin/nix";
+
+    nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
   };
 
-  outputs = { self, nixpkgs, nixpkgs-stable, nixpkgs-unstable, home-manager, darwin, kmonad, nil, catppuccin, ... }@inputs:
+  outputs = { self, nixpkgs, nixpkgs-stable, nixpkgs-unstable, home-manager, darwin, kmonad, nil, catppuccin, nixos-wsl, ... }@inputs:
     let
       inherit (self) outputs;
       overlay-unstable = final: prev: {
