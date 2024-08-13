@@ -22,7 +22,7 @@
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
-    users.jscherrer = import "${self}/home/jscherrer/bbrain-linux.nix";
+    users.jscherrer = import "${self}/home/jscherrer/jo-home.nix";
     users.root = import "${self}/home/root";
     extraSpecialArgs = { inherit inputs outputs; };
   };
