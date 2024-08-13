@@ -1,4 +1,4 @@
-{ inputs, ... }:
+{ inputs, outputs, self, ... }:
 {
    imports = [
     inputs.nixos-wsl.nixosModules.default
@@ -19,13 +19,13 @@
 
   system.stateVersion = "24.05"; # Did you read the comment?
 
-  # home-manager = {
-  #   useGlobalPkgs = true;
-  #   useUserPackages = true;
-  #   users.jscherrer = import "${self}/home/jscherrer/bbrain-linux.nix";
-  #   users.root = import "${self}/home/root";
-  #   extraSpecialArgs = { inherit inputs outputs; };
-  # };
+  home-manager = {
+    useGlobalPkgs = true;
+    useUserPackages = true;
+    users.jscherrer = import "${self}/home/jscherrer/bbrain-linux.nix";
+    users.root = import "${self}/home/root";
+    extraSpecialArgs = { inherit inputs outputs; };
+  };
 
   # fonts.packages = [
   #   pkgs.nerdfonts
