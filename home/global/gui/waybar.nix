@@ -11,29 +11,35 @@ in
 {
   programs.waybar = {
     enable = true;
+    catppuccin.enable = true;
+
     settings = {
       mainBar = {
         position = "top";
         layer = "top";
         height = 16;
+        margin = "5";
         margin-top = 0;
         margin-bottom = 0;
         margin-left = 0;
         margin-right = 0;
-        modules-left = [ "hyprland/window" ];
-        # modules-left = [ "custom/launcher" "custom/playerctl" "custom/playerlabel" ];
-        modules-center = [
+        reload_style_on_change = true;
+        modules-left = [
           "hyprland/workspaces"
+        ];
+        modules-center = [
+          "hyprland/window"
         ];
         modules-right = [
           "tray"
+          "custom/lock"
           "pulseaudio"
           "clock"
           # "custom/randwall"
           # "network"
         ];
         clock = {
-          format = "󱑍 {:%H:%M}";
+          format = "󱑍  {:%H:%M}";
           tooltip = "true";
           tooltip-format = ''
             <big>{:%Y %B}</big>
@@ -104,19 +110,10 @@ in
           };
         };
 
-        battery = {
-          states = {
-            good = 95;
-            warning = 30;
-            critical = 15;
-          };
-          format = "{icon}  {capacity}%";
-          format-charging = "{capacity}% ";
-          format-plugged = "{capacity}% ";
-          format-alt = "{icon} {time}";
-          # "format-good"= "", # An empty format will hide the module
-          # "format-full"= "";
-          format-icons = [ "" "" "" "" "" ];
+        "custom/lock" = {
+            tooltip = false;
+            on-click = "loginctl lock-session";
+            format = "";
         };
 
         memory = {
@@ -149,20 +146,12 @@ in
         };
 
         tray = {
-          icon-size = 18;
-          spacing = 10;
-        };
-
-        backlight = {
-          # "device"= "acpi_video1";
-          format = "{icon} {percent}%";
-          format-icons = [ "" "" "" "" "" "" "" "" "" ];
-          #	"on-scroll-up"=;
-          #	"on-scroll-down"=;
+          icon-size = 17;
+          spacing = 8;
         };
 
         pulseaudio = {
-          format = "{icon} {volume}%";
+          format = "{icon}  {volume}%";
           format-muted = "";
           format-icons = { default = [ "" "" "" ]; };
           on-click = "pamixer --toggle-mute";
@@ -202,119 +191,233 @@ in
     };
     style = ''
       * {
-        border: none;
-        border-radius: 0px;
-        /* font-family: LigaSFMono Nerd Font, Iosevka, FontAwesome, Noto Sans CJK; */
-        /* font-family: Iosevka, FontAwesome, Noto Sans CJK; */
-        /* font-family: JetBrainsMono Nerd Font, FontAwesome, Noto Sans CJK; */
-        font-family: CaskaydiaCove Nerd Font;
-        font-size: 14px;
-        font-style: normal;
-        min-height: 0;
+        font-family: FantasqueSansMono Nerd Font;
+        font-size: 17px;
+        min-height: 0px;
       }
-
-      window#waybar {
-        background: rgba(16,22,24, 0.9);
-        transition-property: background-color;
-        transition-duration: .5s;
-        color: ${xcolors.fg}
+      
+      #waybar {
+        /* background: transparent; */
+        background: rgba(0,0,0,0.7);
+        color: @text;
+        margin: 0px;
+        border: 0px solid rgba(0, 0, 0, 0);
+        border-radius: 0rem;
       }
-
-      tooltip {
-        background: ${xcolors.bg};
-        border-radius: 10px;
-        border-width: 2px;
-        border-style: solid;
-        border-color: ${xcolors.bg};
+      
+      :hover {
+          background: rgba(0,0,0,0);
       }
-
+      
+      
+      .modules {
+        margin: 0px;
+        padding: 0px;
+        outline-width: 0px;
+      }
+      
+      
+      .modules-right,
+      .modules-center,
+      .modules-left {
+        border-radius: 0rem;
+        margin: 0px 0px;
+        padding: 0px;
+        outline-width: 0px;
+        /* background-color: @surface0; */
+      }
+      
+      
+      
       #workspaces {
-        background: ${xcolors.bg};
-        margin: 5px 5px;
-        padding: 8px 5px;
-        border-radius: 16px;
-        border: solid 0px ${xcolors.fg};
-        font-weight: normal;
-        font-style: normal;
+        margin-left: 0px;
+        margin-right: 0px;
       }
-
+      
       #workspaces button {
-        padding: 0px 5px;
-        margin: 0px 3px;
-        border-radius: 16px;
-        color: #2f354a;
-        background-color: #2f354a;
-        transition: all 0.3s ease-in-out;
+        color: @white;
+        border-radius: 0rem;
+        padding-left: 0.4rem;
+        padding-right: 0.95rem;
+        border-bottom: 2px solid rgba(0, 0, 0, 0);
       }
-
+      
       #workspaces button.active {
-        color: ${xcolors.fg};
-        background-color: ${xcolors.fg};
-        border-radius: 16px;
-        min-width: 50px;
-        background-size: 400% 400%;
-        transition: all 0.3s ease-in-out;
+        color: @white;
+        border-radius: 0rem;
+        border-bottom: 2px solid @white;
       }
-
+      
       #workspaces button:hover {
-        background-color: ${xcolors.fg};
-        color: ${xcolors.fg};
-        border-radius: 16px;
-        min-width: 50px;
-        background-size: 400% 400%;
+        color: @white;
+        border-radius: 0rem;
+        background: rgba(255,255,255,0.1);
+        box-shadow: 0px 0px 0px 0px @white;
       }
-
-      #custom-date, #custom-playerctl, #clock, #battery, #pulseaudio, #network {
-        background: ${xcolors.bg};
-        color: ${xcolors.fg};
-        padding: 0 6px;
-        border-radius: 10px;
-        margin: 6px 0px;
-      }
-
-      #pulseaudio, #tray, #clock, #custom-launcher {
-        margin-right: 6px;
-      }
-
-      #cpu,
-      #disk,
-      #memory,
-      #pulseaudio,
+      
+      
+      #custom-music,
+      #tray,
       #backlight,
+      #clock,
       #battery,
-      #network,
+      #pulseaudio,
+      #custom-lock,
+      #window,
+      #custom-power {
+        /* background-color: @surface0; */
+        padding: 0rem 5px;
+        margin: 0;
+        font-size: 15px;
+      }
+      
+      #window label {
+        color: @white;
+        font-size: 14px;
+      }
+      
       #clock {
-          border-radius: 10px;
+        color: @white;
+        border-radius: 0px 1rem 1rem 0px;
+        margin-right: 1rem;
       }
-
-      #tray {
-        color: ${xcolors.color4};
-      }
-
-      #tray>.passive {
-        -gtk-icon-effect: dim;
-      }
-
-      #tray>.needs-attention {
-        -gtk-icon-effect: highlight;
-      }
-
-      custom-launcher {
-        font-size: 20px;
-        margin: 0px 0px 2px 0px;
-        border-radius: 0px 10px 0px 0px;
-        padding: 10px 15px 10px 15px;
-        color: ${xcolors.color12};
-      }
-
+      
       #pulseaudio {
-        color: ${xcolors.fg};
+        color: @white;
+        border-radius: 1rem 0px 0px 1rem;
+        margin-left: 1rem;
       }
-
-      #pulseaudio.muted {
-        color: ${xcolors.color1};
-        padding-right: 10px;
+      
+      #custom-music {
+        color: @mauve;
+        border-radius: 1rem;
+      }
+      
+      #custom-lock {
+          border-radius: 0;
+          color: @white;
+      }
+      
+      #tray {
+        margin-right: 0rem;
+        border-radius: 0rem;
       }
     '';
+    # style = ''
+    #   * {
+    #     border: none;
+    #     border-radius: 0px;
+    #     /* font-family: LigaSFMono Nerd Font, Iosevka, FontAwesome, Noto Sans CJK; */
+    #     /* font-family: Iosevka, FontAwesome, Noto Sans CJK; */
+    #     /* font-family: JetBrainsMono Nerd Font, FontAwesome, Noto Sans CJK; */
+    #     font-family: CaskaydiaCove Nerd Font;
+    #     font-size: 14px;
+    #     font-style: normal;
+    #     min-height: 0;
+    #   }
+    #
+    #   window#waybar {
+    #     background: rgba(16,22,24, 0.9);
+    #     transition-property: background-color;
+    #     transition-duration: .5s;
+    #     color: ${xcolors.fg}
+    #   }
+    #
+    #   tooltip {
+    #     background: ${xcolors.bg};
+    #     border-radius: 10px;
+    #     border-width: 2px;
+    #     border-style: solid;
+    #     border-color: ${xcolors.bg};
+    #   }
+    #
+    #   #workspaces {
+    #     background: ${xcolors.bg};
+    #     margin: 5px 5px;
+    #     padding: 8px 5px;
+    #     border-radius: 16px;
+    #     border: solid 0px ${xcolors.fg};
+    #     font-weight: normal;
+    #     font-style: normal;
+    #   }
+    #
+    #   #workspaces button {
+    #     padding: 0px 5px;
+    #     margin: 0px 3px;
+    #     border-radius: 16px;
+    #     color: #2f354a;
+    #     background-color: #2f354a;
+    #     transition: all 0.3s ease-in-out;
+    #   }
+    #
+    #   #workspaces button.active {
+    #     color: ${xcolors.fg};
+    #     background-color: ${xcolors.fg};
+    #     border-radius: 16px;
+    #     min-width: 50px;
+    #     background-size: 400% 400%;
+    #     transition: all 0.3s ease-in-out;
+    #   }
+    #
+    #   #workspaces button:hover {
+    #     background-color: ${xcolors.fg};
+    #     color: ${xcolors.fg};
+    #     border-radius: 16px;
+    #     min-width: 50px;
+    #     background-size: 400% 400%;
+    #   }
+    #
+    #   #custom-date, #custom-playerctl, #clock, #battery, #pulseaudio, #network {
+    #     background: ${xcolors.bg};
+    #     color: ${xcolors.fg};
+    #     padding: 0 6px;
+    #     border-radius: 10px;
+    #     margin: 6px 0px;
+    #   }
+    #
+    #   #pulseaudio, #tray, #clock, #custom-launcher {
+    #     margin-right: 6px;
+    #   }
+    #
+    #   #cpu,
+    #   #disk,
+    #   #memory,
+    #   #pulseaudio,
+    #   #backlight,
+    #   #battery,
+    #   #network,
+    #   #clock {
+    #       border-radius: 10px;
+    #   }
+    #
+    #   #tray {
+    #     color: ${xcolors.color4};
+    #   }
+    #
+    #   #tray>.passive {
+    #     -gtk-icon-effect: dim;
+    #   }
+    #
+    #   #tray>.needs-attention {
+    #     -gtk-icon-effect: highlight;
+    #   }
+    #
+    #   custom-launcher {
+    #     font-size: 20px;
+    #     margin: 0px 0px 2px 0px;
+    #     border-radius: 0px 10px 0px 0px;
+    #     padding: 10px 15px 10px 15px;
+    #     color: ${xcolors.color12};
+    #   }
+    #
+    #   #pulseaudio {
+    #     color: ${xcolors.fg};
+    #   }
+    #
+    #   #pulseaudio.muted {
+    #     color: ${xcolors.color1};
+    #     padding-right: 10px;
+    #   }
+    # '';
   };
 }

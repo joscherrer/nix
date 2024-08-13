@@ -189,6 +189,10 @@ rec
         disable_hyprland_logo = true;
       };
 
+      xwayland = {
+        force_zero_scaling = true;
+      };
+
       decoration = {
         rounding = 5;
         blur = {
@@ -208,7 +212,7 @@ rec
         shadow_range = 50;
         shadow_render_power = 3;
         "col.shadow" = "rgba(00000099)";
-        blurls = [ "gtk-layer-shell" "waybar" "lockscreen" ];
+        blurls = [ "gtk-layer-shell" "lockscreen" ];
       };
 
       animations = {
@@ -356,6 +360,7 @@ rec
         "tile, title:^(Spotify)$"
         "workspace 9 silent, title:^(Spotify)$"
         "workspace 4, title:^(.*(Disc|WebC)ord.*)$"
+        "workspace 2, class:^(firefox)$,title:^(Mozilla Firefox)$"
 
         "idleinhibit focus, class:^(mpv|.+exe)$"
         "idleinhibit focus, class:^(firefox)$, title:^(.*YouTube.*)$"

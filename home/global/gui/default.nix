@@ -27,6 +27,11 @@ in
   home.sessionVariables.GTK_THEME = "catppuccin-mocha-mauve-compact+normal";
   home.sessionVariables.DEFAULT_BROWSER = "${pkgs.firefox}/bin/firefox";
 
+  catppuccin = {
+    accent = "mauve";
+    flavor = "mocha";
+  };
+
   home.pointerCursor = {
     gtk.enable = true;
     x11.enable = true;
@@ -51,8 +56,8 @@ in
 
     catppuccin = {
       enable = true;
-      accent = "mauve";
-      flavor = "mocha";
+      # accent = "mauve";
+      # flavor = "mocha";
       size = "compact";
     };
 

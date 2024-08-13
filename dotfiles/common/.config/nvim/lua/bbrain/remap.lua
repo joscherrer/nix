@@ -35,6 +35,14 @@ vim.keymap.set("n", "<PageUp>", "<C-u>zz", { desc = "Page up (centered)" })
 vim.keymap.set("n", "n", "nzzzv", { desc = "Next match (centered)" })
 vim.keymap.set("n", "N", "Nzzzv", { desc = "Prev match (centered)" })
 
+-- Mouse forward/backward
+vim.keymap.set({ "n", "i", "v", "t" }, "<X1Mouse>", "<C-O>", { desc = "Go forward", noremap = true })
+vim.keymap.set({ "n", "i", "v", "t" }, "<X2Mouse>", "<C-I>", { desc = "Go backward", noremap = true })
+for i = 2, 4 do
+    vim.keymap.set({ "n", "i", "v", "t" }, "<" .. i .. "-X1Mouse>", "", { desc = "Go forward", noremap = true })
+    vim.keymap.set({ "n", "i", "v", "t" }, "<" .. i .. "-X2Mouse>", "", { desc = "Go backward", noremap = true })
+end
+
 -- ??
 vim.keymap.set("x", "<leader>p", "\"_dP")
 
