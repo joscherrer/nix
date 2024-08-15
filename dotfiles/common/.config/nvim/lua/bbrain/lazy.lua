@@ -16,13 +16,17 @@ local plugins = {
     { 'numToStr/Comment.nvim',  opts = {} },
     { 'windwp/nvim-autopairs',  event = "InsertEnter", opts = {} },
     {
-        'danielfalk/smart-open.nvim',
-        branch = "0.2.x",
+        -- 'danielfalk/smart-open.nvim',
+        -- branch = "0.2.x",
+        'scottmckendry/smart-open.nvim',
+        commit = "698442805d3f4a577abfd7141cd5278306fe04ed",
         config = function()
             if vim.fn.filereadable(vim.fn.stdpath('config') .. '/lua/nix/sqlite.lua') ~= 0 then
                 require('nix.sqlite')
             elseif vim.fn.filereadable('/usr/lib/x86_64-linux-gnu/libsqlite3.so') ~= 0 then
                 vim.g.sqlite_clib_path = '/usr/lib/x86_64-linux-gnu/libsqlite3.so'
+            elseif vim.fn.filereadable(vim.fn.stdpath('data') .. '/sqlite/sqlite3.dll') ~= 0 then
+                vim.g.sqlite_clib_path = vim.fn.stdpath('data') .. '/sqlite/sqlite3.dll'
             end
             require('telescope').load_extension('smart_open')
         end,
@@ -140,7 +144,7 @@ local plugins = {
     },
     {
         "echasnovski/mini.move", version = false, opts = {}
-    }
+    },
 }
 
 local opts = {}

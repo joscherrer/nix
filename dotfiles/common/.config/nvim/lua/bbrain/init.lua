@@ -17,6 +17,18 @@ vim.opt.rtp:prepend(lazypath)
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
+local powershell_options = {
+    shell = vim.fn.executable "pwsh" == 1 and "pwsh" or "powershell",
+    shellcmdflag = "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;",
+    shellredir = "-RedirectStandardOutput %s -NoNewWindow -Wait",
+    shellpipe = "2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode",
+    shellquote = "",
+    shellxquote = "",
+}
+  
+for option, value in pairs(powershell_options) do
+    vim.opt[option] = value
+end
 
 vim.opt.termguicolors = true -- required before starting nvim-notify
 require("bbrain.lazy")
@@ -26,3 +38,4 @@ require("bbrain.remap")
 require("bbrain.autocmd")
 require("bbrain.hlsearch")
 require("bbrain.palette")
+

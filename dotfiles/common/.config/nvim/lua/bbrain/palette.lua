@@ -322,23 +322,28 @@ M.add("Git", "GitBranches", {
 M.add("Picker", "PickerHighlights", {
     cmd = { name = "Telescope highlights" },
     keys = {},
-    desc = "Misc: Show highlights"
+    desc = "Show highlights"
 })
 
 M.add("Overseer", "OverseerOpen", {
-    cmd = { name = "OverseerOpen" },
+    cmd = { name = "OverseerToggle" },
     keys = {},
-    desc = "Overseer: Open UI"
+    desc = "Toggle UI"
 })
 M.add("Overseer", "OverseerRun", {
     cmd = { name = "OverseerRun" },
     keys = {},
-    desc = "Overseer: Run Task"
+    desc = "Run Task"
 })
 M.add("View", "MaximizePane", {
     cmd = { name = "Maximize pane", cmd = vim.cmd.Maximize },
     keys = { { mode = { "n" }, lhs = "<leader>mm", opts = {} } },
-    desc = "View: Toggle maximize"
+    desc = "Toggle maximize"
+})
+M.add("Picker", "PickerRegisters", {
+    cmd = { name = "Telescope registers" },
+    keys = { { mode = { "n", "c", "v", "i" }, lhs = "<F8>", opts = {} } },
+    desc = "Show registers"
 })
 
 return M

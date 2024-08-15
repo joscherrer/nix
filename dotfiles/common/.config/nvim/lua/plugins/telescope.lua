@@ -1,5 +1,11 @@
 local picker_opts = { preview_title = false }
 
+local fzf_build = ""
+if vim.loop.os_uname().sysname == "Windows_NT" then
+    fzf_build = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cp build/Release/libfzf.dll build/libfzf.dll"
+else
+    fzf_build = "make"
+end
 
 return {
     {
@@ -58,5 +64,5 @@ return {
             require('telescope').load_extension('fzf')
         end
     },
-    { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
+    { 'nvim-telescope/telescope-fzf-native.nvim', build = fzf_build },
 }

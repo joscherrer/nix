@@ -122,6 +122,10 @@ return {
         dependencies = {
             "MunifTanjim/nui.nvim",
             "rcarriga/nvim-notify",
-        }
+        },
+        config = function(_, opts)
+            require("noice").setup(opts)
+            require("noice.source.notify").notify("Reminder to check if MR #76 has been merged", vim.log.levels.WARN)
+        end,
     }
 }

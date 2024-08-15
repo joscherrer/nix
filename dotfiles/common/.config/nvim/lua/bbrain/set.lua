@@ -14,7 +14,8 @@ vim.opt.wrap = false
 
 vim.opt.swapfile = false
 vim.opt.backup = false
-vim.opt.undodir = os.getenv("HOME") .. "/.local/share/nvim/undodir"
+
+vim.opt.undodir = vim.fn.stdpath('data') .. "/undodir"
 vim.opt.undofile = true
 
 vim.opt.hlsearch = true
@@ -47,5 +48,6 @@ if vim.g.neovide then
     vim.g.neovide_light_angle_degrees = 45
     vim.g.neovide_light_radius = 5
     vim.g.neovide_scroll_animation_length = 0.22
+    vim.o.guifont = "CaskaydiaCove Nerd Font Mono"
     -- vim.g.neovide_transparency = 0
 end
