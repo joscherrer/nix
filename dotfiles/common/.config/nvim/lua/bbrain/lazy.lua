@@ -137,6 +137,9 @@ local plugins = {
         },
         opts = {
         },
+    },
+    {
+        "echasnovski/mini.move", version = false, opts = {}
     }
 }
 

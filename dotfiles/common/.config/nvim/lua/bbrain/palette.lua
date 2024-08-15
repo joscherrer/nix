@@ -336,7 +336,7 @@ M.add("Overseer", "OverseerRun", {
     desc = "Overseer: Run Task"
 })
 M.add("View", "MaximizePane", {
-    cmd = { name = "Maximize pane", cmd = "Maximize" },
+    cmd = { name = "Maximize pane", cmd = vim.cmd.Maximize },
     keys = { { mode = { "n" }, lhs = "<leader>mm", opts = {} } },
     desc = "View: Toggle maximize"
 })

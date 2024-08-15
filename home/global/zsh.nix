@@ -88,6 +88,7 @@ in
       kdesc = "kubectl describe ";
       kwaitp = "kubectl wait --for=condition=ready pod ";
       ltmux = "tmuxp load -d $(find ~/.config/tmuxp -name \"*.yaml\" -exec basename {} .yaml \\;)";
+      open = "xdg-open";
     };
     initExtra = initExtra;
     envExtra = envExtra;

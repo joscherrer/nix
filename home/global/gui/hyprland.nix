@@ -13,6 +13,30 @@ let
       hyprctl -j activewindow | jq -r '"\(.at[0]),\(.at[1]) \(.size[0])x\(.size[1])"' | grim -g - - | wl-copy
     fi
   '';
+
+  screenrecorder = pkgs.writeShellScriptBin "screenrecorder" ''
+    #!/usr/bin/env bash
+
+    mode="$1"
+
+    wf-recorder_check() {
+      if pgrep -x "wf-recorder" > /dev/null; then
+          pkill -INT -x wf-recorder
+          notify-send "Stopping all instances of wf-recorder" "$(cat /tmp/recording.txt)"
+          wl-copy < "$(cat /tmp/recording.txt)"
+          exit 0
+      fi
+    }
+
+    wf-recorder_check
+
+    if [ "$mode" = "region" ]; then
+      pos=$(slurp)
+      ${pkgs.wf-recorder}/bin/wf-recorder -g "$pos" -f "$HOME"/ScreenRecordings/$(date +%Y-%m-%d_%H-%M-%S).mp4
+    fi
+
+  '';
+
   waybar-wrapper = pkgs.writeShellScriptBin "waybar-wrapper" ''
     #!/usr/bin/env bash
     while true; do
@@ -294,6 +318,7 @@ rec
         "$mainMod, mouse_up, workspace, e-1"
         ",Print, exec, slurp | grim -g - - | wl-copy"
         "SHIFT, Print, exec, hyprctl -j activewindow | jq -r '\"\\(.at[0]),\\(.at[1]) \\(.size[0])x\\(.size[1])\"' | grim -g - - | wl-copy"
+        "CTRL, Print, exec, ${screenrecorder}/bin/screenrecorder region"
         "SUPER CTRL ALT SHIFT, DELETE, exit,"
         "$mainMod SHIFT, Q, exec, wlogout -p layer-shell"
         "CTRL ALT, DELETE, exec, wlogout -p layer-shell"
