@@ -39,3 +39,6 @@ gh-copilot:
 
 image:
 	podman build -t nix-bbrain .
+
+wsl:
+	sudo nixos-rebuild switch --flake "$(PWD)/#jo-home" $(EXTRA_ARGS)

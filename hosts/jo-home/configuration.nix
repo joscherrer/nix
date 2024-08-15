@@ -7,6 +7,7 @@
 
   wsl = {
     enable = true;
+    defaultUser = "jscherrer";
   };
 
   nixpkgs.config.allowUnfree = true;
