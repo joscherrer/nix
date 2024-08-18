@@ -345,5 +345,26 @@ M.add("Picker", "PickerRegisters", {
     keys = { { mode = { "n", "c", "v", "i" }, lhs = "<F8>", opts = {} } },
     desc = "Show registers"
 })
+M.add("Misc", "ToggleAutoSave", {
+    cmd = {
+        name = "ToggleAutoSave",
+        cmd = function()
+            if vim.g.bbrain_auto_save then
+                vim.notify("Disabling auto-save")
+                vim.g.bbrain_auto_save = false
+            else
+                vim.notify("Enabling auto-save")
+                vim.g.bbrain_auto_save = true
+            end
+        end
+    },
+    keys = {},
+    desc = "Toggle auto-save"
+})
+M.add("View", "ToggleDapUI", {
+    cmd = { name = "ToggleDapUI", cmd = function() require("dapui").toggle() end },
+    keys = {},
+    desc = "Toggle DAP UI"
+})
 
 return M

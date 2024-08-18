@@ -35,5 +35,9 @@ return {
         config = function()
             require('dap-python').setup('python3')
         end
+    },
+    {
+        "leoluz/nvim-dap-go",
+        opts = {}
     }
 }

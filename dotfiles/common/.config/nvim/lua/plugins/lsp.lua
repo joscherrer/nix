@@ -93,7 +93,10 @@ local function lspconfig_config()
             },
             init_options = {
                 usePlaceholders = true,
-            }
+            },
+            on_attach = function(client, _)
+                client.capabilities.workspace.didChangeWatchedFiles.dynamicRegistration = true
+            end
         })
     end
 

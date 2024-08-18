@@ -14,9 +14,14 @@ vim.api.nvim_create_autocmd('VimResized', {
 -- FocusLost, InsertLeave,
 vim.api.nvim_create_autocmd({ 'FocusLost', 'InsertLeave' }, {
     callback = function(ev)
+        if not vim.g.bbrain_auto_save then
+            return
+        end
+
         if not vim.api.nvim_get_option_value("modified", { buf = ev.buf }) then
             return
         end
+
         if not vim.api.nvim_buf_is_valid(ev.buf) then
             return
         end
