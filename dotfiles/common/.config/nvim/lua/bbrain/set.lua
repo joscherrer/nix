@@ -35,6 +35,7 @@ vim.opt.clipboard = "unnamedplus"
 vim.o.pumheight = 12
 
 vim.o.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
+vim.g.default_winblend = 100
 
 -- vim.opt.shortmess = "ltToOCFW"
 
@@ -49,5 +50,6 @@ if vim.g.neovide then
     vim.g.neovide_light_radius = 5
     vim.g.neovide_scroll_animation_length = 0.22
     vim.o.guifont = "CaskaydiaCove Nerd Font Mono"
+    vim.g.default_winblend = 20
     -- vim.g.neovide_transparency = 0
 end

@@ -125,7 +125,7 @@ local plugins = {
                 width = function()
                     return math.ceil(vim.o.columns * 0.9)
                 end,
-                winblend = 20,
+                winblend = vim.g.default_winblend,
             }
         },
         keys = {
