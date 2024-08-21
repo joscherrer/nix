@@ -36,7 +36,10 @@ vim.api.nvim_create_autocmd('BufWritePost', {
     group = af_group,
     desc = 'Auto format on save',
     callback = function()
+        local tscontext = require('treesitter-context')
+        tscontext.disable()
         helpers.format(0, { async = false })
+        vim.defer_fn(tscontext.enable, 500)
     end
 })
 

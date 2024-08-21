@@ -65,7 +65,6 @@ return {
     },
     {
         "nvim-treesitter/nvim-treesitter-context",
-        enable = false,
         opts = {}
     }
 }

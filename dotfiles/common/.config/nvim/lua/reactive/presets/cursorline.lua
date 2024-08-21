@@ -4,6 +4,9 @@ return {
         vim.opt.cursorline = true
     end,
     static = {
+        hl = {
+            TreesitterContext = { bg = '#353847' },
+        },
         winhl = {
             inactive = {
                 CursorLine = { bg = '#282a36' },
