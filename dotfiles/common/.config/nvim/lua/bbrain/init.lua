@@ -35,6 +35,9 @@ end
 
 
 vim.opt.termguicolors = true -- required before starting nvim-notify
+if vim.g.neovide then        -- required before loading plugins
+    vim.g.default_winblend = 20
+end
 require("bbrain.lazy")
 require("bbrain.helpers")
 require("bbrain.set")
