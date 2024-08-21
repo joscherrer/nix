@@ -26,11 +26,11 @@ return {
                 restore_upcoming_session = true,
                 pre_cwd_changed_hook = function()
                     require("bbrain.helpers").close_terminals()
-                    require("bbrain.helpers").close_all_buffers()
                 end,
                 post_cwd_changed_hook = function()
                     local as = require("auto-session")
                     if not as.session_exists_for_cwd() then
+                        require("bbrain.helpers").close_all_buffers()
                         as.AutoSaveSession()
                     end
                 end

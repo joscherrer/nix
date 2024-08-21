@@ -1,3 +1,7 @@
+vim.defer_fn(function()
+    vim.notify("Reminder to check if PR #76 has been merged", vim.log.levels.WARN, { title = "smart-open.nvim" })
+end, 1000)
+
 local plugins = {
     { import = "plugins" },
     {
