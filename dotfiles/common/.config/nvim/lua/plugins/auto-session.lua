@@ -11,6 +11,7 @@ return {
             auto_session_suppress_dirs = { '~/', '~/Projects', '~/Downloads', '/' },
             auto_session_allowed_dirs = { '~/dev/*' },
             auto_session_enable_last_session = vim.g.neovide and #vim.fn.argv() == 0,
+            silent_restore = false,
             session_lens = {
                 load_on_setup = true,
                 theme_conf = {
@@ -24,7 +25,14 @@ return {
                         require("auto-session").RestoreSession()
                     end
                 end,
-            }
+            },
+            pre_save_cmds = {
+                function()
+                    require("bbrain.helpers").close_terminals()
+                    require("nvim-tree.api").tree.close()
+                    require("dapui").close()
+                end,
+            },
         }
     end,
     keys = {

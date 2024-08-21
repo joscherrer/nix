@@ -90,4 +90,13 @@ if vim.g.neovide then
     }
 end
 
+function M.close_terminals()
+    local terminals = require('toggleterm.terminal').get_all()
+    if require('toggleterm.ui').find_open_windows() then
+        for _, term in pairs(terminals) do
+            term:close()
+        end
+    end
+end
+
 return M
