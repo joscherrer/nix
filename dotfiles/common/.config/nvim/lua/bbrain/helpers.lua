@@ -99,4 +99,11 @@ function M.close_terminals()
     end
 end
 
+function M.close_all_buffers()
+    local bufs = vim.api.nvim_list_bufs()
+    for _, i in ipairs(bufs) do
+        vim.api.nvim_buf_delete(i, {})
+    end
+end
+
 return M

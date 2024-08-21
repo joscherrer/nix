@@ -11,12 +11,24 @@ return {
             auto_session_suppress_dirs = { '~/', '~/Projects', '~/Downloads', '/' },
             auto_session_allowed_dirs = { '~/dev/*' },
             auto_session_enable_last_session = vim.g.neovide and #vim.fn.argv() == 0,
+            close_unsupported_windows = true,
             silent_restore = false,
+            -- log_level = "debug",
             session_lens = {
                 load_on_setup = true,
                 theme_conf = {
                     borderchars = require("telescope.config").values.borderchars
                 }
+            },
+            cwd_change_handling = {
+                restore_upcoming_session = true,
+                post_cwd_changed_hook = function()
+                    local as = require("auto-session")
+                    if not as.session_exists_for_cwd() then
+                        require("bbrain.helpers").close_all_buffers()
+                        as.AutoSaveSession()
+                    end
+                end
             },
             no_restore_cmds = {
                 function()
