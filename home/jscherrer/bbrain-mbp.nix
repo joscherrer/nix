@@ -14,7 +14,7 @@
     # Others
     # unstable.mitmproxy
     wireshark
-    youtube-dl
+    # youtube-dl
     # inputs.kmonad.packages."${pkgs.system}".kmonad
   ];
 
