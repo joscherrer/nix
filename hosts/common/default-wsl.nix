@@ -12,6 +12,16 @@
     };
   };
 
+  virtualisation.podman = {
+    enable = true;
+    dockerSocket.enable = true;
+  };
+  virtualisation.containers = {
+    enable = true;
+    registries.search = ["registry.access.redhat.com" "docker.io" "quay.io" "ghcr.io"];
+    # registries.insecure = ["cr.dns.podman" "cr.dns.podman:5000" "kind-cr.dns.podman:5000" "localhost:5000"];
+  };
+
   i18n.defaultLocale = "en_US.UTF-8";
 
   security.sudo.enable = true;
