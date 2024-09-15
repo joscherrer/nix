@@ -1,0 +1,7 @@
+{
+    "Gio widget": {
+        "prefix": ["func(gtx)", "widget"],
+        "body": "func(gtx layout.Context) layout.Dimensions {\n}",
+        "description": "Gio widget"
+    }
+}

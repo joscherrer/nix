@@ -1,0 +1,11 @@
+{
+	"name": "Extra Snippets",
+	"contributes": {
+		"snippets": [
+			{
+				"language": "go",
+				"path": "./go/gioui.json"
+			}
+		]
+	}
+}

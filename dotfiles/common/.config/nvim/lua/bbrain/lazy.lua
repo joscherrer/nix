@@ -18,7 +18,7 @@ local plugins = {
     },
     { 'kylechui/nvim-surround', opts = {} },
     { 'numToStr/Comment.nvim',  opts = {} },
-    { 'windwp/nvim-autopairs',  event = "InsertEnter", opts = {} },
+    -- { 'windwp/nvim-autopairs',  event = "InsertEnter", opts = {} },
     {
         -- 'danielfalk/smart-open.nvim',
         -- branch = "0.2.x",
@@ -148,6 +148,9 @@ local plugins = {
     },
     {
         "echasnovski/mini.move", version = false, opts = {}
+    },
+    {
+        "echasnovski/mini.pairs", version = false, opts = {}
     },
 }
 

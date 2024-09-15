@@ -75,6 +75,7 @@ local function lspconfig_config()
     })
 
     local lspconfig = require('lspconfig')
+    vim.lsp.client.offset_encoding = 'utf-8'
 
     if not vim.env.JFROG_IDE_URL then
         lspconfig.gopls.setup({
@@ -148,6 +149,11 @@ local function lspconfig_config()
             client.server_capabilities.semanticTokensProvider = nil
         end,
     })
+    lspconfig.csharp_ls.setup({
+        -- on_init = function(client)
+        --     client.offset_encoding = 'utf-8'
+        -- end,
+    })
 
     vim.api.nvim_set_hl(0, "@odp.function.builtin.python", { link = "pythonBuiltin" })
     vim.api.nvim_set_hl(0, "@odp.import_module.python", { link = "Type" })
@@ -209,6 +215,7 @@ return {
         dependencies = { "rafamadriz/friendly-snippets" },
         config = function()
             require("luasnip.loaders.from_vscode").lazy_load()
+            require("luasnip.loaders.from_vscode").lazy_load({ paths = { vim.fn.stdpath('config') .. '/snippets' } })
         end,
     },
     { 'saadparwaiz1/cmp_luasnip' },
