@@ -5,6 +5,12 @@ if not has_telescope then
     error("The command palette requires telescope.nvim")
 end
 
+vim.api.nvim_set_hl(0, "palette.category.lsp", { fg = "#04818f" })
+vim.api.nvim_set_hl(0, "palette.category.colorizer", { fg = "" })
+vim.api.nvim_set_hl(0, "palette.category.trouble", { fg = "" })
+vim.api.nvim_set_hl(0, "palette.category.picker", { fg = "#E06C75" })
+vim.api.nvim_set_hl(0, "palette.category.overseer", { fg = "#f5b642" })
+vim.api.nvim_set_hl(0, "palette.category.view", { fg = "" })
 vim.api.nvim_set_hl(0, "palette.category.palette", { fg = "#6492e3" })
 vim.api.nvim_set_hl(0, "palette.category.git", { fg = "#64e364" })
 vim.api.nvim_set_hl(0, "palette.category.default", {})
@@ -63,6 +69,8 @@ local category_highlights = {
     ["Picker"] = "palette.category.picker",
     ["Overseer"] = "palette.category.overseer",
     ["View"] = "palette.category.view",
+    ["LSP"] = "palette.category.lsp",
+    ["Misc"] = "palette.category.default",
 }
 
 
@@ -260,15 +268,17 @@ function M.add(category, name, opts)
 
         ---@diagnostic disable-next-line: param-type-mismatch
         for _, mode in ipairs(key.mode) do
-            local mode_icon = mode_icons[mode] or ("[" .. string.upper(mode) .. "]")
-            local key_repr = mode_icon .. " " .. keybind
-            keys_display[mode] = {
-                repr = key_repr,
-                icon_size = #mode_icon,
-                hl_name = mode_highlights[mode] or "PaletteMapNormal",
-                width = #key_repr,
-                width_offset = #key_repr - vim.fn.strdisplaywidth(key_repr)
-            }
+            if vim.list_contains({ "n", "i", "v" }, mode) then
+                local mode_icon = mode_icons[mode] or ("[" .. string.upper(mode) .. "]")
+                local key_repr = mode_icon .. " " .. keybind
+                keys_display[mode] = {
+                    repr = key_repr,
+                    icon_size = #mode_icon,
+                    hl_name = mode_highlights[mode] or "PaletteMapNormal",
+                    width = #key_repr,
+                    width_offset = #key_repr - vim.fn.strdisplaywidth(key_repr)
+                }
+            end
         end
     end
 
@@ -295,7 +305,10 @@ end
 
 M.add("Palette", "PaletteOpen", {
     cmd = { name = "PaletteOpen", cmd = function() require('bbrain.palette').picker() end },
-    keys = { { mode = { "n", "t", "v", "i" }, lhs = "<C-S-p>", opts = {} } },
+    keys = {
+        { mode = { "n", "t", "v", "i" }, lhs = "<C-S-p>",    opts = {} },
+        { mode = { "n" },                lhs = "<leader>pp", opts = {} }
+    },
     desc = "Open command palette",
 })
 M.add("Palette", "PaletteReload", {
@@ -308,10 +321,20 @@ M.add("Colorizer", "ColorizerToggle", {
     keys = { { mode = { "n" }, lhs = "<leader>tc", opts = {} } },
     desc = "Toggle hex colors highlight",
 })
-M.add("Trouble", "TroubleDiagnostics", {
-    cmd = { name = "Trouble diagnostics" },
-    keys = {},
+M.add("LSP", "TroubleDiagnostics", {
+    cmd = { name = "Trouble diagnostics focus=true" },
+    keys = { { mode = { "n" }, lhs = "<leader>td", opts = {} } },
     desc = "Open Diagnostics",
+})
+M.add("LSP", "TroubleSymbols", {
+    cmd = { name = "Trouble symbols focus=true win.size=0.4" },
+    keys = { { mode = { "n" }, lhs = "<leader>ts", opts = {} } },
+    desc = "Show symbols",
+})
+M.add("Picker", "Trouble", {
+    cmd = { name = "Trouble" },
+    keys = { { mode = { "n" }, lhs = "<leader>pt", opts = {} } },
+    desc = "Open Trouble picker",
 })
 -- M.add({ name = "Telescope find_files" })
 M.add("Git", "GitBranches", {
@@ -340,6 +363,11 @@ M.add("View", "MaximizePane", {
     keys = { { mode = { "n" }, lhs = "<leader>mm", opts = {} } },
     desc = "Toggle maximize"
 })
+M.add("View", "Quickfix", {
+    cmd = { name = "Trouble quickfix focus=true win.position=bottom" },
+    keys = { { mode = { "n" }, lhs = "<leader>tq", opts = {} } },
+    desc = "Show quickfix",
+})
 M.add("Picker", "PickerRegisters", {
     cmd = { name = "Telescope registers" },
     keys = { { mode = { "n", "c", "v", "i" }, lhs = "<F8>", opts = {} } },
@@ -361,10 +389,17 @@ M.add("Misc", "ToggleAutoSave", {
     keys = {},
     desc = "Toggle auto-save"
 })
+
 M.add("View", "ToggleDapUI", {
     cmd = { name = "ToggleDapUI", cmd = function() require("dapui").toggle() end },
     keys = {},
     desc = "Toggle DAP UI"
+})
+
+M.add("LSP", "Code Action", {
+    cmd = { name = "LspCodeAction", cmd = vim.lsp.buf.code_action },
+    keys = { { mode = "n", lhs = "<leader>ca", opts = {} } },
+    desc = "Code action"
 })
 
 return M

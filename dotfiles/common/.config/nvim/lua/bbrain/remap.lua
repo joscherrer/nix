@@ -104,6 +104,7 @@ vim.keymap.set("n", "<Esc>",
         vim.api.nvim_set_option_value("hlsearch", false, {})
         require("notify").dismiss()
         require("nvim-tree.api").tree.close()
+        require("trouble").close()
         vim.cmd.echo()
     end,
     { desc = "Clear search highlights, dismiss notifications" }
