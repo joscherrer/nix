@@ -76,6 +76,11 @@ function M.format(buffer, opts)
     if filetype == 'go' then
         format_go()
     end
+
+    if filetype == 'hcl' then
+        vim.cmd('silent !hclfmt -w %')
+        return
+    end
     vim.lsp.buf.format(opts)
     vim.cmd('silent! write')
 end

@@ -22,6 +22,16 @@ return {
                         status = nil,
                         status_not = false,
                     },
+                    {
+                        function()
+                            if vim.g.smart_resize_mode == true then
+                                return "📏"
+                            else
+                                return ""
+                            end
+                        end,
+
+                    }
                     -- {
                     --     require("noice").api.status.search.get,
                     --     cond = require("noice").api.status.search.has,

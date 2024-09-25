@@ -12,6 +12,7 @@ in
       enable = true;
       trustedInterfaces = [ "kind" "kindrl" "kindrf" "podman0" "podman1" "enp39s0" ];
       interfaces."podman+".allowedUDPPorts = [53 5353];
+      interfaces."podman+".allowedTCPPorts = [8443 6666];
     };
     networkmanager.enable = true;
   };

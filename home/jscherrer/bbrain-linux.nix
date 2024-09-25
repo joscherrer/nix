@@ -30,7 +30,7 @@
     pkgs.vagrant
     pkgs.obsidian
     pkgs.yubikey-manager-qt
-    pkgs.ankama-launcher
+    # pkgs.ankama-launcher
   ];
 
 }

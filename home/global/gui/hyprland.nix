@@ -279,7 +279,7 @@ rec
         "$mainMod, E, exec, ${pkgs.xfce.thunar}/bin/thunar"
         "$mainMod, F, fullscreen,"
         "$mainMod, M, fullscreen, 1"
-        "$mainMod SHIFT, F, fakefullscreen,"
+        "$mainMod SHIFT, F, fullscreenstate, -1, 2"
         "$mainMod, S, layoutmsg, swapwithmaster master"
         "$mainMod, V, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy && wtype -M ctrl -M shift v -m ctrl -m shift"
         "$mainMod ALT, C, exec, hyprpicker -a --no-fancy -r"
@@ -330,8 +330,8 @@ rec
       ];
 
       windowrulev2 = [
-        "fakefullscreen, title:^(notion)$"
-        "fakefullscreen, title:^(notion-calendar)$"
+        "fullscreenstate -1 2, title:^(notion)$"
+        "fullscreenstate -1 2, title:^(notion-calendar)$"
         "opacity 0.90 0.90,class:^(org.wezfurlong.wezterm)$"
         "opacity 0.90 0.90,class:^(Alacritty)$"
         "opacity 0.90 0.90,class:^(Brave-browser)$"

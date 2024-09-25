@@ -86,8 +86,9 @@
     dig
     tcpdump
     pinentry-curses
-    cargo
     lua
     htop
+    hclfmt
+    scalr-cli
   ];
 }

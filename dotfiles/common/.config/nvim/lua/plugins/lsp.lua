@@ -145,6 +145,11 @@ local function lspconfig_config()
     })
 
     lspconfig.terraformls.setup({})
+    vim.filetype.add({
+        extension = {
+            tf = "terraform",
+        }
+    })
     lspconfig.marksman.setup({})
     lspconfig.basedpyright.setup({
         on_init = function(client, _)

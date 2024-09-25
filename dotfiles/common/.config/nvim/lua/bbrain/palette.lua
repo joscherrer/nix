@@ -402,4 +402,27 @@ M.add("LSP", "Code Action", {
     desc = "Code action"
 })
 
+M.add("DAP", "ListBreakPoints", {
+    cmd = {
+        name = "ListBreakPoints",
+        cmd = function()
+            require("dap").list_breakpoints()
+            require("trouble").open({ mode = "quickfix", focus = true })
+        end
+    },
+    keys = {},
+    desc = "List breakpoints"
+})
+
+M.add("View", "StartResizeMode", {
+    cmd = {
+        name = "StartResizeMode",
+        cmd = function()
+            require('smart-splits').start_resize_mode()
+        end
+    },
+    keys = { { mode = "n", lhs = "<leader>sr", opts = {} } },
+    desc = "Start resize mode"
+})
+
 return M

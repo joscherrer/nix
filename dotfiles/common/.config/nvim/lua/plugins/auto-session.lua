@@ -9,7 +9,7 @@ return {
     opts = function()
         return {
             auto_session_suppress_dirs = { '~/', '~/Projects', '~/Downloads', '/' },
-            auto_session_allowed_dirs = { '~/dev/*' },
+            auto_session_allowed_dirs = { '~/dev/*', '~/dev/bbrain-io/*' },
             auto_session_enable_last_session = vim.g.neovide and #vim.fn.argv() == 0,
             auto_restore_lazy_delay_enabled = true,
             close_unsupported_windows = true,
@@ -50,6 +50,15 @@ return {
                     require("dapui").close()
                 end,
             },
+            post_restore_cmds = {
+                function()
+                    local root = vim.fn.fnamemodify(vim.fn.getcwd(), ":t")
+                    local relfile = require("plenary.path"):new(vim.fn.expand("%:.")):shorten(8, { -1, -2, -3 })
+
+                    vim.o.title = true
+                    vim.o.titlestring = root .. " - " .. relfile
+                end,
+            }
         }
     end,
     keys = {

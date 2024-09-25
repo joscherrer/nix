@@ -53,7 +53,7 @@ return {
                     },
                     include_surrounding_whitespace = true,
                 }
-            }
+            },
             -- indent = {
             --     enable = true,
             -- },

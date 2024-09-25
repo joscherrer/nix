@@ -2,7 +2,7 @@
 {
   programs.kitty = {
     enable = true;
-    theme = "Snazzy";
+    themeFile = "snazzy";
     font.name = "CaskaydiaCove Nerd Font";
     font.size = 13;
     settings = {

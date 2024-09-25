@@ -43,7 +43,7 @@ in
       # color = "#282a36";
     };
     GTK = {
-      theme_name = "Catppuccin-Mocha-Compact-Mauve-Dark";
+      theme_name = lib.mkForce "Catppuccin-Mocha-Compact-Mauve-Dark";
       application_prefer_dark_theme = true;
     };
   };
