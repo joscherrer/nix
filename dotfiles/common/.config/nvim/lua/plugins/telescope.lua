@@ -2,7 +2,7 @@ local picker_opts = { preview_title = false }
 
 local fzf_build = ""
 
-if vim.loop.os_uname().sysname == "Windows_NT" then
+if vim.uv.os_uname().sysname == "Windows_NT" then
     fzf_build =
     "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cp build/Release/libfzf.dll build/libfzf.dll"
 else
