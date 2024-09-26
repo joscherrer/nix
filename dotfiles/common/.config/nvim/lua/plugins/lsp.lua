@@ -107,6 +107,9 @@ local function lspconfig_config()
         capabilities = lsp_capabilities,
         settings = {
             ['nil'] = {
+                formatting = {
+                    command = { "nixfmt" }
+                },
                 nix = {
                     flake = {
                         autoArchive = true,
