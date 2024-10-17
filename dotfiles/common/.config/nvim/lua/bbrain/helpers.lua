@@ -1,3 +1,7 @@
+local nvim_tree_api = require('nvim-tree.api')
+
+local M = {}
+
 function ToggleTheme()
     if vim.o.background == "dark" then
         vim.cmd("colorscheme onelight")
@@ -8,30 +12,50 @@ end
 
 vim.api.nvim_create_user_command('ToggleTheme', ToggleTheme, {})
 
-MaxTabs = {}
+M.MaxTabs = {}
 
 function Maximize()
-    local win = vim.api.nvim_get_current_win()
-    local cursor = vim.api.nvim_win_get_cursor(0)
-    if MaxTabs[win] then
-        vim.cmd("tabclose")
-        local main_win = vim.api.nvim_get_current_win()
-        vim.api.nvim_win_set_cursor(main_win, cursor)
-        MaxTabs[win] = nil
+    if vim.print(vim.api.nvim_get_option_value("buftype", { buf = 0 })) == "terminal" then
         return
     end
 
-    local buf = vim.api.nvim_get_current_buf()
-    vim.cmd("tabnew")
-    win = vim.api.nvim_get_current_win()
-    vim.api.nvim_win_set_buf(win, buf)
-    vim.api.nvim_win_set_cursor(win, cursor)
-    MaxTabs[win] = true
+    local tabCount = #vim.api.nvim_list_tabpages()
+    local wins = vim.api.nvim_tabpage_list_wins(0)
+    local is_floating = function(win_id)
+        return vim.api.nvim_win_get_config(win_id).zindex ~= nil
+    end
+
+    local winCount = 0
+    for _, win in ipairs(wins) do
+        if not is_floating(win) then
+            winCount = winCount + 1
+        end
+    end
+
+    if tabCount == 1 and winCount == 1 then
+        vim.notify("Only one window and one tab, nothing to un/maximize", vim.log.levels.DEBUG)
+        return
+    end
+
+    if tabCount > 1 and winCount == 1 then
+        vim.notify("Unmaximizing...", vim.log.levels.INFO, { title = "Maximize" })
+        vim.cmd("tabclose")
+        return
+    end
+
+    if tabCount == 1 and winCount > 1 then
+        vim.notify("Maximizing...", vim.log.levels.INFO, { title = "Maximize" })
+        local buf = vim.api.nvim_get_current_buf()
+        local cursor = vim.api.nvim_win_get_cursor(0)
+        vim.cmd("tabnew")
+        local win = vim.api.nvim_get_current_win()
+        vim.api.nvim_win_set_buf(win, buf)
+        vim.api.nvim_win_set_cursor(win, cursor)
+    end
 end
 
 vim.api.nvim_create_user_command('Maximize', Maximize, {})
 
-local M = {}
 
 function M.buf_get_var(buf, var)
     local success, data = pcall(vim.api.nvim_buf_get_var, buf, var)
@@ -81,6 +105,11 @@ function M.format(buffer, opts)
         vim.cmd('silent !hclfmt -w %')
         return
     end
+
+    if filetype == 'javascript' then
+        vim.cmd('silent !prettier % --write')
+        return
+    end
     vim.lsp.buf.format(opts)
     vim.cmd('silent! write')
 end
@@ -109,6 +138,76 @@ function M.close_all_buffers()
     for _, i in ipairs(bufs) do
         vim.api.nvim_buf_delete(i, {})
     end
+end
+
+local fs = require('luvit.fs')
+function M.load_maxtabs()
+    local path = vim.fn.stdpath('data') .. '/maxtabs.json'
+    fs.readFile(path, function(err, data)
+        if err then
+            M.MaxTabs = {}
+            return
+        end
+        M.MaxTabs = vim.json.decode(data)
+    end)
+end
+
+function M.save_maxtabs()
+    local path = vim.fn.stdpath('data') .. '/maxtabs.json'
+    fs.writeFile(path, vim.json.encode(M.MaxTabs), function(err)
+        if err then
+            print('Error saving maxtabs')
+        end
+    end)
+end
+
+M.load_maxtabs()
+
+local function findNonTermWindow()
+    local wins = vim.api.nvim_tabpage_list_wins(0)
+    for _, win in ipairs(wins) do
+        local buf = vim.api.nvim_win_get_buf(win)
+        local bufType = vim.api.nvim_get_option_value("buftype", { buf = buf })
+        if bufType == "" then
+            return win
+        end
+    end
+    return nil
+end
+
+function M.exit_term_focus()
+    local bufType = vim.api.nvim_get_option_value("buftype", { buf = 0 })
+    if bufType ~= "terminal" then
+        return
+    end
+
+    local win = findNonTermWindow()
+    if win == nil then
+        vim.cmd("new")
+    else
+        vim.api.nvim_set_current_win(win)
+    end
+end
+
+function M.toggle_nvimtree()
+    M.exit_term_focus()
+    nvim_tree_api.tree.toggle()
+end
+
+function M.toggle_smart_open()
+    M.exit_term_focus()
+    require("telescope").extensions.smart_open.smart_open({ preview_title = false })
+end
+
+function M.random_string(length)
+    local alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+    local n = string.len(alphabet)
+    local pw = {}
+    for i = 1, length
+    do
+        pw[i] = string.byte(alphabet, math.random(n))
+    end
+    return string.char(unpack(pw))
 end
 
 return M

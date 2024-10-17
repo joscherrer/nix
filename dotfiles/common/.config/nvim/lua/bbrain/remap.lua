@@ -1,4 +1,5 @@
-vim.keymap.set("n", "<leader>te", vim.cmd.NvimTreeToggle)
+vim.keymap.set("n", "<leader>te", require("bbrain.helpers").toggle_nvimtree)
+-- vim.keymap.set("n", "<leader>te", vim.cmd.NvimTreeToggle)
 
 -- split navigation
 vim.keymap.set("n", "<leader>hh", '<C-w>h', { desc = "Move to left split" })
@@ -102,9 +103,21 @@ vim.keymap.set("n", "<C-h>", ":s/\\v", { desc = "Search and replace" })
 vim.keymap.set("n", "<Esc>",
     function()
         vim.api.nvim_set_option_value("hlsearch", false, {})
+        if vim.g.smart_resize_mode == true then
+            require('smart-splits.resize-mode').end_resize_mode()
+        end
         require("notify").dismiss()
         require("nvim-tree.api").tree.close()
         vim.cmd.echo()
     end,
     { desc = "Clear search highlights, dismiss notifications" }
 )
+
+vim.keymap.set("n", "<leader>db", function()
+    local cmp = require("cmp.utils.debug")
+    if cmp.flag then
+        cmp.flag = false
+    else
+        cmp.flag = true
+    end
+end)

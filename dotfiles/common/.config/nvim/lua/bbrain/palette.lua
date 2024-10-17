@@ -363,6 +363,7 @@ M.add("View", "MaximizePane", {
     keys = { { mode = { "n" }, lhs = "<leader>mm", opts = {} } },
     desc = "Toggle maximize"
 })
+
 M.add("View", "Quickfix", {
     cmd = { name = "Trouble quickfix focus=true win.position=bottom" },
     keys = { { mode = { "n" }, lhs = "<leader>tq", opts = {} } },
@@ -423,6 +424,21 @@ M.add("View", "StartResizeMode", {
     },
     keys = { { mode = "n", lhs = "<leader>sr", opts = {} } },
     desc = "Start resize mode"
+})
+
+M.add("Edit", "TSJToggle", {
+    cmd = { name = "TSJToggle" },
+    keys = { { mode = "n", lhs = "<leader>tj", opts = {} } },
+    desc = "Toggle split/join"
+})
+
+M.add("Tools", "ToggleKubectl", {
+    cmd = { name = "ToggleKubectl", cmd = function() require("kubectl").toggle() end },
+    keys = {
+        { mode = "n", lhs = "<leader>tk", opts = {} },
+        { mode = "n", lhs = "<C-;>",      opts = {} },
+    },
+    desc = "Toggle kubectl"
 })
 
 return M

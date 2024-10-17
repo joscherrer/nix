@@ -1,3 +1,146 @@
+local fs = require('luvit.fs')
+
+local yaml_on_attach = function(client, bufnr)
+    local predicate = function(v)
+        return function(o)
+            return o.name == v
+        end
+    end
+    local getSymbol = function(symbols, key)
+        for k, v in pairs(symbols) do
+            if v.name == key then
+                return v.detail
+            end
+        end
+        return nil
+    end
+    local callback = function(_, result)
+        local rootStrings = vim.tbl_filter(function(o) return o.kind == 15 end, result)
+        local kind = getSymbol(rootStrings, "kind")
+        local apiVersion = getSymbol(rootStrings, "apiVersion")
+        -- local hasKind = vim.tbl_contains(rootStrings, predicate("kind"), { predicate = true })
+        -- local hasApiVersion = vim.tbl_contains(rootStrings, predicate("apiVersion"), { predicate = true })
+        if kind == nil or apiVersion == nil then
+            return
+        end
+
+        local s = vim.split(apiVersion, "/")
+        local group = s[1]
+        local version = s[2]
+        if #s < 2 then
+            group = ""
+            version = s[1]
+        end
+        local schemas = vim.fn.expand("$HOME/.datree/crdSchemas")
+        kind = string.lower(kind)
+
+        local schema = vim.fs.joinpath(schemas, group, kind .. "_" .. version .. ".json")
+        local schema_s = vim.fs.joinpath(schemas, group, kind .. "s_" .. version .. ".json")
+        if vim.fn.filereadable(schema) ~= 0 then
+            vim.notify("Found: " .. schema, vim.log.levels.DEBUG)
+            client.settings.yaml.schemas = {
+                [schema] = vim.api.nvim_buf_get_name(bufnr)
+            }
+        elseif vim.fn.filereadable(schema_s) ~= 0 then
+            vim.notify("Found: " .. schema_s, vim.log.levels.DEBUG)
+            client.settings.yaml.schemas = {
+                [schema_s] = vim.api.nvim_buf_get_name(bufnr)
+            }
+        else
+            vim.notify("Kubernetes schema enabled", vim.log.levels.DEBUG)
+            client.settings.yaml.schemas = {
+                kubernetes = vim.api.nvim_buf_get_name(bufnr)
+            }
+        end
+
+        client.notify('workspace/didChangeConfiguration', {
+            settings = client.settings
+        })
+    end
+    client.request('textDocument/documentSymbol', {
+            textDocument = vim.lsp.util.make_text_document_params()
+        },
+        callback
+    )
+end
+
+local yaml_multi_on_attach = function(client, bufnr)
+    local helpers = require('bbrain.helpers')
+    local getSymbol = function(symbols, key)
+        local objs = {}
+        for _, v in pairs(symbols) do
+            if v.name == key then
+                table.insert(objs, v.detail)
+            end
+        end
+        return objs
+    end
+    local callback = function(_, result)
+        local rootStrings = vim.tbl_filter(function(o) return o.kind == 15 end, result)
+        local kinds = getSymbol(rootStrings, "kind")
+        local apiVersions = getSymbol(rootStrings, "apiVersion")
+        local ready = 0
+
+        if #kinds == 0 or #apiVersions == 0 then
+            return
+        end
+
+        if #kinds ~= #apiVersions then
+            return
+        end
+
+        local schemas = vim.fn.expand("$HOME/.datree/crdSchemas")
+        local schemaSequencePath = vim.fs.joinpath("/tmp",
+            helpers.random_string(10) .. ".json")
+
+        local schemaSequence = {}
+
+        for i, _ in pairs(kinds) do
+            local group, version = unpack(vim.split(apiVersions[i], "/"))
+            local kind = string.lower(kinds[i])
+            if version == nil then
+                version = group
+                group = ""
+            end
+            local schema = vim.fs.joinpath(schemas, group, kind .. "_" .. version .. ".json")
+            local schema_s = vim.fs.joinpath(schemas, group, kind .. "s_" .. version .. ".json")
+            if vim.fn.filereadable(schema) ~= 0 then
+                vim.notify("Found: " .. schema, vim.log.levels.INFO)
+                ready = ready + 1
+                fs.readFile(schema, function(_, data)
+                    table.insert(schemaSequence, vim.json.decode(data))
+                    ready = ready - 1
+                end)
+            elseif vim.fn.filereadable(schema_s) ~= 0 then
+                vim.notify("Found: " .. schema_s, vim.log.levels.INFO)
+                ready = ready + 1
+                fs.readFile(schema, function(_, data)
+                    table.insert(schemaSequence, vim.json.decode(data))
+                    ready = ready - 1
+                end)
+            end
+        end
+
+        while ready > 0 do
+            vim.wait(10)
+        end
+        fs.writeFileSync(vim.fn.expand(schemaSequencePath),
+            vim.json.encode({ schemaSequence = schemaSequence }))
+
+        client.settings.yaml.schemas = {
+            [schemaSequencePath] = vim.api.nvim_buf_get_name(bufnr)
+        }
+        client.notify('workspace/didChangeConfiguration', {
+            settings = client.settings
+        })
+    end
+    client.request('textDocument/documentSymbol', {
+            textDocument = vim.lsp.util.make_text_document_params()
+        },
+        callback
+    )
+end
+
 local function lspconfig_config()
     vim.keymap.set('n', 'gl', '<cmd>lua vim.diagnostic.open_float()<cr>', { desc = "LSP: Open floating diagnostics" })
     vim.keymap.set('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<cr>', { desc = "LSP: Go to previous diagnostic" })
@@ -134,7 +277,8 @@ local function lspconfig_config()
                     checkThirdParty = false,
                     library = {
                         vim.env.VIMRUNTIME,
-                        "${3rd}/luv/library"
+                        "${3rd}/luv/library",
+                        -- vim.fn.stdpath('data') .. '/lazy/noice.nvim',
                     }
                 }
             })
@@ -149,11 +293,6 @@ local function lspconfig_config()
     })
 
     lspconfig.terraformls.setup({})
-    vim.filetype.add({
-        extension = {
-            tf = "terraform",
-        }
-    })
     lspconfig.marksman.setup({})
     lspconfig.basedpyright.setup({
         on_init = function(client, _)
@@ -164,6 +303,50 @@ local function lspconfig_config()
         -- on_init = function(client)
         --     client.offset_encoding = 'utf-8'
         -- end,
+    })
+
+    lspconfig.eslint.setup({
+    })
+
+    lspconfig.yamlls.setup({
+        capabilities = vim.tbl_deep_extend('force', lsp_capabilities, {
+            workspace = {
+                didChangeConfiguration = {
+                    dynamicRegistration = true
+                }
+            }
+        }),
+        on_attach = yaml_multi_on_attach,
+        settings = {
+            yaml = {
+                format = {
+                    enable = true
+                },
+                completion = {
+                    enable = true
+                },
+                -- schemas = {
+                --     ["https://raw.githubusercontent.com/SchemaStore/schemastore/refs/heads/master/src/schemas/json/kustomization.json"] =
+                --     "kustomization.yaml",
+                --     -- kubernetes = "*.yaml",
+                --     ["http://json.schemastore.org/github-workflow"] = ".github/workflows/*",
+                --     ["http://json.schemastore.org/github-action"] = ".github/action.{yml,yaml}",
+                --     ["http://json.schemastore.org/ansible-stable-2.9"] = "roles/tasks/*.{yml,yaml}",
+                --     ["http://json.schemastore.org/prettierrc"] = ".prettierrc.{yml,yaml}",
+                --     ["http://json.schemastore.org/kustomization"] = "kustomization.{yml,yaml}",
+                --     ["http://json.schemastore.org/ansible-playbook"] = "*play*.{yml,yaml}",
+                --     ["http://json.schemastore.org/chart"] = "Chart.{yml,yaml}",
+                --     ["https://json.schemastore.org/dependabot-v2"] = ".github/dependabot.{yml,yaml}",
+                --     ["https://json.schemastore.org/gitlab-ci"] = "*gitlab-ci*.{yml,yaml}",
+                --     ["https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/schemas/v3.1/schema.json"] =
+                --     "*api*.{yml,yaml}",
+                --     ["https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json"] =
+                --     "*docker-compose*.{yml,yaml}",
+                --     ["https://raw.githubusercontent.com/argoproj/argo-workflows/master/api/jsonschema/schema.json"] =
+                --     "*flow*.{yml,yaml}",
+                -- }
+            }
+        }
     })
 
     vim.api.nvim_set_hl(0, "@odp.function.builtin.python", { link = "pythonBuiltin" })
@@ -260,6 +443,16 @@ return {
             local cmp = require('cmp')
 
             cmp.setup({
+                completion = {
+                    autocomplete = {
+                        "TextChanged"
+                    },
+                    completeopt = 'menu,menuone,noselect',
+                    keyword_pattern = [[\%(-\?\d\+\%(\.\d\+\)\?\|\h\w*\%(-\w*\)*\)]],
+                    keyword_length = 1,
+                    -- keyword_length = 1,
+                    -- keyword_pattern = ".*",
+                },
                 -- formatting = lsp_zero.cmp_format({ details = true }),
                 mapping = cmp.mapping.preset.insert({
                     ['<C-u>'] = cmp.mapping.scroll_docs(-4),
@@ -269,12 +462,14 @@ return {
                     ['<C-y>'] = cmp.mapping.confirm({ select = true }),
                 }),
                 sources = cmp.config.sources({
-                    { name = 'nvim_lsp' },
+                    {
+                        name = 'nvim_lsp',
+                        trigger_characters = vim.split("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", "")
+                    },
                     { name = 'path' },
                     { name = 'luasnip' },
                     { name = 'nvim_lsp_signature_help' },
                 }, {
-                    -- { name = 'copilot' },
                     { name = 'buffer' },
                 }),
                 snippet = {

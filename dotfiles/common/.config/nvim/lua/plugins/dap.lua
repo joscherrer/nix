@@ -28,6 +28,19 @@ return {
             vim.keymap.set('n', '<F11>', function() require("dap").step_into() end, { desc = "DAP: Step into" })
             vim.keymap.set('n', '<S-F11>', function() require("dap").step_out() end, { desc = "DAP: Step out" })
             vim.keymap.set('n', '<F12>', function() require("dap").terminate() end, { desc = "DAP: Terminate" })
+            dap.adapters.jsonnet = {
+                type = 'executable',
+                command = vim.fn.expand("~/go/bin/jsonnet-debugger"),
+                args = { '-s', '-d', '-J', 'vendor', '-J', 'lib' },
+            }
+            dap.configurations.jsonnet = {
+                {
+                    type = 'jsonnet',
+                    request = 'launch',
+                    name = 'debug',
+                    program = '${file}',
+                }
+            }
         end
     },
     {

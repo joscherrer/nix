@@ -125,10 +125,22 @@ local plugins = {
         opts = {
             default_amount = 5,
             resize_mode = {
+                quit_key = '<C-S-Esc>',
                 resize_keys = { "<Left>", "<Down>", "<Up>", "<Right>" },
             }
         },
-    }
+    },
+    {
+        "lukas-reineke/indent-blankline.nvim",
+        main = "ibl",
+        opts = {}
+    },
+    {
+        "ramilito/kubectl.nvim",
+        opts = {
+            kubectl_cmd = { cmd = "kubectl", env = { KUBECONFIG = vim.fn.expand("~/.config/kube/config") } },
+        },
+    },
 }
 
 local opts = {}

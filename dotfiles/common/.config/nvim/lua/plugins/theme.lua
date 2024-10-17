@@ -1,3 +1,14 @@
+local minified_messages = { "Maximize", "lazy.nvim" }
+
+vim.cmd([[
+    :hi link NvimTreeSignColumn NvimTreeNormalFloat
+]])
+
+---@param message NoiceMessage
+local function minify_msg(message)
+    return message.opts and vim.list_contains(minified_messages, message.title)
+end
+
 return {
     {
         "olimorris/onedarkpro.nvim",
@@ -44,7 +55,7 @@ return {
             -- vim.notify = require('notify')
             require('notify').setup({
                 fps = 120,
-                max_width = function() return math.ceil(vim.api.nvim_win_get_width(0) * 0.3) end,
+                max_width = function() return math.ceil(vim.opt.columns:get() * 0.3) end,
                 render = "wrapped-compact",
                 stages = {
                     function(state)
@@ -104,6 +115,11 @@ return {
                 { filter = { event = "msg_show", kind = "search_count" },         opts = { skip = true } },
                 { filter = { event = "msg_show", kind = "", find = "wiped out" }, opts = { skip = true } },
                 { filter = { event = "msg_show", kind = "", find = "written" },   view = "mini" },
+                { filter = { event = "msg_show", kind = "", find = "yanked" },    view = "mini" },
+                {
+                    filter = { event = "notify", cond = minify_msg },
+                    view = "mini"
+                },
             },
             views = {
                 cmdline_popup = {
@@ -116,6 +132,10 @@ return {
                         winhighlight = "NormalFloat:NormalFloat,FloatBorder:FloatBorder",
                     },
                 }
+            },
+            redirect = {
+                view = "split",
+                filter = { event = "msg_show" }
             }
         },
         dependencies = {
