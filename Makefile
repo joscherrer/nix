@@ -42,3 +42,6 @@ image:
 
 wsl:
 	sudo nixos-rebuild switch --flake "$(PWD)/#jo-home" $(EXTRA_ARGS)
+
+alpine:
+	podman build -t alpine-bbrain -f alpine.Containerfile .

@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+src=$1; shift
+dst=
+opts=()
+
+while [ $# -gt 0 ]; do
+  case $1 in
+    -*|--*) opts+=("$1");;
+    *) port=$1;; 
+  esac
+  shift
+done
+xdg-open "http://localhost:$port"
+kubectl port-forward $src "${opts[@]}" $port
+

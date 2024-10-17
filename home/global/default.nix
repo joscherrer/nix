@@ -1,4 +1,11 @@
-{ inputs, lib, pkgs, config, outputs, ... }:
+{
+  inputs,
+  lib,
+  pkgs,
+  config,
+  outputs,
+  ...
+}:
 {
   imports = [
     ./minimal.nix
@@ -6,10 +13,14 @@
     ./languages
   ];
 
+  programs.k9s = {
+    enable = true;
+  };
 
   home.packages = with pkgs; [
     # IaC/Cloud
     terraform
+    opentofu
     terraform-ls
     packer
     ansible
@@ -25,14 +36,18 @@
     open-policy-agent
     ibmcloud-cli
     minio-client
+    azure-cli
     natscli
     postgresql
+    pv-migrate
 
     # Containers
     podman-compose
     dive
     kustomize
     kubectl
+    kubectl-explore
+    krew
     kubectx
     kubelogin-oidc
     kind
@@ -41,34 +56,26 @@
     helm-docs
     kubernetes-helmPlugins.helm-diff
     kubetail
-    k9s
+    clusterctl
+    talosctl
 
-    # Python
-    # (python311.withPackages (ps: with ps; [
-    #   flake8
-    #   ruamel-yaml
-    #   requests
-    #   toml
-    #   types-toml
-    #   sh
-    #   debugpy
-    # ]))
     tmuxp
     black
     mypy
     basedpyright
-    # python311Packages.virtualenv
-
-
-    # Nix
-    niv
-    nil
 
     # Dev misc
     openapi-generator-cli
     caddy
     termscp
     marksman
+    k6
+
+    # kube-prometheus
+    go-jsonnet
+    jsonnet-bundler
+    jsonnet-language-server
+    gojsontoyaml
 
     # Video
     ffmpeg

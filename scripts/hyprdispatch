@@ -7,15 +7,17 @@ import asyncio
 
 workspace_by_monitor = {
     "LG Electronics LG HDR WQHD+ 205NTCZ8L675": list(range(1, 10, 2)),
-    "Dell Inc. DELL U2415 7MT0167B2YNL": list(range(2, 10, 2)),
+    "Dell Inc. DELL U2415 7MT0167B2YNL": list(range(2, 11, 2)),
 }
 monitor_by_workspace = {v: k for k, l in workspace_by_monitor.items() for v in l}
+
 
 def get_monitor_id(monitors, monitor_description):
     for monitor in monitors:
         if monitor.get("description", "").startswith(monitor_description):
             return monitor.get("id")
     return None
+
 
 def dispatch_workspace(workspace, monitors):
     workspace_id = workspace.get("id")
@@ -48,17 +50,20 @@ def dispatch_workspace(workspace, monitors):
         f"{workspace_id} desc:{required_monitor_desc}",
     )
 
+
 def get_data():
-    workspaces = json.loads(sh.hyprctl("workspaces", "-j"))    
+    workspaces = json.loads(sh.hyprctl("workspaces", "-j"))
     monitors = json.loads(sh.hyprctl("monitors", "-j"))
     cursorpos_raw = sh.hyprctl("cursorpos").split(", ")
     cursorpos = (int(cursorpos_raw[0]), int(cursorpos_raw[1]))
     return workspaces, monitors, cursorpos
 
+
 async def start():
     while True:
         main()
         await asyncio.sleep(1)
+
 
 def main():
     workspaces, monitors, cursorpos = get_data()
@@ -69,6 +74,7 @@ def main():
     if cursorpos[0] > 5760:
         print("Moving cursor to main monitor")
         sh.hyprctl("dispatch", "movecursor", "3840", "800")
+
 
 if len(sys.argv) == 2 and sys.argv[1] == "start":
     asyncio.run(start())

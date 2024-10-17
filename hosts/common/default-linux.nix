@@ -1,4 +1,12 @@
-{ self, inputs, outputs, config, pkgs, lib, ... }:
+{
+  self,
+  inputs,
+  outputs,
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 let
   better-gc = pkgs.writeShellScriptBin "better-gc" (builtins.readFile "${self}/scripts/better-gc");
 in
@@ -10,9 +18,22 @@ in
   networking = {
     firewall = {
       enable = true;
-      trustedInterfaces = [ "kind" "kindrl" "kindrf" "podman0" "podman1" "enp39s0" ];
-      interfaces."podman+".allowedUDPPorts = [53 5353];
-      interfaces."podman+".allowedTCPPorts = [8443 6666];
+      trustedInterfaces = [
+        "kind"
+        "kindrl"
+        "kindrf"
+        "podman0"
+        "podman1"
+        "enp39s0"
+      ];
+      interfaces."podman+".allowedUDPPorts = [
+        53
+        5353
+      ];
+      interfaces."podman+".allowedTCPPorts = [
+        8443
+        6666
+      ];
     };
     networkmanager.enable = true;
   };
@@ -26,11 +47,19 @@ in
 
   virtualisation.podman = {
     enable = true;
-    dockerSocket.enable = true;
+    dockerSocket.enable = false;
+  };
+  virtualisation.docker = {
+    enable = true;
   };
   virtualisation.containers = {
     enable = true;
-    registries.search = ["registry.access.redhat.com" "docker.io" "quay.io" "ghcr.io"];
+    registries.search = [
+      "registry.access.redhat.com"
+      "docker.io"
+      "quay.io"
+      "ghcr.io"
+    ];
     # registries.insecure = ["cr.dns.podman" "cr.dns.podman:5000" "kind-cr.dns.podman:5000" "localhost:5000"];
   };
 
@@ -68,7 +97,10 @@ in
   };
 
   systemd.services."better-gc" = {
-    path = [ pkgs.bash pkgs.nix ];
+    path = [
+      pkgs.bash
+      pkgs.nix
+    ];
     serviceConfig = {
       Type = "oneshot";
       User = "better-gc";
@@ -82,7 +114,13 @@ in
     initialHashedPassword = "";
     isNormalUser = true;
     group = "jscherrer";
-    extraGroups = [ "wheel" "networkmanager" "libvirtd" "podman" ];
+    extraGroups = [
+      "wheel"
+      "networkmanager"
+      "libvirtd"
+      "podman"
+      "docker"
+    ];
     createHome = true;
   };
 
@@ -98,7 +136,12 @@ in
   };
 
   security.pam.loginLimits = [
-    { domain = "*"; type = "soft"; item = "nofile"; value = "131070"; }
+    {
+      domain = "*";
+      type = "soft";
+      item = "nofile";
+      value = "131070";
+    }
   ];
   systemd.user.extraConfig = "DefaultLimitNOFILE=131070";
 
@@ -106,5 +149,13 @@ in
     enable = true;
     # pinentryFlavor = "gnome3";
     enableSSHSupport = true;
+  };
+
+  systemd.services.flatpak-repo = {
+    wantedBy = [ "multi-user.target" ];
+    path = [ pkgs.flatpak ];
+    script = ''
+      flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+    '';
   };
 }

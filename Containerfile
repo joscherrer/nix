@@ -7,13 +7,17 @@ RUN dnf install -y git sudo xz gzip && \
 USER jscherrer
 ENV USER=jscherrer
 WORKDIR /home/jscherrer
-RUN curl -L https://nixos.org/nix/install | sh -s -- --no-daemon
 
 COPY --chown=jscherrer:jscherrer . /home/jscherrer/.config/home-manager
 
-RUN mkdir -p ~/.config/nix && \
+RUN curl -L https://nixos.org/nix/install | sh -s -- --no-daemon && \
+    mkdir -p ~/.config/nix && \
     . /home/jscherrer/.nix-profile/etc/profile.d/nix.sh && \
-    nix --extra-experimental-features "nix-command flakes" run home-manager/master -- init --switch
+    echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf && \
+    # nix --extra-experimental-features "nix-command flakes" run home-manager/master -- init --switch
+    nix run home-manager/master -- -b bak init --switch --flake "/home/jscherrer/.config/home-manager#jscherrer" && \
+    nix-store --optimise && \
+    nix-collect-garbage -d
 #
 # USER jscherrer
 # RUN mkdir -p ~/.config/nix && \

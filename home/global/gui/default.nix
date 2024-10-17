@@ -1,6 +1,14 @@
-{ self, inputs, outputs, config, pkgs, default, ... }:
+{
+  self,
+  inputs,
+  outputs,
+  config,
+  pkgs,
+  default,
+  ...
+}:
 let
-  browser = ["firefox.desktop"];
+  browser = [ "firefox.desktop" ];
   notion-icon = builtins.fetchurl {
     url = "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Notion-logo.svg/480px-Notion-logo.svg.png";
     sha256 = "sha256:0vrbmwl13hf3sqv8157z4r5glvz8mhffr1r1v46dj7yzd95a97bp";
@@ -20,7 +28,6 @@ in
     ./thunderbird.nix
     inputs.catppuccin.homeManagerModules.catppuccin
   ];
-
 
   programs.firefox.enable = true;
   home.sessionVariables.BROWSER = "${pkgs.firefox}/bin/firefox";
@@ -64,8 +71,12 @@ in
     gtk2.extraConfig = ''
       gtk-application-prefer-dark-theme = 1
     '';
-    gtk3.extraConfig = { gtk-application-prefer-dark-theme = 1; };
-    gtk4.extraConfig = { gtk-application-prefer-dark-theme = 1; };
+    gtk3.extraConfig = {
+      gtk-application-prefer-dark-theme = 1;
+    };
+    gtk4.extraConfig = {
+      gtk-application-prefer-dark-theme = 1;
+    };
   };
 
   qt = {
@@ -85,7 +96,6 @@ in
     };
   };
 
-
   xdg.mimeApps.enable = true;
   xdg.mimeApps.defaultApplications = {
     "application/x-extension-htm" = browser;
@@ -96,20 +106,20 @@ in
     "application/xhtml+xml" = browser;
     "text/html" = browser;
     "x-scheme-handler/about" = browser;
-    "x-scheme-handler/chrome" = ["chromium-browser.desktop"];
+    "x-scheme-handler/chrome" = [ "chromium-browser.desktop" ];
     "x-scheme-handler/ftp" = browser;
     "x-scheme-handler/http" = browser;
     "x-scheme-handler/https" = browser;
     "x-scheme-handler/unknown" = browser;
 
-    "audio/*" = ["mpv.desktop"];
-    "video/*" = ["mpv.dekstop"];
-    "image/*" = ["imv.desktop"];
+    "audio/*" = [ "mpv.desktop" ];
+    "video/*" = [ "mpv.dekstop" ];
+    "image/*" = [ "imv.desktop" ];
     "application/json" = browser;
-    "application/pdf" = ["org.pwmt.zathura.desktop.desktop"];
-    "x-scheme-handler/discord" = ["webcord.desktop"];
-    "x-scheme-handler/spotify" = ["spotify.desktop"];
-    "x-scheme-handler/tg" = ["telegramdesktop.desktop"];
+    "application/pdf" = [ "org.pwmt.zathura.desktop.desktop" ];
+    "x-scheme-handler/discord" = [ "webcord.desktop" ];
+    "x-scheme-handler/spotify" = [ "spotify.desktop" ];
+    "x-scheme-handler/tg" = [ "telegramdesktop.desktop" ];
   };
 
   programs.wlogout = {
@@ -126,6 +136,8 @@ in
     playerctl
     pamixer
     webcord
+    discord
+    vesktop
     slurp
     grim
     wf-recorder
@@ -196,12 +208,15 @@ in
     Categories=Office;
   '';
 
-  home.sessionVariables = { QT_STYLE_OVERRIDE = "kvantum"; };
+  home.sessionVariables = {
+    QT_STYLE_OVERRIDE = "kvantum";
+  };
 
   xdg.configFile."Kvantum/kvantum.kvconfig".source =
-    (pkgs.formats.ini { }).generate "kvantum.kvconfig" {
-      General.Theme = "Catppuccin-Mocha-Mauve";
-    };
+    (pkgs.formats.ini { }).generate "kvantum.kvconfig"
+      {
+        General.Theme = "Catppuccin-Mocha-Mauve";
+      };
 
   programs.obs-studio = {
     enable = true;

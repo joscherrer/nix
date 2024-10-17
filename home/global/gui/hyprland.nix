@@ -1,4 +1,12 @@
-{ inputs, lib, pkgs, config, outputs, default, ... }:
+{
+  inputs,
+  lib,
+  pkgs,
+  config,
+  outputs,
+  default,
+  ...
+}:
 let
   common-root = "${inputs.self}/dotfiles/common";
   colors = default.colors;
@@ -45,14 +53,13 @@ let
     done
   '';
 
-  gather-windows = pkgs.writeScriptBin "gather-windows" (builtins.readFile "${inputs.self}/scripts/hyprdispatch");
-  hyprdispatch = pkgs.writeScriptBin "hyprdispatch" (builtins.readFile "${inputs.self}/scripts/hyprdispatch");
+  hyprdispatch = pkgs.writeScriptBin "hyprdispatch" (
+    builtins.readFile "${inputs.self}/scripts/hyprdispatch"
+  );
 in
-rec
-{
+rec {
   home.packages = [
     screenshot-handler
-    gather-windows
     hyprdispatch
     pkgs.bibata-cursors
     pkgs.hyprpicker
@@ -119,24 +126,125 @@ rec
         {
           timeout = 300;
           on-timeout = "loginctl lock-session";
+          on-resume = "${hyprdispatch}/bin/hyprdispatch";
         }
         {
           timeout = 600;
           on-timeout = "systemctl suspend";
+          on-resume = "${hyprdispatch}/bin/hyprdispatch";
         }
       ];
     };
   };
 
+  xdg.configFile."hyprswitch/style.css" = {
+    enable = true;
+    text = ''
+      .client-image {
+          margin: 15px;
+      }
+
+      .client-index {
+          margin: 6px;
+          padding: 5px;
+          font-size: 30px;
+          font-weight: bold;
+          border-radius: 15px;
+          border: 3px solid rgba(80, 90, 120, 0.80);
+          background-color: rgba(20, 20, 20, 1);
+      }
+
+      .client {
+          border-radius: 15px;
+          border: 3px solid rgba(80, 90, 120, 0.80);
+          background-color: rgba(25, 25, 25, 0.90);
+      }
+
+      .client:hover {
+          background-color: rgba(40, 40, 50, 1);
+      }
+
+      .client_active {
+          border: 3px solid rgba(239, 9, 9, 0.94);
+      }
+
+      .workspace {
+          font-size: 25px;
+          font-weight: bold;
+          border-radius: 15px;
+          border: 3px solid rgba(70, 80, 90, 0.80);
+          background-color: rgba(20, 20, 25, 0.90);
+      }
+
+      .workspace_special {
+          border: 3px solid rgba(0, 255, 0, 0.4);
+      }
+
+      .workspaces {
+          margin: 10px;
+      }
+
+      window {
+          border-radius: 15px;
+          opacity: 0.85;
+          border: 6px solid rgba(17, 171, 192, 0.85);
+      }
+    '';
+  };
+
   wayland.windowManager.hyprland = {
     enable = true;
     xwayland.enable = true;
+    extraConfig = ''
+      $flags = --filter-current-monitor 
+      $key = TAB
+      $modifier = ALT
+      $modifier_release = ALT_L
+      $reverse = SHIFT
+
+      # allows repeated switching with same keypress that starts the submap
+      binde = $modifier, $key, exec, hyprswitch gui --do-initial-execute $flags
+      bind = $modifier, $key, submap, switch
+
+      # allows repeated switching with same keypress that starts the submap
+      binde = $modifier $reverse, $key, exec, hyprswitch gui --do-initial-execute -r $flags
+      bind = $modifier $reverse, $key, submap, switch
+
+      submap = switch
+      # allow repeated window switching in submap (same keys as repeating while starting)
+      binde = $modifier, $key, exec, hyprswitch gui $flags
+      binde = $modifier $reverse, $key, exec, hyprswitch gui -r $flags
+
+      # switch to specific window offset (TODO replace with a more dynamic solution)
+      bind = $modifier, 1, exec, hyprswitch gui --offset=1 $flags
+      bind = $modifier, 2, exec, hyprswitch gui --offset=2 $flags
+      bind = $modifier, 3, exec, hyprswitch gui --offset=3 $flags
+      bind = $modifier, 4, exec, hyprswitch gui --offset=4 $flags
+      bind = $modifier, 5, exec, hyprswitch gui --offset=5 $flags
+
+      bind = $modifier $reverse, 1, exec, hyprswitch gui --offset=1 -r $flags
+      bind = $modifier $reverse, 2, exec, hyprswitch gui --offset=2 -r $flags
+      bind = $modifier $reverse, 3, exec, hyprswitch gui --offset=3 -r $flags
+      bind = $modifier $reverse, 4, exec, hyprswitch gui --offset=4 -r $flags
+      bind = $modifier $reverse, 5, exec, hyprswitch gui --offset=5 -r $flags
+
+
+      # exit submap and stop hyprswitch
+      bindrt = $modifier, $modifier_release, exec, hyprswitch close
+      bindrt = $modifier, $modifier_release, submap, reset
+
+      # if it somehow doesn't close on releasing $switch_release, escape can kill (doesnt switch)
+      bindr = ,escape, exec, hyprswitch close --kill
+      bindr = ,escape, submap, reset
+      submap = reset
+    '';
     settings = {
       exec-once = [
         "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
         "${pkgs.wl-clipboard}/bin/wl-paste --type text --watch cliphist store"
         "${pkgs.wl-clipboard}/bin/wl-paste --type image --watch cliphist store"
         "${waybar-wrapper}/bin/waybar-wrapper"
+        "hyprswitch init --show-title --custom-css ${config.xdg.configHome}/hyprswitch/style.css &"
       ];
 
       monitor = [
@@ -206,7 +314,7 @@ rec
         "col.border_inactive" = "rgb(${colors.contrast})";
       };
       debug = {
-          disable_logs = false;
+        disable_logs = false;
       };
 
       misc = {
@@ -236,7 +344,10 @@ rec
         shadow_range = 50;
         shadow_render_power = 3;
         "col.shadow" = "rgba(00000099)";
-        blurls = [ "gtk-layer-shell" "lockscreen" ];
+        blurls = [
+          "gtk-layer-shell"
+          "lockscreen"
+        ];
       };
 
       animations = {
@@ -286,7 +397,7 @@ rec
         "$mainMod, period, exec, rofi -modi 'emoji:rofimoji' -show emoji | wl-copy"
         "$mainMod, W, layoutmsg, toggle split"
         "$mainMod, Space, exec, rofi -show drun"
-        "$mainMod SHIFT, R, exec, gather-windows"
+        "$mainMod SHIFT, R, exec, hyprdispatch"
         "$mainMod, P, togglefloating,"
         "$mainMod, J, togglesplit, # dwindle"
         "$mainMod, L, exec, loginctl lock-session"
@@ -348,7 +459,7 @@ rec
         "opacity 0.80 0.80,class:^(nwg-look)$"
         "opacity 0.80 0.80,class:^(qt5ct)$"
         "opacity 0.80 0.80,class:^(discord)$"
-        "opacity 0.80 0.80,class:^(WebCord)$"
+        "opacity 1 1,class:^(WebCord)$"
         "opacity 0.80 0.70,class:^(pavucontrol)$"
         "opacity 0.80 0.70,class:^(org.kde.polkit-kde-authentication-agent-1)$"
         "opacity 0.80 0.80,class:^(org.telegram.desktop)$"
@@ -379,7 +490,7 @@ rec
         # "move 50% 50%,class:^(firefox)$,floating:1"
 
         # "nomaximizerequest,class:^(firefox)$"
-        
+
         "noshadow, floating:0"
 
         "tile, title:^(Spotify)$"

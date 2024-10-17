@@ -1,4 +1,12 @@
-{ self, inputs, outputs, config, pkgs, lib, ... }:
+{
+  self,
+  inputs,
+  outputs,
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 {
   imports = [
     inputs.home-manager.nixosModules.home-manager
@@ -18,7 +26,12 @@
   };
   virtualisation.containers = {
     enable = true;
-    registries.search = ["registry.access.redhat.com" "docker.io" "quay.io" "ghcr.io"];
+    registries.search = [
+      "registry.access.redhat.com"
+      "docker.io"
+      "quay.io"
+      "ghcr.io"
+    ];
     # registries.insecure = ["cr.dns.podman" "cr.dns.podman:5000" "kind-cr.dns.podman:5000" "localhost:5000"];
   };
 
@@ -45,7 +58,12 @@
   };
 
   security.pam.loginLimits = [
-    { domain = "*"; type = "soft"; item = "nofile"; value = "131070"; }
+    {
+      domain = "*";
+      type = "soft";
+      item = "nofile";
+      value = "131070";
+    }
   ];
   systemd.user.extraConfig = "DefaultLimitNOFILE=131070";
 

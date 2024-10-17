@@ -1,0 +1,167 @@
+#!/usr/bin/env bash
+
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
+function log() {
+    printf '%s\n' "$*"
+}
+
+ACTION=${1}
+CLEAN=${2}
+
+ROOTFUL=${ROOTFUL:-"false"}
+CLUSTER_NAME=${CLUSTER_NAME:-"kind"}
+CR_NAME=${CR_NAME:-"cr"}
+NETWORK_NAME=${NETWORK_NAME:-"kind-${CLUSTER_NAME}"}
+KIND_EXPERIMENTAL_PODMAN_NETWORK=${NETWORK_NAME}
+export KIND_EXPERIMENTAL_PODMAN_NETWORK
+
+if [ "${ROOTFUL}" = "true" ]; then
+    REGISTRY_HOST=${REGISTRY_HOST:-"${CR_NAME}.dns.podman"}
+    REGISTRY_PORT=${REGISTRY_PORT:-"80"}
+    REGISTRY_HTTP_ADDR=${REGISTRY_HTTP_ADDR:-"0.0.0.0:${REGISTRY_PORT}"}
+    REGISTRY_ARGS=( "-e" "REGISTRY_HTTP_ADDR=${REGISTRY_HTTP_ADDR}" )
+    IF_NAME=${IF_NAME:-"kindrl"}
+    INGRESS_VALUES=${INGRESS_VALUES:-"${SCRIPT_DIR}/values/ingress-rootless.yaml"}
+    CONTAINERS_CONF_DIR=${CONTAINERS_CONF_DIR:-"/etc/containers/containers.conf.d"}
+    CLUSTER_CONFIG=${CLUSTER_CONFIG:-"cluster/cluster-rootful.yaml"}
+    IPV6_SUBNET=${IPV6_SUBNET:-"fc00:f853:ccd:ca1d::/64"}
+    IPV6_GATEWAY=${IPV6_GATEWAY:-"fc00:f853:ccd:ca1d::1"}
+    IPV6_IP_RANGE=${IPV6_IP_RANGE:-"fc00:f853:ccd:ca1d::10-fc00:f853:ccd:ca1d::100"}
+    IPV4_SUBNET=${IPV4_SUBNET:-"172.16.0.0/24"}
+    IPV4_GATEWAY=${IPV4_GATEWAY:-"172.16.0.1"}
+    IPV4_IP_RANGE=${IPV4_IP_RANGE:-"172.16.0.10-172.16.0.100"}
+
+    CONTAINER_HOST=${CONTAINER_HOST:-"unix:///run/podman/podman.sock"}
+    export CONTAINER_HOST
+else
+    REGISTRY_HOST=${REGISTRY_HOST:-"localhost"}
+    REGISTRY_PORT=${REGISTRY_PORT:-"5000"}
+    REGISTRY_HTTP_ADDR=${REGISTRY_HTTP_ADDR:-"0.0.0.0:${REGISTRY_PORT}"}
+    REGISTRY_ARGS=( "-e" "REGISTRY_HTTP_ADDR=${REGISTRY_HTTP_ADDR}" "-p" "127.0.0.1:${REGISTRY_PORT}:${REGISTRY_PORT}" )
+    IF_NAME=${IF_NAME:-"kindrf"}
+    INGRESS_VALUES=${INGRESS_VALUES:-"${SCRIPT_DIR}/values/ingress-rootful.yaml"}
+    CONTAINERS_CONF_DIR=${CONTAINERS_CONF_DIR:-"${HOME}/.config/containers/containers.conf.d"}
+    CLUSTER_CONFIG=${CLUSTER_CONFIG:-"cluster/cluster-rootless.yaml"}
+    IPV6_SUBNET=${IPV6_SUBNET:-"fc00:f853:ccd:aa1d::/64"}
+    IPV6_GATEWAY=${IPV6_GATEWAY:-"fc00:f853:ccd:aa1d::1"}
+    IPV6_IP_RANGE=${IPV6_IP_RANGE:-"fc00:f853:ccd:aa1d::10-fc00:f853:ccd:aa1d::100"}
+    IPV4_SUBNET=${IPV4_SUBNET:-"172.16.5.0/24"}
+    IPV4_GATEWAY=${IPV4_GATEWAY:-"172.16.5.1"}
+    IPV4_IP_RANGE=${IPV4_IP_RANGE:-"172.16.5.10-172.16.5.100"}
+fi
+
+function create() {
+    # There is an issue with kubernetes' nginx-ingress when pids_limit is too low
+    # We remove the limit to avoid the issue.
+    # https://github.com/kubernetes/ingress-nginx/issues/10765
+    # https://github.com/kubernetes/ingress-nginx/issues/6141
+    # https://github.com/cri-o/cri-o/issues/5779
+    log "Set container pids_limit to 0"
+    sudo mkdir -p "${CONTAINERS_CONF_DIR}"
+    printf '%b\n' "[containers]\npids_limit=0" | sudo tee "${CONTAINERS_CONF_DIR}/pids.conf" >/dev/null
+
+    # When running in rootful mode, containers are reachable from the host without any port mapping
+    # In rootless mode, podman cannot create network interfaces, thus direct connectivity is not possible
+    log "Creating kind network"
+    podman network create "${NETWORK_NAME}" \
+        --ignore \
+        --interface-name="${IF_NAME}" --driver=bridge \
+        --disable-dns=false --ipv6=true \
+        --subnet="${IPV6_SUBNET}" --gateway="${IPV6_GATEWAY}" --ip-range="${IPV6_IP_RANGE}" \
+        --subnet="${IPV4_SUBNET}" --gateway="${IPV4_GATEWAY}" --ip-range="${IPV4_IP_RANGE}" || {
+        log "Failed to create kind network"
+        exit 1
+    }
+
+    # Start a container registry to make working with custom images easier
+    if ! podman container exists "${CR_NAME}"; then
+        log "Starting container registry"
+        podman run -d --restart=always "${REGISTRY_ARGS[@]}" --net "${NETWORK_NAME}" --name "${CR_NAME}" docker.io/registry:2 || {
+            log "Failed to start container registry"
+            exit 1
+        }
+        log "Registry listening on ${REGISTRY_HOST}:${REGISTRY_PORT}"
+    fi
+
+    clusters=$(kind get clusters 2>/dev/null)
+    if ! printf '%s' "${clusters}" | grep -q "${CLUSTER_NAME}"; then
+        kind create cluster --config "${CLUSTER_CONFIG}" --name "${CLUSTER_NAME}" || {
+            log "Failed to create cluster ${CLUSTER_NAME}"
+            exit 1
+        }
+    fi
+
+    kind export kubeconfig --name "${CLUSTER_NAME}" --kubeconfig "${HOME}/.config/kube/config"
+    chmod 600 "${HOME}/.config/kube/config"
+
+    if [ "${ROOTFUL}" = "true" ]; then
+        kubectl config set-cluster "kind-${CLUSTER_NAME}" --server="https://${CLUSTER_NAME}-control-plane.dns.podman:6443"
+    fi
+    kubectl config use-context "kind-${CLUSTER_NAME}"
+
+    # Map ${CR_NAME}.dns.podman to http://${CR_NAME}.dns.podman:${REGISTRY_PORT}
+    # Should not matter in rootful mode
+    tmp=$(mktemp)
+    printf '%s' "[host.\"http://${CR_NAME}.dns.podman:${REGISTRY_PORT}\"]" > "${tmp}"
+    for node in $(kind get nodes --name "${CLUSTER_NAME}"); do
+        log "Configuring container registry on ${node}"
+        podman exec "${node}" mkdir -p "/etc/containerd/certs.d/${CR_NAME}.dns.podman"
+        podman cp "${tmp}" "${node}:/etc/containerd/certs.d/${CR_NAME}.dns.podman/hosts.toml"
+    done
+    rm -f "${tmp}"
+
+    if [ "${ROOTFUL}" = "true" ]; then
+        python3 "${SCRIPT_DIR}/trust-registry.py" "${CR_NAME}.dns.podman"
+        python3 "${SCRIPT_DIR}/trust-registry.py" "${CR_NAME}.dns.podman:${REGISTRY_PORT}"
+        # In rootful mode, setup metallb loadbalancer
+        kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.7/config/manifests/metallb-native.yaml
+        kubectl wait --namespace metallb-system --for=condition=ready pod --selector=app=metallb --timeout=90s
+        kubectl apply -k "${SCRIPT_DIR}/loadbalancer"
+    else
+        python3 "${SCRIPT_DIR}/trust-registry.py" "localhost:${REGISTRY_PORT}"
+        kubectl apply -f "${SCRIPT_DIR}/local-registry.yaml"
+    fi
+
+    helm upgrade ingress-nginx ingress-nginx \
+        --install --repo https://kubernetes.github.io/ingress-nginx \
+        --namespace ingress-nginx --create-namespace --values "${INGRESS_VALUES}"
+
+    # Install metrics server
+    kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+    kubectl patch -n kube-system deployment metrics-server --type=json \
+        -p '[{"op":"add","path":"/spec/template/spec/containers/0/args/-","value":"--kubelet-insecure-tls"}]'
+}
+
+function delete() {
+    clusters=$(kind get clusters 2>/dev/null)
+    if printf '%s' "${clusters}" | grep -q "${CLUSTER_NAME}"; then
+        kind delete cluster --name "${CLUSTER_NAME}"
+    fi
+
+    if podman container exists "${CR_NAME}" && [ "${CLEAN}" = "clean" ]; then
+        podman kill "${CR_NAME}"
+        podman rm "${CR_NAME}" --volumes
+    elif podman container exists "${CR_NAME}"; then
+        podman kill "${CR_NAME}"
+        podman rm "${CR_NAME}"
+    fi
+
+    if podman network exists "${NETWORK_NAME}"; then
+        podman network rm "${NETWORK_NAME}"
+    fi
+}
+
+case "${ACTION}" in
+    create)
+        log "Creating cluster ${CLUSTER_NAME}"
+        create
+        ;;
+    delete)
+        delete
+        ;;
+    *)
+        log "Usage: ${0} <create|delete> [clean]"
+        exit 1
+        ;;
+esac

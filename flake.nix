@@ -27,9 +27,25 @@
     catppuccin.url = "github:catppuccin/nix";
 
     nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
+
+    hyprswitch.url = "github:h3rmt/hyprswitch/release";
   };
 
-  outputs = { self, nixpkgs, nixpkgs-stable, nixpkgs-unstable, home-manager, darwin, kmonad, nil, catppuccin, nixos-wsl, ... }@inputs:
+  outputs =
+    {
+      self,
+      nixpkgs,
+      nixpkgs-stable,
+      nixpkgs-unstable,
+      home-manager,
+      darwin,
+      kmonad,
+      nil,
+      catppuccin,
+      nixos-wsl,
+      hyprswitch,
+      ...
+    }@inputs:
     let
       inherit (self) outputs;
       overlay-unstable = final: prev: {
@@ -48,15 +64,20 @@
       };
       overlay-kubectx = final: prev: {
         kubectx = prev.kubectx.overrideAttrs (old: {
-          postInstall = old.postInstall + ''
-            ln -s $out/bin/kubens $out/bin/kubectl-ns
-          '';
+          postInstall =
+            old.postInstall
+            + ''
+              ln -s $out/bin/kubens $out/bin/kubectl-ns
+            '';
         });
       };
 
       overlay-terraform = final: prev: {
         terraform = prev.terraform.overrideAttrs (old: {
-          ldflags = old.ldflags ++ [ "-X" "'github.com/hashicorp/terraform/version.dev=no'" ];
+          ldflags = old.ldflags ++ [
+            "-X"
+            "'github.com/hashicorp/terraform/version.dev=no'"
+          ];
         });
       };
 
@@ -72,9 +93,13 @@
         });
       };
 
-      overlay-jetbrains = final: prev:
+      overlay-jetbrains =
+        final: prev:
         let
-          tools = [ "goland" "idea-ultimate" ];
+          tools = [
+            "goland"
+            "idea-ultimate"
+          ];
           makeToolOverlay = tool: {
             ${tool} = prev.jetbrains.${tool}.overrideAttrs (old: {
               patches = (old.patches or [ ]) ++ [
@@ -84,11 +109,14 @@
           };
         in
         {
-          jetbrains = prev.jetbrains //
-            builtins.foldl' (acc: tool: acc // makeToolOverlay tool) { } tools;
+          jetbrains = prev.jetbrains // builtins.foldl' (acc: tool: acc // makeToolOverlay tool) { } tools;
         };
 
-      supportedSystems = [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" ];
+      supportedSystems = [
+        "x86_64-linux"
+        "aarch64-linux"
+        "aarch64-darwin"
+      ];
       forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
       colorlib = import ./colors.nix nixpkgs.lib;
     in
@@ -104,7 +132,8 @@
         # inherit overlay-pdm;
       };
 
-      packages = forAllSystems (system:
+      packages = forAllSystems (
+        system:
         import ./pkgs {
           pkgs = nixpkgs.legacyPackages.${system};
         }
@@ -114,7 +143,10 @@
         bbrain-linux = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           specialArgs = {
-            default = import ./lib/theme { inherit colorlib; lib = nixpkgs.lib; };
+            default = import ./lib/theme {
+              inherit colorlib;
+              lib = nixpkgs.lib;
+            };
             inherit self inputs outputs;
           };
           modules = [
@@ -125,7 +157,10 @@
         jo-home = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           specialArgs = {
-            default = import ./lib/theme { inherit colorlib; lib = nixpkgs.lib; };
+            default = import ./lib/theme {
+              inherit colorlib;
+              lib = nixpkgs.lib;
+            };
             inherit self inputs outputs;
           };
           modules = [
@@ -137,7 +172,9 @@
       darwinConfigurations = {
         bbrain-mbp = darwin.lib.darwinSystem {
           system = "aarch64-darwin";
-          specialArgs = { inherit self inputs outputs; };
+          specialArgs = {
+            inherit self inputs outputs;
+          };
           modules = [
             ./hosts/bbrain-mbp
           ];
@@ -147,7 +184,9 @@
       homeConfigurations = {
         "jscherrer@dx15-qemu" = home-manager.lib.homeManagerConfiguration {
           pkgs = nixpkgs.legacyPackages."x86_64-linux";
-          extraSpecialArgs = { inherit inputs outputs; };
+          extraSpecialArgs = {
+            inherit inputs outputs;
+          };
           modules = [
             ./home/jscherrer/dx15-qemu.nix
           ];
@@ -155,21 +194,27 @@
 
         "jscherrer@dx15" = home-manager.lib.homeManagerConfiguration {
           pkgs = nixpkgs.legacyPackages."x86_64-linux";
-          extraSpecialArgs = { inherit inputs outputs; };
+          extraSpecialArgs = {
+            inherit inputs outputs;
+          };
           modules = [
             ./home/jscherrer/dx15.nix
           ];
         };
         "jscherrer@docker" = home-manager.lib.homeManagerConfiguration {
           pkgs = nixpkgs.legacyPackages."x86_64-linux";
-          extraSpecialArgs = { inherit inputs outputs; };
+          extraSpecialArgs = {
+            inherit inputs outputs;
+          };
           modules = [
             ./home/jscherrer/docker.nix
           ];
         };
         "jscherrer" = home-manager.lib.homeManagerConfiguration {
           pkgs = nixpkgs.legacyPackages."x86_64-linux";
-          extraSpecialArgs = { inherit inputs outputs; };
+          extraSpecialArgs = {
+            inherit inputs outputs;
+          };
           modules = [
             ./home/jscherrer/docker.nix
           ];

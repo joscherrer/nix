@@ -1,4 +1,12 @@
-{ self, inputs, outputs, config, pkgs, lib, ... }:
+{
+  self,
+  inputs,
+  outputs,
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 {
   boot.loader.systemd-boot.enable = true;
   boot.loader.systemd-boot.configurationLimit = 4;
@@ -10,10 +18,21 @@
     "raid1"
   ];
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
-  boot.binfmt.registrations."aarch64-linux".fixBinary = true;
-  boot.binfmt.registrations."aarch64-linux".matchCredentials = true;
+  # boot.binfmt.registrations."aarch64-linux".fixBinary = true;
+  # boot.binfmt.registrations."aarch64-linux".matchCredentials = true;
+  # https://github.com/NixOS/nixpkgs/pull/334859
+
+  boot.binfmt.registrations.aarch64-linux = {
+    interpreter = "${pkgs.pkgsStatic.qemu-user}/bin/qemu-aarch64";
+    wrapInterpreterInShell = false;
+    fixBinary = true;
+    openBinary = true; # debatable, see https://github.com/NixOS/nixpkgs/pull/314998#issuecomment-2237347334
+    matchCredentials = true;
+    preserveArgvZero = true;
+  };
 
   environment.systemPackages = [
+    pkgs.qemu-user
     pkgs.jetbrains.jdk
     pkgs.jetbrains.idea-ultimate
     # pkgs.jetbrains.gateway
@@ -26,15 +45,18 @@
     pkgs.wineWowPackages.waylandFull
     pkgs.cifs-utils
     pkgs.qmk
-    (pkgs.python3.withPackages (ps: with ps; [
-      flake8
-      ruamel-yaml
-      requests
-      toml
-      types-toml
-      sh
-      debugpy
-    ]))
+    (pkgs.python3.withPackages (
+      ps: with ps; [
+        flake8
+        ruamel-yaml
+        requests
+        toml
+        types-toml
+        sh
+        debugpy
+      ]
+    ))
+    inputs.hyprswitch.packages.x86_64-linux.default
   ];
 
   hardware.bluetooth.enable = true;
@@ -87,7 +109,10 @@
 
   # Local k8s cluster with direct access
   networking.search = [ "dns.podman" ];
-  networking.nameservers = [ "127.0.0.1" "::1" ];
+  networking.nameservers = [
+    "127.0.0.1"
+    "::1"
+  ];
   networking.hosts = {
     "172.16.0.200" = [ "kind-ingress.dns.podman" ];
   };
@@ -130,13 +155,16 @@
   users.users.jscherrer = {
     isNormalUser = true;
     description = "Jonathan Scherrer";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+    ];
     packages = with pkgs; [ ];
   };
 
   users.users.greeter = {
-      home = "/home/greeter";
-      createHome = true;
+    home = "/home/greeter";
+    createHome = true;
   };
 
   system.stateVersion = "23.05"; # Did you read the comment?
@@ -146,7 +174,9 @@
     useUserPackages = true;
     users.jscherrer = import "${self}/home/jscherrer/bbrain-linux.nix";
     users.root = import "${self}/home/root";
-    extraSpecialArgs = { inherit inputs outputs; };
+    extraSpecialArgs = {
+      inherit inputs outputs;
+    };
   };
 
   hardware.graphics = {
