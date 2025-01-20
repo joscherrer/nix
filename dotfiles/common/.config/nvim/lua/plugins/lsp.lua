@@ -18,8 +18,7 @@ local yaml_on_attach = function(client, bufnr)
         local rootStrings = vim.tbl_filter(function(o) return o.kind == 15 end, result)
         local kind = getSymbol(rootStrings, "kind")
         local apiVersion = getSymbol(rootStrings, "apiVersion")
-        -- local hasKind = vim.tbl_contains(rootStrings, predicate("kind"), { predicate = true })
-        -- local hasApiVersion = vim.tbl_contains(rootStrings, predicate("apiVersion"), { predicate = true })
+
         if kind == nil or apiVersion == nil then
             return
         end
@@ -66,6 +65,8 @@ end
 
 local yaml_multi_on_attach = function(client, bufnr)
     local helpers = require('bbrain.helpers')
+    local http = require('bbrain.http')
+
     local getSymbol = function(symbols, key)
         local objs = {}
         for _, v in pairs(symbols) do
@@ -89,13 +90,19 @@ local yaml_multi_on_attach = function(client, bufnr)
             return
         end
 
+        vim.notify("Found " .. #kinds .. " resources", vim.log.levels.DEBUG)
+
         local schemas = vim.fn.expand("$HOME/.datree/crdSchemas")
-        local schemaSequencePath = vim.fs.joinpath("/tmp",
+        local schemaSequencePath = vim.fs.joinpath("/tmp", "schemaSequence_" ..
             helpers.random_string(10) .. ".json")
 
         local schemaSequence = {}
+        ---@type table<number, fun()>
+        local asyncReqs = {}
 
         for i, _ in pairs(kinds) do
+            vim.notify("index: " .. i, vim.log.levels.DEBUG)
+            vim.notify("Processing: " .. kinds[i] .. " " .. apiVersions[i], vim.log.levels.DEBUG)
             local group, version = unpack(vim.split(apiVersions[i], "/"))
             local kind = string.lower(kinds[i])
             if version == nil then
@@ -105,25 +112,40 @@ local yaml_multi_on_attach = function(client, bufnr)
             local schema = vim.fs.joinpath(schemas, group, kind .. "_" .. version .. ".json")
             local schema_s = vim.fs.joinpath(schemas, group, kind .. "s_" .. version .. ".json")
             if vim.fn.filereadable(schema) ~= 0 then
-                vim.notify("Found: " .. schema, vim.log.levels.INFO)
+                vim.notify(i .. ": Found: " .. schema, vim.log.levels.DEBUG)
                 ready = ready + 1
                 fs.readFile(schema, function(_, data)
-                    table.insert(schemaSequence, vim.json.decode(data))
+                    schemaSequence[i] = vim.json.decode(data)
                     ready = ready - 1
                 end)
             elseif vim.fn.filereadable(schema_s) ~= 0 then
-                vim.notify("Found: " .. schema_s, vim.log.levels.INFO)
+                vim.notify(i .. ": Found: " .. schema_s, vim.log.levels.DEBUG)
                 ready = ready + 1
                 fs.readFile(schema, function(_, data)
-                    table.insert(schemaSequence, vim.json.decode(data))
+                    schemaSequence[i] = vim.json.decode(data)
                     ready = ready - 1
                 end)
+            else
+                local kube_version = "v1.30.5-standalone"
+                local urlfmt = "https://github.com/yannh/kubernetes-json-schema/raw/refs/heads/master/%s/%s-%s.json"
+                local url = string.format(urlfmt, kube_version, kind, version)
+                vim.notify("Trying to find native k8s schema", vim.log.levels.DEBUG)
+                schemaSequence[i] = {}
+                local res = http.async_get(url, {}, function(out)
+                    vim.notify(i .. ": Found: " .. url, vim.log.levels.DEBUG)
+                    schemaSequence[i] = vim.json.decode(out.stdout)
+                end)
+                table.insert(asyncReqs, res)
             end
         end
 
         while ready > 0 do
             vim.wait(10)
         end
+        for _, v in pairs(asyncReqs) do
+            v()
+        end
+        vim.notify("Schema sequence length: " .. #schemaSequence, vim.log.levels.DEBUG)
         fs.writeFileSync(vim.fn.expand(schemaSequencePath),
             vim.json.encode({ schemaSequence = schemaSequence }))
 
@@ -205,6 +227,7 @@ local function lspconfig_config()
     if not vim.env.JFROG_IDE_URL then
         table.insert(lsp_server_list, 'gopls')
         table.insert(lsp_server_list, 'volar')
+        table.insert(lsp_server_list, 'ts_ls')
     else
         table.insert(lsp_server_list, 'basedpyright')
         table.insert(lsp_server_list, 'marksman')
@@ -288,9 +311,6 @@ local function lspconfig_config()
         }
     })
 
-    lspconfig.volar.setup({
-        filetypes = { 'vue' }
-    })
 
     lspconfig.terraformls.setup({})
     lspconfig.marksman.setup({})
@@ -299,14 +319,7 @@ local function lspconfig_config()
             client.server_capabilities.semanticTokensProvider = nil
         end,
     })
-    lspconfig.csharp_ls.setup({
-        -- on_init = function(client)
-        --     client.offset_encoding = 'utf-8'
-        -- end,
-    })
-
-    lspconfig.eslint.setup({
-    })
+    lspconfig.csharp_ls.setup({})
 
     lspconfig.yamlls.setup({
         capabilities = vim.tbl_deep_extend('force', lsp_capabilities, {
@@ -316,7 +329,8 @@ local function lspconfig_config()
                 }
             }
         }),
-        on_attach = yaml_multi_on_attach,
+        -- on_attach = yaml_multi_on_attach,
+        on_attach = require('bbrain.lsp.yamlls').on_attach,
         settings = {
             yaml = {
                 format = {
@@ -347,6 +361,36 @@ local function lspconfig_config()
                 -- }
             }
         }
+    })
+
+    local mason_registry = require('mason-registry')
+    local vue_language_server_path = mason_registry.get_package('vue-language-server'):get_install_path() ..
+        '/node_modules/@vue/language-server'
+
+
+    lspconfig.volar.setup({
+        -- init_options = {
+        --     typescript = {
+        --         tsdk = "node_modules/typescript/lib"
+        --     }
+        -- }
+    })
+
+    lspconfig.ts_ls.setup({
+        capabilities = lsp_capabilities,
+        init_options = {
+            plugins = {
+                {
+                    name = "@vue/typescript-plugin",
+                    location = vue_language_server_path,
+                    languages = { "vue" },
+                }
+            }
+        }
+    })
+
+    lspconfig.eslint.setup({
+        capabilities = lsp_capabilities
     })
 
     vim.api.nvim_set_hl(0, "@odp.function.builtin.python", { link = "pythonBuiltin" })

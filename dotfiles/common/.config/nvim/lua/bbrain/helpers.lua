@@ -1,4 +1,5 @@
 local nvim_tree_api = require('nvim-tree.api')
+local fs = require('luvit.fs')
 
 local M = {}
 
@@ -110,6 +111,12 @@ function M.format(buffer, opts)
         vim.cmd('silent !prettier % --write')
         return
     end
+
+    if filetype == 'alloy' then
+        vim.cmd('silent !alloy fmt %')
+        return
+    end
+
     vim.lsp.buf.format(opts)
     vim.cmd('silent! write')
 end
@@ -140,7 +147,6 @@ function M.close_all_buffers()
     end
 end
 
-local fs = require('luvit.fs')
 function M.load_maxtabs()
     local path = vim.fn.stdpath('data') .. '/maxtabs.json'
     fs.readFile(path, function(err, data)

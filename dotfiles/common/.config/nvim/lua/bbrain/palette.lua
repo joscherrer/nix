@@ -441,4 +441,34 @@ M.add("Tools", "ToggleKubectl", {
     desc = "Toggle kubectl"
 })
 
+M.add("Log", "SetLogLevel", {
+    cmd = {
+        name = "SetLogLevel",
+        cmd = function(_)
+            local opts = {}
+            pickers.new(opts, {
+                prompt_title = "Level",
+                finder = finders.new_table {
+                    results = { "ERROR", "WARN", "INFO", "DEBUG" }
+                },
+                sorter = conf.generic_sorter(opts),
+                attach_mappings = function(prompt_bufnr, map)
+                    actions.select_default:replace(function()
+                        actions.close(prompt_bufnr)
+                        local selection = action_state.get_selected_entry()
+                        vim.notify("Setting log level to " .. selection.value)
+                        require("notify").setup({ level = selection.value })
+                    end)
+                    return true
+                end
+            }):find()
+        end,
+        -- opts = { nargs = 1, complete = function(A, L, P) return { "INFO", "WARN", "ERROR", "DEBUG" } end },
+        opts = {},
+        create = true
+    },
+    keys = {},
+    desc = "Set log level"
+})
+
 return M

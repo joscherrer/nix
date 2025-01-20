@@ -141,6 +141,9 @@ local plugins = {
             kubectl_cmd = { cmd = "kubectl", env = { KUBECONFIG = vim.fn.expand("~/.config/kube/config") } },
         },
     },
+    {
+        "grafana/vim-alloy",
+    }
 }
 
 local opts = {}

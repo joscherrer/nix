@@ -57,6 +57,7 @@ return {
                 fps = 120,
                 max_width = function() return math.ceil(vim.opt.columns:get() * 0.3) end,
                 render = "wrapped-compact",
+                -- level = vim.log.levels.DEBUG,
                 stages = {
                     function(state)
                         local next_height = state.message.height + 2

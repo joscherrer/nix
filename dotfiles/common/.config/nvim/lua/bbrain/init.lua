@@ -39,7 +39,7 @@ if vim.g.neovide then        -- required before loading plugins
     vim.g.default_winblend = 20
 end
 require("bbrain.lazy")
-require("bbrain.helpers")
+-- require("bbrain.helpers")
 require("bbrain.set")
 require("bbrain.remap")
 require("bbrain.autocmd")
