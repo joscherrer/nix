@@ -17,7 +17,7 @@
     package = lib.mkDefault pkgs.nix;
     settings = {
       auto-optimise-store = true;
-      experimental-features = [ "nix-command" "flakes" "repl-flake" ];
+      experimental-features = [ "nix-command" "flakes" ];
       warn-dirty = false;
       substituters = ["https://cache.nixos.org/"]; 
     };
@@ -39,6 +39,7 @@
   # };
 
   users.users.jscherrer = {
+    isNormalUser = true;
     openssh.authorizedKeys.keys =
       let
         authorizedKeys = pkgs.fetchurl {

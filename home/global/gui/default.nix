@@ -11,7 +11,7 @@ let
   browser = [ "firefox.desktop" ];
   notion-icon = builtins.fetchurl {
     url = "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Notion-logo.svg/480px-Notion-logo.svg.png";
-    sha256 = "sha256:0vrbmwl13hf3sqv8157z4r5glvz8mhffr1r1v46dj7yzd95a97bp";
+    sha256 = "sha256:0liksflpwv14q4fqg36syaa2sbxc2nwksf0j6gpr36qaji7mnwwk";
   };
 in
 {
@@ -151,8 +151,8 @@ in
     bitwarden
     telegram-desktop
     (catppuccin-kvantum.override {
-      accent = "Mauve";
-      variant = "Mocha";
+      accent = "mauve";
+      variant = "mocha";
     })
   ];
 
@@ -167,7 +167,7 @@ in
   # home.file.".local/share/applications/discord.desktop".text = ''
   #   [Desktop Entry]
   #   Categories=Network;InstantMessaging
-  #   Exec=Discord --enable-features=UseOzonePlatform --ozone-platform=wayland 
+  #   Exec=Discord --enable-features=UseOzonePlatform --ozone-platform=wayland
   #   GenericName=All-in-one cross-platform voice and text chat for gamers
   #   Icon=discord
   #   MimeType=x-scheme-handler/discord

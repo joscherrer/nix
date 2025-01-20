@@ -45,3 +45,6 @@ wsl:
 
 alpine:
 	podman build -t alpine-bbrain -f alpine.Containerfile .
+
+jumbo:
+	sudo nixos-rebuild switch --flake "/root/nix#jumbo" $(EXTRA_ARGS)

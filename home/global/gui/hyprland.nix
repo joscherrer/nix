@@ -338,12 +338,14 @@ rec {
           xray = true;
         };
 
-        drop_shadow = true;
-        shadow_ignore_window = true;
-        shadow_offset = "0 8";
-        shadow_range = 50;
-        shadow_render_power = 3;
-        "col.shadow" = "rgba(00000099)";
+        shadow = {
+          enabled = true;
+          ignore_window = true;
+          offset = "0 8";
+          range = 50;
+          render_power = 3;
+          color = "rgba(00000099)";
+        };
         blurls = [
           "gtk-layer-shell"
           "lockscreen"
@@ -374,7 +376,6 @@ rec {
       dwindle = {
         pseudotile = true;
         preserve_split = true;
-        no_gaps_when_only = false;
       };
 
       master = {
