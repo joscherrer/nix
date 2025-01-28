@@ -1,4 +1,10 @@
-{ inputs, config, pkgs, lib, ... }:
+{
+  inputs,
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 {
   imports = [
     ../global
@@ -27,9 +33,10 @@
     pkgs.kanshi
     pkgs.buildah
     pkgs.pdm
-    pkgs.vagrant
+    pkgs.stable.vagrant
     pkgs.obsidian
     pkgs.yubikey-manager-qt
+    pkgs.stockfish
     # pkgs.ankama-launcher
   ];
 

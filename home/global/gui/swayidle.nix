@@ -1,4 +1,12 @@
-{ inputs, lib, pkgs, config, outputs, default, ... }:
+{
+  inputs,
+  lib,
+  pkgs,
+  config,
+  outputs,
+  default,
+  ...
+}:
 {
   services.swayidle = {
     enable = false;
@@ -20,5 +28,5 @@
     ];
   };
 
-  systemd.user.services.swayidle.Install.WantedBy = [ "hyprland-session.target" "greetd.target" ];
+  # systemd.user.services.swayidle.Install.WantedBy = [ "hyprland-session.target" "greetd.target" ];
 }

@@ -20,8 +20,8 @@ in
     ./dunst.nix
     ./hyprland.nix
     ./rofi.nix
-    ./swayidle.nix
-    ./swaylock.nix
+    # ./swayidle.nix
+    # ./swaylock.nix
     ./terminal.nix
     ./vscode.nix
     ./waybar.nix
@@ -151,8 +151,8 @@ in
     bitwarden
     telegram-desktop
     (catppuccin-kvantum.override {
-      accent = "Mauve";
-      variant = "Mocha";
+      accent = "mauve";
+      variant = "mocha";
     })
   ];
 
@@ -167,7 +167,7 @@ in
   # home.file.".local/share/applications/discord.desktop".text = ''
   #   [Desktop Entry]
   #   Categories=Network;InstantMessaging
-  #   Exec=Discord --enable-features=UseOzonePlatform --ozone-platform=wayland 
+  #   Exec=Discord --enable-features=UseOzonePlatform --ozone-platform=wayland
   #   GenericName=All-in-one cross-platform voice and text chat for gamers
   #   Icon=discord
   #   MimeType=x-scheme-handler/discord

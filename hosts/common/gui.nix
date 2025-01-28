@@ -1,4 +1,12 @@
-{ self, lib, inputs, outputs, config, pkgs, ... }:
+{
+  self,
+  lib,
+  inputs,
+  outputs,
+  config,
+  pkgs,
+  ...
+}:
 {
   imports = [
     ./. # hosts/common/
@@ -17,7 +25,7 @@
     type = "ibus";
   };
 
-  security.pam.services.swaylock = {
-    text = "auth include login";
-  };
+  # security.pam.services.swaylock = {
+  #   text = "auth include login";
+  # };
 }

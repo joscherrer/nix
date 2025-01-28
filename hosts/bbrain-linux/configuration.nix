@@ -73,9 +73,9 @@
     thunar-volman
   ];
 
-  fonts.packages = [
-    pkgs.nerdfonts
-  ];
+  fonts.packages =
+    [ ]
+    ++ builtins.filter lib.attrsets.isDerivation (builtins.attrValues pkgs.nerd-fonts);
 
   # Need to create /etc/nixos/smb-secrets with the following content:
   # username=<USERNAME>

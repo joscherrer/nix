@@ -40,6 +40,7 @@
     natscli
     postgresql
     pv-migrate
+    grafana-alloy
 
     # Containers
     podman-compose

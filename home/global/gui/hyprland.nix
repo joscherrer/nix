@@ -295,6 +295,8 @@ rec {
         "9, monitor:desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675, persistent:true, default:false"
         "10, monitor:desc:Dell Inc. DELL U2415 7MT0167B2YNL, persistent:true, default:false, layoutopt:orientation:top"
         "11, monitor:desc:AOC 28E850, persistent:true, default:true"
+        "w[tv1], gapsout:0, gapsin:0"
+        "f[1], gapsout:0, gapsin:0"
       ];
 
       general = {
@@ -338,12 +340,14 @@ rec {
           xray = true;
         };
 
-        drop_shadow = true;
-        shadow_ignore_window = true;
-        shadow_offset = "0 8";
-        shadow_range = 50;
-        shadow_render_power = 3;
-        "col.shadow" = "rgba(00000099)";
+        shadow = {
+          enabled = true;
+          ignore_window = true;
+          offset = "0 8";
+          range = 50;
+          render_power = 3;
+          color = "rgba(00000099)";
+        };
         blurls = [
           "gtk-layer-shell"
           "lockscreen"
@@ -374,7 +378,7 @@ rec {
       dwindle = {
         pseudotile = true;
         preserve_split = true;
-        no_gaps_when_only = false;
+        # no_gaps_when_only = false;
       };
 
       master = {
@@ -513,6 +517,10 @@ rec {
         "noinitialfocus,class:^(xwaylandvideobridge)$"
         "noblur,class:^(xwaylandvideobridge)$"
         "noshadow,class:^(xwaylandvideobridge)$"
+        "bordersize 0, floating:0, onworkspace:w[tv1]"
+        "rounding 0, floating:0, onworkspace:w[tv1]"
+        "bordersize 0, floating:0, onworkspace:f[1]"
+        "rounding 0, floating:0, onworkspace:f[1]"
       ];
       layerrule = [
         "blur, ^(gtk-layer-shell|anyrun)$"

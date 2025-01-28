@@ -1,4 +1,12 @@
-{ self, inputs, outputs, config, pkgs, lib, ... }:
+{
+  self,
+  inputs,
+  outputs,
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 {
   environment.pathsToLink = [ "/share/zsh" ];
   environment.systemPackages = with pkgs; [
@@ -17,9 +25,12 @@
     package = lib.mkDefault pkgs.nix;
     settings = {
       auto-optimise-store = true;
-      experimental-features = [ "nix-command" "flakes" "repl-flake" ];
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
       warn-dirty = false;
-      substituters = ["https://cache.nixos.org/"]; 
+      substituters = [ "https://cache.nixos.org/" ];
     };
   };
 
@@ -43,7 +54,7 @@
       let
         authorizedKeys = pkgs.fetchurl {
           url = "https://github.com/joscherrer.keys";
-          hash = "sha256-gWAWZKicQVi9H4xCGiMQHauiUN34CBMYhJgBem5qunI=";
+          hash = "sha256-do86BT7VmTlQDRXoPgnUORTH56axo8UroQLDcP52lgE=";
         };
       in
       pkgs.lib.splitString "\n" (builtins.readFile authorizedKeys);
