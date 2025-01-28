@@ -43,6 +43,10 @@
   };
 
   networking = {
+    nameservers = [
+      "8.8.8.8"
+      "1.1.1.1"
+    ];
     firewall = {
       allowedUDPPorts = [ 51820 ];
     };
@@ -60,7 +64,6 @@
               "192.168.1.0/24"
             ];
             endpoint = "82.66.46.243:30195";
-            persistentKeepalive = 25;
           }
         ];
       };
