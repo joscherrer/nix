@@ -314,6 +314,7 @@ local function lspconfig_config()
 
     lspconfig.terraformls.setup({})
     lspconfig.marksman.setup({})
+    lspconfig.jsonnet_ls.setup({})
     lspconfig.basedpyright.setup({
         on_init = function(client, _)
             client.server_capabilities.semanticTokensProvider = nil

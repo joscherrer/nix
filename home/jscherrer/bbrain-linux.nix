@@ -33,6 +33,7 @@
     pkgs.kanshi
     pkgs.buildah
     pkgs.pdm
+    pkgs.poetry
     pkgs.stable.vagrant
     pkgs.obsidian
     pkgs.yubikey-manager-qt

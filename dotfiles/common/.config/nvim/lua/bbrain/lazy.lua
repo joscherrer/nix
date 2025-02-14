@@ -1,7 +1,3 @@
-vim.defer_fn(function()
-    vim.notify("Reminder to check if PR #76 has been merged", vim.log.levels.WARN, { title = "smart-open.nvim" })
-end, 1000)
-
 local plugins = {
     { import = "plugins" },
     {
@@ -20,10 +16,8 @@ local plugins = {
     { 'numToStr/Comment.nvim',  opts = {} },
     -- { 'windwp/nvim-autopairs',  event = "InsertEnter", opts = {} },
     {
-        -- 'danielfalk/smart-open.nvim',
-        -- branch = "0.2.x",
-        'scottmckendry/smart-open.nvim',
-        commit = "698442805d3f4a577abfd7141cd5278306fe04ed",
+        'danielfalk/smart-open.nvim',
+        branch = "0.2.x",
         config = function()
             if vim.fn.filereadable(vim.fn.stdpath('config') .. '/lua/nix/sqlite.lua') ~= 0 then
                 require('nix.sqlite')

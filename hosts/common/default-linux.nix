@@ -19,6 +19,7 @@ in
     firewall = {
       enable = true;
       trustedInterfaces = [
+        "wg0"
         "kind"
         "kindrl"
         "kindrf"

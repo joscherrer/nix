@@ -129,7 +129,7 @@
   networking.interfaces.enp39s0.wakeOnLan.enable = true;
 
   networking = {
-    wireguard.enable = true;
+    wireguard.enable = false;
     wireguard.interfaces = {
       wg0 = {
         ips = [ "192.168.27.69/32" ];
@@ -140,7 +140,8 @@
             publicKey = "kPDTM5DF/IzZ3h8Akd4mE20utzaKsbxmk9UEtI+SPi0=";
             allowedIPs = [
               "192.168.27.64/27"
-              "192.168.1.0/24"
+              # "192.168.1.0/24"
+              "192.168.14.0/24"
             ];
             endpoint = "82.66.46.243:30195";
             persistentKeepalive = 25;
