@@ -34,9 +34,27 @@
     #pkgs.buildah
     #pkgs.pdm
     #pkgs.vagrant
-    #pkgs.obsidian
+    pkgs.obsidian
     #pkgs.yubikey-manager-qt
     # pkgs.ankama-launcher
   ];
+
+  wayland.windowManager.hyprland = {
+    settings = {
+      workspace = [
+        "1, monitor:desc:Acer Technologies V277 E 842614EC23W01, persistent:true, default:true"
+        "2, monitor:desc:Acer Technologies V277 E 842614D663W01, persistent:true, default:true"
+        "3, monitor:desc:Acer Technologies V277 E 842614EC23W01, persistent:true, default:false"
+        "4, monitor:desc:Acer Technologies V277 E 842614D663W01, persistent:true, default:false"
+        "5, monitor:desc:Acer Technologies V277 E 842614EC23W01, persistent:true, default:false"
+        "6, monitor:desc:Acer Technologies V277 E 842614D663W01, persistent:true, default:false"
+        "7, monitor:desc:Acer Technologies V277 E 842614EC23W01, persistent:true, default:false"
+        "8, monitor:desc:Acer Technologies V277 E 842614D663W01, persistent:true, default:false"
+        "9, monitor:desc:Acer Technologies V277 E 842614EC23W01, persistent:true, default:false"
+        "10, monitor:desc:Acer Technologies V277 E 842614D663W01, persistent:true, default:false"
+        "11, monitor:desc:AOC 28E850, persistent:true, default:true"
+      ];
+    };
+  };
 
 }
