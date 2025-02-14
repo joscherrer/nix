@@ -21,6 +21,10 @@
   #     sudo.u2fAuth = true;
   # };
 
+  programs.git = {
+    userEmail = "jonathan@jumbomana.com";
+  };
+
   xdg.mimeApps.enable = true;
   xdg.mimeApps.defaultApplications = {
     "text/html" = "firefox.desktop";

@@ -52,6 +52,19 @@
     package = pkgs.gnupg;
   };
 
+  programs.git = {
+    enable = true;
+    userName = "Jonathan Scherrer";
+    userEmail = lib.mkDefault "jonathan.s.scherrer@gmail.com";
+    delta = {
+      enable = true;
+      options = {
+        navigate = true;
+        side-by-side = true;
+      };
+    };
+  };
+
   home.packages = with pkgs; [
     # Shell utilities
     coreutils
