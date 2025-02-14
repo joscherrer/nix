@@ -3,8 +3,10 @@
   home.packages = with pkgs; [
     # JS/TS
     nodejs
-    nodePackages.typescript
+    # nodePackages.typescript
     yarn
     nodePackages.prettier
+    typescript
+    typescript-language-server
   ];
 }

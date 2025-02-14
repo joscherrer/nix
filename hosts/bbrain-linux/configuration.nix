@@ -73,9 +73,9 @@
     thunar-volman
   ];
 
-  fonts.packages = [
-    pkgs.nerdfonts
-  ];
+  fonts.packages =
+    [ ]
+    ++ builtins.filter lib.attrsets.isDerivation (builtins.attrValues pkgs.nerd-fonts);
 
   # Need to create /etc/nixos/smb-secrets with the following content:
   # username=<USERNAME>
@@ -127,6 +127,29 @@
     '';
   };
   networking.interfaces.enp39s0.wakeOnLan.enable = true;
+
+  networking = {
+    wireguard.enable = false;
+    wireguard.interfaces = {
+      wg0 = {
+        ips = [ "192.168.27.69/32" ];
+        listenPort = 51820;
+        privateKeyFile = "/home/jscherrer/.config/wireguard/privatekey";
+        peers = [
+          {
+            publicKey = "kPDTM5DF/IzZ3h8Akd4mE20utzaKsbxmk9UEtI+SPi0=";
+            allowedIPs = [
+              "192.168.27.64/27"
+              # "192.168.1.0/24"
+              "192.168.14.0/24"
+            ];
+            endpoint = "82.66.46.243:30195";
+            persistentKeepalive = 25;
+          }
+        ];
+      };
+    };
+  };
 
   boot.kernel.sysctl = {
     "net.ipv4.ip_unprivileged_port_start" = 80;
@@ -235,6 +258,9 @@
 
   networking.firewall = {
     enable = true;
-    allowedUDPPorts = [ 8211 ];
+    allowedUDPPorts = [
+      8211
+      51820
+    ];
   };
 }

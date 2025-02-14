@@ -40,9 +40,11 @@
     natscli
     postgresql
     pv-migrate
+    grafana-alloy
 
     # Containers
-    podman-compose
+    # podman-compose
+    docker-compose
     dive
     kustomize
     kubectl

@@ -103,9 +103,12 @@ local lsp_symbol_callback = function(client, bufnr, _, result)
     fs.writeFileSync(vim.fn.expand(schemaSequencePath),
         vim.json.encode({ schemaSequence = schemaSequence }))
 
-    client.settings.yaml.schemas = {
-        [schemaSequencePath] = vim.api.nvim_buf_get_name(bufnr)
-    }
+
+    if vim.api.nvim_buf_is_valid(bufnr) then
+        client.settings.yaml.schemas = {
+            [schemaSequencePath] = vim.api.nvim_buf_get_name(bufnr)
+        }
+    end
     client.notify('workspace/didChangeConfiguration', {
         settings = client.settings
     })

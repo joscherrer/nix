@@ -6,5 +6,6 @@
     ./js.nix
     ./rust.nix
     ./nix.nix
+    ./python.nix
   ];
 }

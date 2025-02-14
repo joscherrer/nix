@@ -33,9 +33,11 @@
     pkgs.kanshi
     pkgs.buildah
     pkgs.pdm
-    pkgs.vagrant
+    pkgs.poetry
+    pkgs.stable.vagrant
     pkgs.obsidian
     pkgs.yubikey-manager-qt
+    pkgs.stockfish
     # pkgs.ankama-launcher
   ];
 
