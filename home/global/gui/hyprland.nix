@@ -128,11 +128,11 @@ rec {
           on-timeout = "loginctl lock-session";
           on-resume = "${hyprdispatch}/bin/hyprdispatch";
         }
-        {
-          timeout = 600;
-          on-timeout = "systemctl suspend";
-          on-resume = "${hyprdispatch}/bin/hyprdispatch";
-        }
+        # {
+        #   timeout = 600;
+        #   on-timeout = "systemctl suspend";
+        #   on-resume = "${hyprdispatch}/bin/hyprdispatch";
+        # }
       ];
     };
   };
@@ -283,21 +283,19 @@ rec {
         accel_profile = "flat";
       };
 
-      workspace = [
-        "1, monitor:desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675, persistent:true, default:true"
-        "2, monitor:desc:Dell Inc. DELL U2415 7MT0167B2YNL, persistent:true, default:true, layoutopt:orientation:top"
-        "3, monitor:desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675, persistent:true, default:false"
-        "4, monitor:desc:Dell Inc. DELL U2415 7MT0167B2YNL, persistent:true, default:false, layoutopt:orientation:top"
-        "5, monitor:desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675, persistent:true, default:false"
-        "6, monitor:desc:Dell Inc. DELL U2415 7MT0167B2YNL, persistent:true, default:false, layoutopt:orientation:top"
-        "7, monitor:desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675, persistent:true, default:false"
-        "8, monitor:desc:Dell Inc. DELL U2415 7MT0167B2YNL, persistent:true, default:false, layoutopt:orientation:top"
-        "9, monitor:desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675, persistent:true, default:false"
-        "10, monitor:desc:Dell Inc. DELL U2415 7MT0167B2YNL, persistent:true, default:false, layoutopt:orientation:top"
-        "11, monitor:desc:AOC 28E850, persistent:true, default:true"
-        "w[tv1], gapsout:0, gapsin:0"
-        "f[1], gapsout:0, gapsin:0"
-      ];
+      # workspace = [
+      #   "1, monitor:desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675, persistent:true, default:true"
+      #   "2, monitor:desc:Dell Inc. DELL U2415 7MT0167B2YNL, persistent:true, default:true, layoutopt:orientation:top"
+      #   "3, monitor:desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675, persistent:true, default:false"
+      #   "4, monitor:desc:Dell Inc. DELL U2415 7MT0167B2YNL, persistent:true, default:false, layoutopt:orientation:top"
+      #   "5, monitor:desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675, persistent:true, default:false"
+      #   "6, monitor:desc:Dell Inc. DELL U2415 7MT0167B2YNL, persistent:true, default:false, layoutopt:orientation:top"
+      #   "7, monitor:desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675, persistent:true, default:false"
+      #   "8, monitor:desc:Dell Inc. DELL U2415 7MT0167B2YNL, persistent:true, default:false, layoutopt:orientation:top"
+      #   "9, monitor:desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675, persistent:true, default:false"
+      #   "10, monitor:desc:Dell Inc. DELL U2415 7MT0167B2YNL, persistent:true, default:false, layoutopt:orientation:top"
+      #   "11, monitor:desc:AOC 28E850, persistent:true, default:true"
+      # ];
 
       general = {
         gaps_in = 5;
@@ -378,7 +376,6 @@ rec {
       dwindle = {
         pseudotile = true;
         preserve_split = true;
-        # no_gaps_when_only = false;
       };
 
       master = {

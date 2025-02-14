@@ -11,7 +11,7 @@ let
   browser = [ "firefox.desktop" ];
   notion-icon = builtins.fetchurl {
     url = "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Notion-logo.svg/480px-Notion-logo.svg.png";
-    sha256 = "sha256:0vrbmwl13hf3sqv8157z4r5glvz8mhffr1r1v46dj7yzd95a97bp";
+    sha256 = "sha256:0liksflpwv14q4fqg36syaa2sbxc2nwksf0j6gpr36qaji7mnwwk";
   };
 in
 {

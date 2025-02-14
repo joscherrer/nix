@@ -154,6 +154,15 @@
             catppuccin.nixosModules.catppuccin
           ];
         };
+        jumbo = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          specialArgs = {
+            inherit self inputs outputs;
+          };
+          modules = [
+            ./hosts/jumbo
+          ];
+        };
         jo-home = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           specialArgs = {

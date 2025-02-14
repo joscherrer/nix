@@ -50,6 +50,7 @@
   # };
 
   users.users.jscherrer = {
+    isNormalUser = true;
     openssh.authorizedKeys.keys =
       let
         authorizedKeys = pkgs.fetchurl {
