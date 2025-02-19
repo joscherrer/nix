@@ -27,6 +27,19 @@
     wget
     curl
     git
+    (python3.withPackages (
+      ps: with ps; [
+        flake8
+        ruamel-yaml
+        requests
+        toml
+        types-toml
+        sh
+        debugpy
+      ]
+    ))
+    python311
+    poetry
   ];
 
   hardware.graphics = {
