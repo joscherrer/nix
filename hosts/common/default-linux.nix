@@ -24,6 +24,7 @@ in
         "kindrl"
         "kindrf"
         "podman0"
+        "docker0"
         "podman1"
         "enp39s0"
       ];
@@ -152,11 +153,11 @@ in
     enableSSHSupport = true;
   };
 
-#  systemd.services.flatpak-repo = {
-#    wantedBy = [ "multi-user.target" ];
-#    path = [ pkgs.flatpak ];
-#    script = ''
-#      flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-#    '';
-#  };
+  #  systemd.services.flatpak-repo = {
+  #    wantedBy = [ "multi-user.target" ];
+  #    path = [ pkgs.flatpak ];
+  #    script = ''
+  #      flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+  #    '';
+  #  };
 }

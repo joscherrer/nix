@@ -150,6 +150,7 @@ in
     dbeaver-bin
     bitwarden
     telegram-desktop
+    pandoc
     (catppuccin-kvantum.override {
       accent = "mauve";
       variant = "mocha";
