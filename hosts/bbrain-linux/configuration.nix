@@ -41,7 +41,7 @@
     pkgs.qt6.qtwayland
     pkgs.qt5.qtwayland
     pkgs.libva
-    pkgs.unstable.xwaylandvideobridge
+    pkgs.unstable.kdePackages.xwaylandvideobridge
     pkgs.wineWowPackages.waylandFull
     pkgs.cifs-utils
     pkgs.qmk
@@ -55,6 +55,7 @@
         types-toml
         sh
         debugpy
+        pywinrm
       ]
     ))
     inputs.hyprswitch.packages.x86_64-linux.default
@@ -111,8 +112,9 @@
   # Local k8s cluster with direct access
   networking.search = [ "dns.podman" ];
   networking.nameservers = [
-    "127.0.0.1"
-    "::1"
+    # "127.0.0.1"
+    # "::1"
+    "8.8.8.8"
   ];
   networking.hosts = {
     "172.16.0.200" = [ "kind-ingress.dns.podman" ];
@@ -172,6 +174,10 @@
   services.xserver.xkb = {
     layout = "us";
     variant = "intl";
+  };
+
+  services.cloudflare-warp = {
+    enable = true;
   };
 
   console.keyMap = "us-acentos";

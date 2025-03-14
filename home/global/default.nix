@@ -32,6 +32,7 @@
     s3cmd
     awscli2
     fluxcd
+    argocd
     vault-bin
     open-policy-agent
     ibmcloud-cli
@@ -41,6 +42,7 @@
     postgresql
     pv-migrate
     grafana-alloy
+    cloudflared
 
     # Containers
     # podman-compose

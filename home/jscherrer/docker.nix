@@ -1,10 +1,17 @@
-{ inputs, outputs, config, pkgs, lib, ... }:
+{
+  inputs,
+  outputs,
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 {
   imports = [
     ../global/minimal.nix
   ];
 
-  nixpkgs.overlays = builtins.attrValues outputs.overlays;
+  # nixpkgs.overlays = builtins.attrValues outputs.overlays;
 
   home.username = lib.mkDefault "jscherrer";
   home.homeDirectory = lib.mkDefault "/home/jscherrer";

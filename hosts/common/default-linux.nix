@@ -17,6 +17,7 @@ in
 
   networking = {
     firewall = {
+      logRefusedConnections = true;
       enable = true;
       trustedInterfaces = [
         "wg0"
@@ -27,6 +28,11 @@ in
         "docker0"
         "podman1"
         "enp39s0"
+        "vboxnet0"
+      ];
+      interfaces."vboxnet+".allowedTCPPorts = [
+        5985
+        5986
       ];
       interfaces."podman+".allowedUDPPorts = [
         53
@@ -65,7 +71,7 @@ in
     # registries.insecure = ["cr.dns.podman" "cr.dns.podman:5000" "kind-cr.dns.podman:5000" "localhost:5000"];
   };
 
-  virtualisation.libvirtd.enable = true;
+  virtualisation.libvirtd.enable = false;
   programs.dconf.enable = true;
 
   i18n.defaultLocale = "en_US.UTF-8";

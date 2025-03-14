@@ -34,10 +34,12 @@
     pkgs.buildah
     pkgs.pdm
     pkgs.poetry
-    pkgs.stable.vagrant
+    pkgs.unstable.vagrant
     pkgs.obsidian
     pkgs.yubikey-manager-qt
     pkgs.stockfish
+    pkgs.moonlight-qt
+    pkgs.desktop-file-utils
     # pkgs.ankama-launcher
   ];
 
