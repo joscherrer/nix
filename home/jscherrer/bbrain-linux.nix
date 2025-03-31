@@ -22,14 +22,16 @@
   # };
 
   systemd.user.services."nvim-server" = {
-    description = "Neovim server";
-    after = [ "network.target" ];
-    serviceConfig = {
+    Unit = {
+      Description = "Neovim server";
+      After = [ "network.target" ];
+    };
+    Service = {
       Type = "simple";
       ExecStart = "${pkgs.neovim}/bin/nvim --headless --listen localhost:6666 --cmd 'let g:neovide = v:true'";
       Restart = "always";
     };
-    wantedBy = [ "default.target" ];
+    # wantedBy = [ "default.target" ];
   };
 
   xdg.mimeApps.enable = true;

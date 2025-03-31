@@ -132,21 +132,36 @@
   networking.interfaces.enp39s0.wakeOnLan.enable = true;
 
   networking = {
-    wireguard.enable = false;
+    wireguard.enable = true;
     wireguard.interfaces = {
-      wg0 = {
-        ips = [ "192.168.27.69/32" ];
+      # wg0 = {
+      #   ips = [ "192.168.27.69/32" ];
+      #   listenPort = 51820;
+      #   privateKeyFile = "/home/jscherrer/.config/wireguard/privatekey";
+      #   peers = [
+      #     {
+      #       publicKey = "kPDTM5DF/IzZ3h8Akd4mE20utzaKsbxmk9UEtI+SPi0=";
+      #       allowedIPs = [
+      #         "192.168.27.64/27"
+      #         # "192.168.1.0/24"
+      #         "192.168.14.0/24"
+      #       ];
+      #       endpoint = "82.66.46.243:30195";
+      #       persistentKeepalive = 25;
+      #     }
+      #   ];
+      # };
+      wg1 = {
+        ips = [ "10.8.0.6/32" ];
         listenPort = 51820;
-        privateKeyFile = "/home/jscherrer/.config/wireguard/privatekey";
+        privateKeyFile = "/home/jscherrer/.config/wireguard/tcs";
         peers = [
           {
-            publicKey = "kPDTM5DF/IzZ3h8Akd4mE20utzaKsbxmk9UEtI+SPi0=";
+            publicKey = "M3VkDBj7p1uY/HFBAsB8z4Wh7hOh2BVukAFGnxP0Rx8=";
             allowedIPs = [
-              "192.168.27.64/27"
-              # "192.168.1.0/24"
-              "192.168.14.0/24"
+              "10.8.0.0/16"
             ];
-            endpoint = "82.66.46.243:30195";
+            endpoint = "wg.jumbomana.io:31532";
             persistentKeepalive = 25;
           }
         ];
