@@ -283,6 +283,12 @@
     allowedTCPPorts = [
       6666
     ];
+    allowedTCPPortRanges = [
+      {
+        from = 6666;
+        to = 6670;
+      }
+    ];
     allowedUDPPorts = [
       8211
       51820

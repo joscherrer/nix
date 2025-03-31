@@ -28,10 +28,33 @@
     };
     Service = {
       Type = "simple";
-      ExecStart = "${pkgs.neovim}/bin/nvim --headless --listen localhost:6666 --cmd 'let g:neovide = v:true'";
+      ExecStart = "${pkgs.neovim}/bin/nvim --headless --listen 0.0.0.0:6666 --cmd 'let g:neovide = v:true'";
       Restart = "always";
     };
-    # wantedBy = [ "default.target" ];
+  };
+
+  systemd.user.services."nvim-server-2" = {
+    Unit = {
+      Description = "Neovim server";
+      After = [ "network.target" ];
+    };
+    Service = {
+      Type = "simple";
+      ExecStart = "${pkgs.neovim}/bin/nvim --headless --listen 0.0.0.0:6667 --cmd 'let g:neovide = v:true'";
+      Restart = "always";
+    };
+  };
+
+  systemd.user.services."nvim-server-3" = {
+    Unit = {
+      Description = "Neovim server";
+      After = [ "network.target" ];
+    };
+    Service = {
+      Type = "simple";
+      ExecStart = "${pkgs.neovim}/bin/nvim --headless --listen 0.0.0.0:6668 --cmd 'let g:neovide = v:true'";
+      Restart = "always";
+    };
   };
 
   xdg.mimeApps.enable = true;
