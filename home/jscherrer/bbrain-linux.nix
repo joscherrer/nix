@@ -21,6 +21,17 @@
   #     sudo.u2fAuth = true;
   # };
 
+  systemd.user.services."nvim-server" = {
+    description = "Neovim server";
+    after = [ "network.target" ];
+    serviceConfig = {
+      Type = "simple";
+      ExecStart = "${pkgs.neovim}/bin/nvim --headless --listen localhost:6666 --cmd 'let g:neovide = v:true'";
+      Restart = "always";
+    };
+    wantedBy = [ "default.target" ];
+  };
+
   xdg.mimeApps.enable = true;
   xdg.mimeApps.defaultApplications = {
     "text/html" = "firefox.desktop";

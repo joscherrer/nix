@@ -26,6 +26,7 @@ in
     ./vscode.nix
     ./waybar.nix
     ./thunderbird.nix
+    ./nvim-remote.nix
     inputs.catppuccin.homeManagerModules.catppuccin
   ];
 
