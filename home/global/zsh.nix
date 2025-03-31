@@ -58,6 +58,9 @@ let
   common-root = "${inputs.self}/dotfiles/common";
 in
 {
+  imports = [
+    ./fzf.nix
+  ];
 
   programs.zsh = {
     enable = true;

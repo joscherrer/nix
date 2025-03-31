@@ -1,4 +1,11 @@
-{ inputs, lib, pkgs, config, outputs, ... }:
+{
+  inputs,
+  lib,
+  pkgs,
+  config,
+  outputs,
+  ...
+}:
 {
   programs.fzf.enable = true;
   programs.fzf.enableZshIntegration = true;
