@@ -34,7 +34,6 @@
     };
     Service = {
       Type = "simple";
-<<<<<<< Updated upstream
       ExecStart = "${pkgs.neovim}/bin/nvim --headless --listen 0.0.0.0:6666 --cmd 'let g:neovide = v:true'";
       Restart = "always";
     };
