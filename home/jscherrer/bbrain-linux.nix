@@ -14,6 +14,12 @@
   home.username = lib.mkDefault "jscherrer";
   home.homeDirectory = lib.mkDefault "/home/jscherrer";
 
+  nix.gc = {
+    automatic = true;
+    frequency = "hourly";
+    options = "--delete-older-than 10d";
+  };
+
   programs.keychain.enable = true;
   services.gnome-keyring.enable = true;
   # security.pam.services = {
@@ -76,7 +82,7 @@
     pkgs.poetry
     pkgs.unstable.vagrant
     pkgs.obsidian
-    pkgs.yubikey-manager-qt
+    # pkgs.yubikey-manager-qt
     pkgs.stockfish
     pkgs.moonlight-qt
     pkgs.desktop-file-utils

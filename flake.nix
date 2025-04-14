@@ -15,8 +15,8 @@
     darwin.url = "github:LnL7/nix-darwin";
     darwin.inputs.nixpkgs.follows = "nixpkgs-darwin";
 
-    kmonad.url = "git+https://github.com/kmonad/kmonad?submodules=1&dir=nix";
-    kmonad.inputs.nixpkgs.follows = "nixpkgs";
+    # kmonad.url = "git+https://github.com/kmonad/kmonad?submodules=1&dir=nix";
+    # kmonad.inputs.nixpkgs.follows = "nixpkgs";
 
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
@@ -39,7 +39,7 @@
       nixpkgs-unstable,
       home-manager,
       darwin,
-      kmonad,
+      # kmonad,
       nil,
       catppuccin,
       nixos-wsl,

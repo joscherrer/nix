@@ -22,6 +22,7 @@
     terraform
     opentofu
     terraform-ls
+    terraform-docs
     packer
     ansible
     ansible-lint
@@ -42,7 +43,7 @@
     postgresql
     pv-migrate
     grafana-alloy
-    cloudflared
+    # cloudflared
 
     # Containers
     # podman-compose

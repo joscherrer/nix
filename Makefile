@@ -4,8 +4,10 @@ OS_NAME := $(shell uname -s | tr A-Z a-z)
 
 all: $(OS_NAME) gh-copilot
 
-fresh: EXTRA_ARGS += --recreate-lock-file
-fresh: $(OS_NAME) gh-copilot commit-lockfile
+fresh: flake-update $(OS_NAME) gh-copilot commit-lockfile
+
+flake-update:
+	nix flake update
 
 ifeq ($(OS_NAME), linux)
 linux: linux-local
