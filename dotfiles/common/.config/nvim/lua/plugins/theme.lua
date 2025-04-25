@@ -92,8 +92,8 @@ return {
     { "norcalli/nvim-colorizer.lua", opts = {} },
     {
         "folke/noice.nvim",
-        version = "4.4.7",
-        pin = true,
+        -- version = "4.4.7",
+        -- pin = true,
         event = "VeryLazy",
         opts = {
             lsp = {
