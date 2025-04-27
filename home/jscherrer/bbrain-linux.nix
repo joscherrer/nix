@@ -59,9 +59,6 @@
     Service = {
       Type = "simple";
       ExecStart = "${pkgs.neovim}/bin/nvim --headless --listen 0.0.0.0:6668 --cmd 'let g:neovide = v:true'";
-=======
-      ExecStart = "${pkgs.neovim}/bin/nvim --headless --listen 192.168.1.175:6666 --cmd 'let g:neovide = v:true'";
->>>>>>> Stashed changes
       Restart = "always";
     };
   };

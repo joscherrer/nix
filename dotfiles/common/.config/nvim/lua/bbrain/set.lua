@@ -38,6 +38,12 @@ vim.o.pumheight = 12
 vim.o.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
 vim.g.default_winblend = 100
 
+vim.opt.foldmethod = "expr"
+vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+vim.opt.foldtext = ""
+vim.opt.fillchars:append("fold: ")
+vim.opt.foldlevelstart = 99
+
 -- vim.opt.shortmess = "ltToOCFW"
 
 if vim.g.neovide then
