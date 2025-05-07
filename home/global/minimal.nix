@@ -1,4 +1,10 @@
 { lib, pkgs, ... }:
+let
+  delta-themes = builtins.fetchurl {
+    url = "https://raw.githubusercontent.com/dandavison/delta/refs/heads/main/themes.gitconfig";
+    sha256 = "sha256:18z0c3skdxzpvh3z0ml280zkmkykq8m5dhdc1bdh11nacxw0n41l";
+  };
+in
 {
   imports = [
     ./zsh.nix
@@ -61,7 +67,19 @@
       options = {
         navigate = true;
         side-by-side = true;
+        syntax-theme = "TwoDark";
+        diff-args = "-U999";
       };
+    };
+    includes = [
+      { path = delta-themes; }
+    ];
+  };
+
+  programs.bat = {
+    enable = true;
+    config = {
+      theme = "TwoDark";
     };
   };
 

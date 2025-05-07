@@ -53,7 +53,7 @@ let
     manpath+=(/usr/share/man /opt/homebrew/share/man /run/current-system/sw/share/man/ /etc/profiles/per-user/jscherrer/share/man)
     fpath+=(~/.config/zsh/site-functions /opt/homebrew/share/zsh/site-functions)
     PATH="$(echo "$PATH" | perl -pe 's|.*${pkgs.tmuxp}/bin:||')"
-    path=(~/.local/bin /opt/homebrew/bin /opt/homebrew/sbin "''${path[@]}")
+    path=(~/.local/bin /opt/homebrew/bin /opt/homebrew/sbin ''$(go env GOPATH)/bin "''${path[@]}")
   '';
   common-root = "${inputs.self}/dotfiles/common";
 in
@@ -84,8 +84,8 @@ in
       expireDuplicatesFirst = true;
       ignoreDups = true;
       ignoreSpace = true;
-      save = 50000;
-      size = 100000;
+      save = 9999999;
+      size = 9999999;
     };
     shellAliases = {
       ls = "lsd";
@@ -117,7 +117,7 @@ in
     sessionVariables = {
       KUBECACHEDIR = "${config.xdg.cacheHome}/kube";
       KUBECONFIG = "${config.xdg.configHome}/kube/config";
-      KUBECTL_EXTERNAL_DIFF = "diff --color=always";
+      KUBECTL_EXTERNAL_DIFF = "delta --default-language yaml";
       EDITOR = "nvim";
       HELM_PLUGINS = "${config.xdg.dataHome}/helm/plugins:${pkgs.kubernetes-helmPlugins.helm-diff}";
       LESS = "-R --mouse --quit-if-one-screen";

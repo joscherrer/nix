@@ -79,6 +79,14 @@ local plugins = {
         opts = {
             direction = "horizontal",
             shading_factor = 10,
+            winbar = {
+                enabled = true,
+                name_formatter = function(term) --  term: Terminal
+                    local Path = require("plenary.path")
+                    local dir = Path:new(term.dir)
+                    return vim.fn.join({ term.id, dir:normalize("~") }, ":")
+                end,
+            },
             float_opts = {
                 border = "solid",
                 row = 1,
@@ -92,10 +100,76 @@ local plugins = {
                     return math.ceil(vim.o.columns * 0.9)
                 end,
                 winblend = vim.g.default_winblend,
-            }
+            },
+            on_open = function(term)
+                vim.keymap.set({ "n", "t" }, "<C-h>", function()
+                    require("bbrain.helpers").next_term(true)
+                end, { desc = "Next Terminal" })
+                vim.keymap.set({ "n", "t" }, "<C-l>", function()
+                    require("bbrain.helpers").next_term(false)
+                end, { desc = "Previous Terminal" })
+                vim.keymap.set({ "n", "t" }, "<C-n>", function()
+                    require("bbrain.helpers").new_term()
+                end, { desc = "New Terminal" })
+                vim.keymap.set({ "n", "t" }, "<C-q>", function()
+                    require("bbrain.helpers").close_term()
+                end, { desc = "Close Terminal" })
+            end,
         },
+        config = function(_, opts)
+            require("toggleterm").setup(opts)
+            vim.api.nvim_set_hl(0, "WinBarActive", { fg = "#98c379", underline = true })
+            vim.api.nvim_set_hl(0, "WinBarInactive", { link = "Comment" })
+
+            local ui = require("toggleterm.ui")
+            local helpers = require('bbrain.helpers')
+
+            _G.___toggleterm_winbar_new_click = helpers.winbar_new_click
+            _G.___toggleterm_winbar_click = helpers.winbar_click
+
+            ui.winbar_orig = ui.winbar
+            ui.winbar = function(term)
+                local winbar = ui.winbar_orig(term)
+                winbar = winbar .. "%@v:lua.___toggleterm_winbar_new_click@%#Normal#➕%* "
+                return winbar
+            end
+
+            -- Switch to the next terminal when the shell in the current terminal is closed
+            vim.api.nvim_create_autocmd("TermClose", {
+                callback = function(event)
+                    local terms = require("toggleterm.terminal")
+                    local next_term
+
+                    local all_terms = terms.get_all()
+                    if #all_terms < 2 then
+                        return
+                    end
+
+                    if vim.g.bbrain_just_closed_terminal then
+                        vim.g.bbrain_just_closed_terminal = false
+                        return
+                    end
+
+                    for i, term in ipairs(terms.get_all()) do
+                        if term.bufnr == event.buf then
+                            next_term = all_terms[i + 1] or all_terms[i - 1] or all_terms[1]
+                            break
+                        end
+                    end
+
+                    if next_term then
+                        vim.notify("TermClose: " .. event.buf .. " -> " .. next_term.id, vim.log.levels.DEBUG,
+                            { title = "ToggleTerm" })
+                        next_term:open()
+                        next_term:focus()
+                    end
+                end,
+            })
+        end,
         keys = {
-            { "<C-`>", function() require("toggleterm").toggle() end, mode = { "n", "v", "i", "t" }, desc = "Toggle Terminal" }
+            { "<C-`>", function() require("toggleterm").toggle() end,             mode = { "n", "v", "i", "t" }, desc = "Toggle Terminal" },
+            { "<C-h>", function() require("bbrain.helpers").next_term(true) end,  mode = { "t" },                desc = "Next Terminal" },
+            { "<C-l>", function() require("bbrain.helpers").next_term(false) end, mode = { "t" },                desc = "Previous Terminal" },
         }
     },
     {

@@ -441,6 +441,51 @@ M.add("Tools", "ToggleKubectl", {
     desc = "Toggle kubectl"
 })
 
+M.add("Actions", "ToggleFold", {
+    cmd = { name = "ToggleFold", cmd = function() vim.cmd("normal! za") end },
+    keys = { { mode = "n", lhs = "za", opts = {} } },
+    desc = "Toggle fold"
+})
+
+M.add("Actions", "SearchWord", {
+    cmd = { name = "SearchWord", cmd = require('telescope.builtin').grep_string },
+    keys = { { mode = "n", lhs = "<C-f>", opts = {} } },
+    desc = "Search word under cursor"
+})
+
+M.add("View", "ZoomIn", {
+    cmd = {
+        name = "ZoomIn",
+        cmd = function()
+            vim.g.neovide_scale_factor = vim.g.neovide_scale_factor + 0.1
+        end
+    },
+    keys = { { mode = "n", lhs = "<leader>zi", opts = {} } },
+    desc = "Zoom in"
+})
+
+M.add("View", "ZoomOut", {
+    cmd = {
+        name = "ZoomOut",
+        cmd = function()
+            vim.g.neovide_scale_factor = vim.g.neovide_scale_factor - 0.1
+        end
+    },
+    keys = { { mode = "n", lhs = "<leader>zo", opts = {} } },
+    desc = "Zoom out"
+})
+
+M.add("View", "ZoomReset", {
+    cmd = {
+        name = "ZoomReset",
+        cmd = function()
+            vim.g.neovide_scale_factor = 1
+        end
+    },
+    keys = { { mode = "n", lhs = "<leader>zr", opts = {} } },
+    desc = "Zoom reset"
+})
+
 M.add("Log", "SetLogLevel", {
     cmd = {
         name = "SetLogLevel",

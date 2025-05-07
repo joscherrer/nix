@@ -102,7 +102,7 @@ vim.keymap.set("n", "<C-h>", ":s/\\v", { desc = "Search and replace" })
 -- Use <Esc> in normal mode
 vim.keymap.set("n", "<Esc>",
     function()
-        vim.api.nvim_set_option_value("hlsearch", false, {})
+        vim.v.hlsearch = 0
         if vim.g.smart_resize_mode == true then
             require('smart-splits.resize-mode').end_resize_mode()
         end

@@ -1,168 +1,3 @@
-local fs = require('luvit.fs')
-
-local yaml_on_attach = function(client, bufnr)
-    local predicate = function(v)
-        return function(o)
-            return o.name == v
-        end
-    end
-    local getSymbol = function(symbols, key)
-        for k, v in pairs(symbols) do
-            if v.name == key then
-                return v.detail
-            end
-        end
-        return nil
-    end
-    local callback = function(_, result)
-        local rootStrings = vim.tbl_filter(function(o) return o.kind == 15 end, result)
-        local kind = getSymbol(rootStrings, "kind")
-        local apiVersion = getSymbol(rootStrings, "apiVersion")
-
-        if kind == nil or apiVersion == nil then
-            return
-        end
-
-        local s = vim.split(apiVersion, "/")
-        local group = s[1]
-        local version = s[2]
-        if #s < 2 then
-            group = ""
-            version = s[1]
-        end
-        local schemas = vim.fn.expand("$HOME/.datree/crdSchemas")
-        kind = string.lower(kind)
-
-        local schema = vim.fs.joinpath(schemas, group, kind .. "_" .. version .. ".json")
-        local schema_s = vim.fs.joinpath(schemas, group, kind .. "s_" .. version .. ".json")
-        if vim.fn.filereadable(schema) ~= 0 then
-            vim.notify("Found: " .. schema, vim.log.levels.DEBUG)
-            client.settings.yaml.schemas = {
-                [schema] = vim.api.nvim_buf_get_name(bufnr)
-            }
-        elseif vim.fn.filereadable(schema_s) ~= 0 then
-            vim.notify("Found: " .. schema_s, vim.log.levels.DEBUG)
-            client.settings.yaml.schemas = {
-                [schema_s] = vim.api.nvim_buf_get_name(bufnr)
-            }
-        else
-            vim.notify("Kubernetes schema enabled", vim.log.levels.DEBUG)
-            client.settings.yaml.schemas = {
-                kubernetes = vim.api.nvim_buf_get_name(bufnr)
-            }
-        end
-
-        client.notify('workspace/didChangeConfiguration', {
-            settings = client.settings
-        })
-    end
-    client.request('textDocument/documentSymbol', {
-            textDocument = vim.lsp.util.make_text_document_params()
-        },
-        callback
-    )
-end
-
-local yaml_multi_on_attach = function(client, bufnr)
-    local helpers = require('bbrain.helpers')
-    local http = require('bbrain.http')
-
-    local getSymbol = function(symbols, key)
-        local objs = {}
-        for _, v in pairs(symbols) do
-            if v.name == key then
-                table.insert(objs, v.detail)
-            end
-        end
-        return objs
-    end
-    local callback = function(_, result)
-        local rootStrings = vim.tbl_filter(function(o) return o.kind == 15 end, result)
-        local kinds = getSymbol(rootStrings, "kind")
-        local apiVersions = getSymbol(rootStrings, "apiVersion")
-        local ready = 0
-
-        if #kinds == 0 or #apiVersions == 0 then
-            return
-        end
-
-        if #kinds ~= #apiVersions then
-            return
-        end
-
-        vim.notify("Found " .. #kinds .. " resources", vim.log.levels.DEBUG)
-
-        local schemas = vim.fn.expand("$HOME/.datree/crdSchemas")
-        local schemaSequencePath = vim.fs.joinpath("/tmp", "schemaSequence_" ..
-            helpers.random_string(10) .. ".json")
-
-        local schemaSequence = {}
-        ---@type table<number, fun()>
-        local asyncReqs = {}
-
-        for i, _ in pairs(kinds) do
-            vim.notify("index: " .. i, vim.log.levels.DEBUG)
-            vim.notify("Processing: " .. kinds[i] .. " " .. apiVersions[i], vim.log.levels.DEBUG)
-            local group, version = unpack(vim.split(apiVersions[i], "/"))
-            local kind = string.lower(kinds[i])
-            if version == nil then
-                version = group
-                group = ""
-            end
-            local schema = vim.fs.joinpath(schemas, group, kind .. "_" .. version .. ".json")
-            local schema_s = vim.fs.joinpath(schemas, group, kind .. "s_" .. version .. ".json")
-            if vim.fn.filereadable(schema) ~= 0 then
-                vim.notify(i .. ": Found: " .. schema, vim.log.levels.DEBUG)
-                ready = ready + 1
-                fs.readFile(schema, function(_, data)
-                    schemaSequence[i] = vim.json.decode(data)
-                    ready = ready - 1
-                end)
-            elseif vim.fn.filereadable(schema_s) ~= 0 then
-                vim.notify(i .. ": Found: " .. schema_s, vim.log.levels.DEBUG)
-                ready = ready + 1
-                fs.readFile(schema, function(_, data)
-                    schemaSequence[i] = vim.json.decode(data)
-                    ready = ready - 1
-                end)
-            else
-                local kube_version = "v1.30.5-standalone"
-                local urlfmt = "https://github.com/yannh/kubernetes-json-schema/raw/refs/heads/master/%s/%s-%s.json"
-                local url = string.format(urlfmt, kube_version, kind, version)
-                vim.notify("Trying to find native k8s schema", vim.log.levels.DEBUG)
-                schemaSequence[i] = {}
-                local res = http.async_get(url, {}, function(out)
-                    vim.notify(i .. ": Found: " .. url, vim.log.levels.DEBUG)
-                    schemaSequence[i] = vim.json.decode(out.stdout)
-                end)
-                table.insert(asyncReqs, res)
-            end
-        end
-
-        while ready > 0 do
-            vim.wait(10)
-        end
-        for _, v in pairs(asyncReqs) do
-            v()
-        end
-        vim.notify("Schema sequence length: " .. #schemaSequence, vim.log.levels.DEBUG)
-        fs.writeFileSync(vim.fn.expand(schemaSequencePath),
-            vim.json.encode({ schemaSequence = schemaSequence }))
-
-        client.settings.yaml.schemas = {
-            [schemaSequencePath] = vim.api.nvim_buf_get_name(bufnr)
-        }
-        client.notify('workspace/didChangeConfiguration', {
-            settings = client.settings
-        })
-    end
-    client.request('textDocument/documentSymbol', {
-            textDocument = vim.lsp.util.make_text_document_params()
-        },
-        callback
-    )
-end
-
 local function lspconfig_config()
     vim.keymap.set('n', 'gl', '<cmd>lua vim.diagnostic.open_float()<cr>', { desc = "LSP: Open floating diagnostics" })
     vim.keymap.set('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<cr>', { desc = "LSP: Go to previous diagnostic" })
@@ -250,9 +85,18 @@ local function lspconfig_config()
     vim.lsp.client.offset_encoding = 'utf-8'
 
     if not vim.env.JFROG_IDE_URL then
+        go_lsp_capabilities = require('cmp_nvim_lsp').default_capabilities()
+        go_lsp_capabilities = vim.tbl_deep_extend('force', go_lsp_capabilities, {
+            workspace = {
+                didChangeWatchedFiles = {
+                    dynamicRegistration = true
+                }
+            }
+        })
+
         lspconfig.gopls.setup({
             cmd = { 'gopls' },
-            capabilities = lsp_capabilities,
+            capabilities = go_lsp_capabilities,
             settings = {
                 gopls = {
                     experimentalPostfixCompletions = true,
@@ -334,7 +178,6 @@ local function lspconfig_config()
                 }
             }
         }),
-        -- on_attach = yaml_multi_on_attach,
         on_attach = require('bbrain.lsp.yamlls').on_attach,
         settings = {
             yaml = {
@@ -344,26 +187,6 @@ local function lspconfig_config()
                 completion = {
                     enable = true
                 },
-                -- schemas = {
-                --     ["https://raw.githubusercontent.com/SchemaStore/schemastore/refs/heads/master/src/schemas/json/kustomization.json"] =
-                --     "kustomization.yaml",
-                --     -- kubernetes = "*.yaml",
-                --     ["http://json.schemastore.org/github-workflow"] = ".github/workflows/*",
-                --     ["http://json.schemastore.org/github-action"] = ".github/action.{yml,yaml}",
-                --     ["http://json.schemastore.org/ansible-stable-2.9"] = "roles/tasks/*.{yml,yaml}",
-                --     ["http://json.schemastore.org/prettierrc"] = ".prettierrc.{yml,yaml}",
-                --     ["http://json.schemastore.org/kustomization"] = "kustomization.{yml,yaml}",
-                --     ["http://json.schemastore.org/ansible-playbook"] = "*play*.{yml,yaml}",
-                --     ["http://json.schemastore.org/chart"] = "Chart.{yml,yaml}",
-                --     ["https://json.schemastore.org/dependabot-v2"] = ".github/dependabot.{yml,yaml}",
-                --     ["https://json.schemastore.org/gitlab-ci"] = "*gitlab-ci*.{yml,yaml}",
-                --     ["https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/schemas/v3.1/schema.json"] =
-                --     "*api*.{yml,yaml}",
-                --     ["https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json"] =
-                --     "*docker-compose*.{yml,yaml}",
-                --     ["https://raw.githubusercontent.com/argoproj/argo-workflows/master/api/jsonschema/schema.json"] =
-                --     "*flow*.{yml,yaml}",
-                -- }
             }
         }
     })
@@ -372,14 +195,7 @@ local function lspconfig_config()
     local vue_language_server_path = mason_registry.get_package('vue-language-server'):get_install_path() ..
         '/node_modules/@vue/language-server'
 
-
-    lspconfig.volar.setup({
-        -- init_options = {
-        --     typescript = {
-        --         tsdk = "node_modules/typescript/lib"
-        --     }
-        -- }
-    })
+    lspconfig.volar.setup({})
 
     lspconfig.ts_ls.setup({
         capabilities = lsp_capabilities,
@@ -490,6 +306,7 @@ return {
             -- lsp_zero.extend_cmp()
 
             local cmp = require('cmp')
+            local luasnip = require('luasnip')
 
             cmp.setup({
                 completion = {
@@ -508,7 +325,33 @@ return {
                     ['<C-d>'] = cmp.mapping.scroll_docs(4),
                     ['<C-Space>'] = cmp.mapping.complete(),
                     ['<C-e>'] = cmp.mapping.abort(),
-                    ['<C-y>'] = cmp.mapping.confirm({ select = true }),
+                    ['<C-y>'] = cmp.mapping(function(fallback)
+                        if cmp.visible() then
+                            if luasnip.expandable() then
+                                luasnip.expand()
+                            else
+                                cmp.confirm({
+                                    select = true,
+                                })
+                            end
+                        else
+                            fallback()
+                        end
+                    end),
+                    ['<Tab>'] = cmp.mapping(function(fallback)
+                        if luasnip.locally_jumpable(1) then
+                            luasnip.jump(1)
+                        else
+                            fallback()
+                        end
+                    end, { 'i', 's' }),
+                    ['<S-Tab>'] = cmp.mapping(function(fallback)
+                        if luasnip.locally_jumpable(-1) then
+                            luasnip.jump(-1)
+                        else
+                            fallback()
+                        end
+                    end, { 'i', 's' }),
                 }),
                 sources = cmp.config.sources({
                     {
@@ -523,7 +366,7 @@ return {
                 }),
                 snippet = {
                     expand = function(args)
-                        require('luasnip').lsp_expand(args.body)
+                        luasnip.lsp_expand(args.body)
                     end,
                 },
             })

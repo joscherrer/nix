@@ -27,7 +27,7 @@ in
     ./waybar.nix
     ./thunderbird.nix
     ./nvim-remote.nix
-    inputs.catppuccin.homeManagerModules.catppuccin
+    inputs.catppuccin.homeModules.catppuccin
   ];
 
   programs.firefox.enable = true;

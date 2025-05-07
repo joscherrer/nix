@@ -75,7 +75,7 @@ function M.buf_get_var_float(buf, var)
 end
 
 local function format_go()
-    local params = vim.lsp.util.make_range_params()
+    local params = vim.lsp.util.make_range_params(0, "utf-16")
     params.context = { only = { "source.organizeImports" } }
     local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, 1000)
     for cid, res in pairs(result or {}) do
@@ -214,6 +214,170 @@ function M.random_string(length)
         pw[i] = string.byte(alphabet, math.random(n))
     end
     return string.char(unpack(pw))
+end
+
+function M.get_term_by_winid(winid)
+    for _, term in ipairs(require('toggleterm.terminal').get_all()) do
+        if term.window == winid then
+            return term
+        end
+    end
+end
+
+function M.swap_term_buf(id, curr_winid)
+    local next_term = require('toggleterm.terminal').get_or_create_term(id)
+    local curr_term = M.get_term_by_winid(curr_winid)
+
+    if not curr_term then return end
+
+    if curr_term.window == next_term.window then return end
+    curr_term:persist_mode()
+
+    curr_term.window, next_term.window = next_term.window, curr_term.window
+    vim.api.nvim_win_set_buf(next_term.window, next_term.bufnr)
+end
+
+local function create_term_buf_if_needed(term)
+    local valid_win = term.window and vim.api.nvim_win_is_valid(term.window)
+    local window = valid_win and term.window or vim.api.nvim_get_current_win()
+    -- If the buffer doesn't exist create a new one
+    local valid_buf = term.bufnr and vim.api.nvim_buf_is_valid(term.bufnr)
+    local bufnr = valid_buf and term.bufnr or vim.api.nvim_create_buf(false, false)
+    -- Assign buf to window to ensure window options are set correctly
+    vim.api.nvim_win_set_buf(window, bufnr)
+    term.window, term.bufnr = window, bufnr
+    term:__set_options()
+    vim.api.nvim_set_current_buf(bufnr)
+end
+
+
+function M.winbar_new_click()
+    M.new_term()
+end
+
+function M.winbar_click(id)
+    if not id then return end
+    local winid = vim.fn.getmousepos().winid
+    M.swap_term_buf(id, winid)
+end
+
+local function get_open_term()
+    local terms = require('toggleterm.terminal')
+    local candidates = {
+        (terms.get_last_focused() or {}).window,
+        vim.fn.getmousepos().winid,
+        vim.api.nvim_get_current_win(),
+    }
+
+    local selected = terms.find(function(t)
+        if vim.tbl_contains(candidates, t.window) then
+            return true
+        end
+    end)
+
+    if not selected then
+        selected = terms.find(function(t)
+            return t:is_open()
+        end)
+    end
+
+    return selected
+end
+
+function M.open_term(id)
+    local terms = require('toggleterm.terminal')
+    local selected = get_open_term()
+
+    if not selected then
+        vim.notify("No terminal window found", vim.log.levels.WARN, { title = "ToggleTerm" })
+        return
+    end
+
+    M.swap_term_buf(id, selected.window)
+    terms.get(id):focus()
+end
+
+function M.new_term()
+    local curr_term = get_open_term()
+    if not curr_term then
+        vim.notify("No terminal window found", vim.log.levels.WARN, { title = "ToggleTerm" })
+        return
+    end
+
+    local terms = require('toggleterm.terminal')
+    local ui = require('toggleterm.ui')
+    local next_term = terms.get_or_create_term(terms.next_id())
+    ui.update_origin_window(next_term.window)
+    curr_term:persist_mode()
+
+    curr_term.window, next_term.window = next_term.window, curr_term.window
+    create_term_buf_if_needed(next_term)
+
+    next_term:spawn()
+    ui.hl_term(next_term)
+    if next_term.on_open then
+        next_term:on_open()
+    end
+end
+
+function M.next_term(reverse)
+    local terms = require('toggleterm.terminal')
+    local curr = get_open_term()
+
+    if not curr then
+        vim.notify("No terminal window found", vim.log.levels.WARN, { title = "ToggleTerm" })
+        return
+    end
+
+    local all = terms.get_all()
+    local candidate
+
+    for i, term in ipairs(all) do
+        if term.id == curr.id then
+            if reverse and i == 1 then
+                candidate = all[#all]
+            elseif reverse then
+                candidate = all[i - 1]
+            elseif i == #all then
+                candidate = all[1]
+            else
+                candidate = all[i + 1]
+            end
+        end
+    end
+
+    if not candidate then
+        vim.notify("No terminal found", vim.log.levels.WARN, { title = "ToggleTerm" })
+        return
+    end
+
+    M.swap_term_buf(candidate.id, curr.window)
+
+    return candidate
+end
+
+function M.close_term()
+    local terms = require('toggleterm.terminal')
+
+    local term = terms.find(function(t)
+        return t.window == vim.fn.getmousepos().winid
+    end) or get_open_term()
+
+    vim.notify("Closing terminal " .. term.id, vim.log.levels.DEBUG, { title = "ToggleTerm" })
+
+    if not term then
+        vim.notify("No terminal window found", vim.log.levels.WARN, { title = "ToggleTerm" })
+        return
+    end
+    vim.g.bbrain_just_closed_terminal = true
+
+    local next_term = M.next_term(true)
+    vim.notify("Terminal buf" .. term.bufnr, vim.log.levels.DEBUG, { title = "ToggleTerm" })
+    vim.api.nvim_buf_delete(term.bufnr, { force = true })
+
+    if next_term then
+        next_term:__restore_mode()
+    end
 end
 
 return M

@@ -40,14 +40,14 @@ return {
             vim.api.nvim_set_hl(0, "Folded", { bg = "#414858" })
         end
     },
-    {
-        'stevearc/dressing.nvim',
-        opts = {
-            select = {
-                telescope = require('bbrain.helpers').telescope.config
-            }
-        }
-    },
+    -- {
+    --     'stevearc/dressing.nvim',
+    --     opts = {
+    --         select = {
+    --             telescope = require('bbrain.helpers').telescope.config
+    --         }
+    --     }
+    -- },
     {
         'rcarriga/nvim-notify',
         priority = 999,
@@ -95,6 +95,7 @@ return {
         "folke/noice.nvim",
         -- version = "4.4.7",
         -- pin = true,
+        enabled = true,
         event = "VeryLazy",
         opts = {
             lsp = {
@@ -118,10 +119,10 @@ return {
                 { filter = { event = "msg_show", kind = "", find = "wiped out" }, opts = { skip = true } },
                 { filter = { event = "msg_show", kind = "", find = "written" },   view = "mini" },
                 { filter = { event = "msg_show", kind = "", find = "yanked" },    view = "mini" },
-                {
-                    filter = { event = "notify", cond = minify_msg },
-                    view = "mini"
-                },
+                -- {
+                --     filter = { event = "notify", cond = minify_msg },
+                --     view = "mini"
+                -- },
             },
             views = {
                 cmdline_popup = {
