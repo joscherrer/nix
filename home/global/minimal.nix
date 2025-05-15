@@ -126,5 +126,6 @@ in
     scalr-cli
     openssl
     urlencode
+    rclone
   ];
 }
