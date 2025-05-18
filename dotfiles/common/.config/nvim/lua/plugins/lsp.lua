@@ -5,6 +5,7 @@ local function lspconfig_config()
 
     local helpers = require('bbrain.helpers')
 
+
     vim.api.nvim_create_autocmd('LspAttach', {
         desc = 'LSP actions',
         callback = function(event)
@@ -213,6 +214,9 @@ local function lspconfig_config()
     lspconfig.eslint.setup({
         capabilities = lsp_capabilities
     })
+
+    local js = require('bbrain.lsp.js')
+    js.setup()
 
     vim.api.nvim_set_hl(0, "@odp.function.builtin.python", { link = "pythonBuiltin" })
     vim.api.nvim_set_hl(0, "@odp.import_module.python", { link = "Type" })

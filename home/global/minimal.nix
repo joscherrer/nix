@@ -74,6 +74,11 @@ in
     includes = [
       { path = delta-themes; }
     ];
+    extraConfig = {
+      init = {
+        defaultBranch = "main";
+      };
+    };
   };
 
   programs.bat = {

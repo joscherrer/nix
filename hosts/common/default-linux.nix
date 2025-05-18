@@ -62,6 +62,11 @@ in
   };
   virtualisation.docker = {
     enable = true;
+    daemon.settings = {
+      features = {
+        containerd-snapshotter = true;
+      };
+    };
   };
   virtualisation.containers = {
     enable = true;

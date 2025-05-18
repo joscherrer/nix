@@ -43,6 +43,28 @@ vim.api.nvim_create_autocmd('BufWritePost', {
     end
 })
 
+vim.api.nvim_create_autocmd({ 'BufEnter', 'CursorHold', 'CursorHoldI', 'FocusGained' }, {
+    pattern = '*',
+    callback = function()
+        if vim.fn.mode() == 'c' then
+            return
+        end
+        vim.cmd('silent! checktime')
+    end
+})
+
+vim.api.nvim_create_autocmd({ "FileChangedShellPost" }, {
+    pattern = { "*" },
+    callback = function(ev)
+        local Path = require("plenary.path")
+        local file = Path:new(ev.file)
+
+        vim.notify("Reloading: \n" .. file:normalize(), vim.log.levels.WARN, {
+            title = "File changed",
+            icon = "",
+        })
+    end,
+})
 -- vim.api.nvim_create_autocmd({ 'InsertLeave', 'TextChanged' }, {
 --     callback = function(ev)
 --         if not vim.api.nvim_buf_get_option(ev.buf, "modified") then

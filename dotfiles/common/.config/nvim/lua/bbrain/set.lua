@@ -56,7 +56,8 @@ if vim.g.neovide then
     vim.g.neovide_light_angle_degrees = 45
     vim.g.neovide_light_radius = 5
     vim.g.neovide_scroll_animation_length = 0.22
-    vim.o.guifont = "CaskaydiaCove Nerd Font Mono"
+    vim.o.guifont = "CaskaydiaCove Nerd Font Mono:h13"
     vim.g.default_winblend = 20
+    -- vim.g.neovide_scale_factor = 0.9
     -- vim.g.neovide_transparency = 0
 end
