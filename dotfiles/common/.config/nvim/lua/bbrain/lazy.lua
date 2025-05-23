@@ -12,8 +12,22 @@ local plugins = {
             vim.g.undotree_ShortIndicators = 1
         end,
     },
-    { 'kylechui/nvim-surround', opts = {} },
-    { 'numToStr/Comment.nvim',  opts = {} },
+    {
+        'kylechui/nvim-surround',
+        opts = {
+            surrounds = {
+                ["("] = false,
+                ["{"] = false,
+                ["["] = false,
+            },
+            aliases = {
+                ["("] = ")",
+                ["{"] = "}",
+                ["["] = "]",
+            },
+        }
+    },
+    { 'numToStr/Comment.nvim', opts = {} },
     -- { 'windwp/nvim-autopairs',  event = "InsertEnter", opts = {} },
     {
         'danielfalk/smart-open.nvim',
