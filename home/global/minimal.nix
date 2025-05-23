@@ -103,6 +103,7 @@ in
     ripgrep
     tmux
     pgcli
+    mongosh
     shellcheck
     cht-sh
     fzf

@@ -1,4 +1,11 @@
-{ inputs, lib, pkgs, config, outputs, ... }:
+{
+  inputs,
+  lib,
+  pkgs,
+  config,
+  outputs,
+  ...
+}:
 {
   programs.go.enable = true;
   programs.go.package = pkgs.go;
@@ -7,5 +14,6 @@
     gopls
     go-outline
     delve
+    go-task
   ];
 }

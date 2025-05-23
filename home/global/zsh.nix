@@ -99,7 +99,9 @@ in
       kz = "kustomize";
       k = "kubectl";
       p = "podman";
+      d = "docker";
       pc = "podman-compose";
+      dc = "docker-compose";
       md = "mkdir -p";
       rd = "rmdir";
       # tf = "terraform";
@@ -156,6 +158,7 @@ in
     command -v podman > /dev/null && [ ! -f "$PODMAN_COMP" ] && podman completion zsh -f "$PODMAN_COMP"
     command -v talosctl > /dev/null && [ ! -f "$USER_COMP/_talosctl" ] && talosctl completion zsh > "$USER_COMP/_talosctl"
     command -v clusterctl > /dev/null && [ ! -f "$USER_COMP/_clusterctl" ] && clusterctl completion zsh > "$USER_COMP/_clusterctl"
+    command -v task > /dev/null && [ ! -f "$USER_COMP/_task" ] && task --completion zsh > "$USER_COMP/_task"
     # source ${pkgs.zsh-vi-mode}/share/zsh-vi-mode/zsh-vi-mode.plugin.zsh
   '';
 }

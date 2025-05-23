@@ -498,6 +498,8 @@ rec {
         "workspace 9 silent, title:^(Spotify)$"
         "workspace 4, title:^(.*(Disc|WebC)ord.*)$"
         "workspace 2, class:^(firefox)$,title:^(Mozilla Firefox)$"
+        "workspace 8, initialClass:^(.*com.jumbomana.avatar.*)$"
+        "fullscreen, initialClass:^(.*com.jumbomana.avatar.*)$"
 
         "idleinhibit focus, class:^(mpv|.+exe)$"
         "idleinhibit focus, class:^(firefox)$, title:^(.*YouTube.*)$"

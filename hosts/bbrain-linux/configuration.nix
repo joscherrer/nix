@@ -5,6 +5,7 @@
   config,
   pkgs,
   lib,
+  options,
   ...
 }:
 {
@@ -74,6 +75,36 @@
     thunar-archive-plugin
     thunar-volman
   ];
+  programs.nix-ld.enable = true;
+  programs.nix-ld.libraries =
+    options.programs.nix-ld.libraries.default
+    ++ (with pkgs; [
+      libxcrypt
+      glib
+      nss
+      nspr
+      dbus
+      at-spi2-atk
+      cups
+      libdrm
+      libuuid
+      gtk3
+      libnotify
+      pango
+      cairo
+      xorg.libX11
+      xorg.libXcomposite
+      xorg.libXdamage
+      xorg.libXfixes
+      xorg.libxcb
+      libgbm
+      expat
+      alsa-lib
+      xdg-utils
+      # xorg.libXext
+      # xorg.libXi
+      # xorg.libXrandr
+    ]);
 
   fonts.packages =
     [ ]
