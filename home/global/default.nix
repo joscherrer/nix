@@ -48,7 +48,7 @@
     # Containers
     # podman-compose
     docker-compose
-    dive
+    unstable.dive
     kustomize
     kubectl
     kubectl-explore

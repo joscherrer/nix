@@ -32,6 +32,27 @@ return {
                         end,
 
                     },
+                    {
+                        function()
+                            local ok, max = pcall(vim.api.nvim_tabpage_get_var, 0, 'maximized')
+                            if ok and max then
+                                return "➖"
+                            else
+                                return "⛶ "
+                            end
+                        end,
+                        on_click = function()
+                            require('bbrain.helpers').toggle_maximize()
+                        end,
+                        color = function()
+                            local ok, max = pcall(vim.api.nvim_tabpage_get_var, 0, 'maximized')
+                            if ok and max then
+                                return { fg = "#c678dd", gui = "bold" }
+                            else
+                                return { fg = "#ffffff", gui = "bold" }
+                            end
+                        end,
+                    }
                     -- {
                     --     require("noice").api.status.search.get,
                     --     cond = require("noice").api.status.search.has,

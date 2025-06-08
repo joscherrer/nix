@@ -415,16 +415,20 @@ M.add("DAP", "ListBreakPoints", {
     desc = "List breakpoints"
 })
 
-M.add("View", "StartResizeMode", {
-    cmd = {
-        name = "StartResizeMode",
-        cmd = function()
-            require('smart-splits').start_resize_mode()
-        end
-    },
-    keys = { { mode = "n", lhs = "<leader>sr", opts = {} } },
-    desc = "Start resize mode"
-})
+-- M.add("View", "StartResizeMode", {
+--     cmd = {
+--         name = "StartResizeMode",
+--         cmd = function()
+--             local submode = require("submode")
+--             submode.create('WinResize', {
+--                 mode = 'n',
+--             })
+--             -- require('smart-splits').start_resize_mode()
+--         end
+--     },
+--     keys = { { mode = "n", lhs = "<leader>sr", opts = {} } },
+--     desc = "Start resize mode"
+-- })
 
 M.add("Edit", "TSJToggle", {
     cmd = { name = "TSJToggle" },
@@ -484,6 +488,18 @@ M.add("View", "ZoomReset", {
     },
     keys = { { mode = "n", lhs = "<leader>zr", opts = {} } },
     desc = "Zoom reset"
+})
+
+M.add("View", "Close all panes", {
+    cmd = {
+        name = "CloseAllPanes",
+        cmd = function()
+            require("trouble").close()
+            vim.cmd("TroubleClose")
+        end
+    },
+    keys = { { mode = "n", lhs = "<leader>tc", opts = {} } },
+    desc = "Close Trouble windows"
 })
 
 M.add("Log", "SetLogLevel", {

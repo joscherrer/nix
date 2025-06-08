@@ -12,7 +12,7 @@ end
 return {
     {
         'nvim-telescope/telescope.nvim',
-        tag = '0.1.6',
+        -- tag = '0.1.6',
         dependencies = {
             'nvim-lua/plenary.nvim',
             'nvim-telescope/telescope-live-grep-args.nvim'
@@ -57,7 +57,7 @@ return {
             { "<leader>pc", function() require("telescope.builtin").commands(picker_opts) end,                         mode = "n", desc = "Telescope: commands" },
             { "<leader>pb", function() require("telescope.builtin").buffers(picker_opts) end,                          mode = "n", desc = "Telescope: buffers" },
             { "<leader>pk", function() require("telescope.builtin").keymaps(picker_opts) end,                          mode = "n", desc = "Telescope: keymaps" },
-            { "<leader>ps", function() require("telescope.builtin").lsp_workspace_symbols(picker_opts) end,            mode = "n", desc = "Telescope: LSP workspace symbols" },
+            { "<leader>ps", function() require("telescope.builtin").lsp_dynamic_workspace_symbols(picker_opts) end,    mode = "n", desc = "Telescope: LSP workspace symbols" },
             { "<leader>pg", function() require("telescope").extensions.live_grep_args.live_grep_args(picker_opts) end, mode = "n", desc = "Telescope: live_grep" },
             {
                 "<leader><leader>",
@@ -72,26 +72,24 @@ return {
         config = function(_, opts)
             local telescope = require('telescope')
             local open_with_trouble = require("trouble.sources.telescope").open
+            local lga_actions = require("telescope-live-grep-args.actions")
+            local actions = require("telescope.actions")
 
             opts.defaults = vim.tbl_deep_extend("force", opts.defaults, {
                 mappings = {
                     i = {
                         ["<c-t>"] = open_with_trouble,
+                        ["<c-f>"] = actions.to_fuzzy_refine,
+                        ["<C-k>"] = lga_actions.quote_prompt(),
+                        ["<C-i>"] = lga_actions.quote_prompt({ postfix = " --iglob " }),
+                        ["<C-n>"] = actions.cycle_history_next,
+                        ["<C-p>"] = actions.cycle_history_prev,
                     },
                     n = {
                         ["<c-t>"] = open_with_trouble,
                     }
                 }
             })
-            local lga_actions = require("telescope-live-grep-args.actions")
-            opts.extensions.live_grep_args.mappings = {
-                i = {
-                    ["<C-k>"] = lga_actions.quote_prompt(),
-                    ["<C-i>"] = lga_actions.quote_prompt({ postfix = " --iglob " }),
-                    -- freeze the current list and start a fuzzy search in the frozen list
-                    ["<C-space>"] = lga_actions.to_fuzzy_refine,
-                }
-            }
             telescope.setup(opts)
             telescope.load_extension('fzf')
             telescope.load_extension('live_grep_args')

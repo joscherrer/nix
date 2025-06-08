@@ -21,6 +21,7 @@ vim.opt.undofile = true
 vim.opt.hlsearch = true
 vim.opt.incsearch = true
 
+vim.opt.showtabline = 0
 
 vim.opt.scrolloff = 8
 vim.opt.signcolumn = "yes"
@@ -60,4 +61,14 @@ if vim.g.neovide then
     vim.g.default_winblend = 20
     -- vim.g.neovide_scale_factor = 0.9
     -- vim.g.neovide_transparency = 0
+    -- vim.fn.system({ "hyprctl", "dispatch", "togglegroup" })
+    local cwd = require("plenary.path"):new(vim.loop.cwd())
+    if vim.tbl_contains(cwd:parents(), cwd.path.home .. "/dev/jumbomana") then
+        vim.notify("Jumbomana detected, setting up workspaces", vim.log.levels.INFO)
+        vim.fn.system({ "hyprctl", "dispatch", "tagwindow", "+work" })
+    else
+        vim.notify("No Jumbomana detected, setting up bbrain workspaces", vim.log.levels.INFO)
+        vim.fn.system({ "hyprctl", "dispatch", "tagwindow", "-work" })
+        vim.fn.system({ "hyprctl", "dispatch", "tagwindow", "+bbrain" })
+    end
 end

@@ -116,16 +116,16 @@ local plugins = {
                 winblend = vim.g.default_winblend,
             },
             on_open = function(term)
-                vim.keymap.set({ "n", "t" }, "<C-h>", function()
+                vim.keymap.set({ "n", "t" }, "<A-h>", function()
                     require("bbrain.helpers").next_term(true)
                 end, { desc = "Next Terminal" })
-                vim.keymap.set({ "n", "t" }, "<C-l>", function()
+                vim.keymap.set({ "n", "t" }, "<A-l>", function()
                     require("bbrain.helpers").next_term(false)
                 end, { desc = "Previous Terminal" })
-                vim.keymap.set({ "n", "t" }, "<C-n>", function()
+                vim.keymap.set({ "n", "t" }, "<A-n>", function()
                     require("bbrain.helpers").new_term()
                 end, { desc = "New Terminal" })
-                vim.keymap.set({ "n", "t" }, "<C-q>", function()
+                vim.keymap.set({ "n", "t" }, "<A-q>", function()
                     require("bbrain.helpers").close_term()
                 end, { desc = "Close Terminal" })
             end,
@@ -182,8 +182,8 @@ local plugins = {
         end,
         keys = {
             { "<C-`>", function() require("toggleterm").toggle() end,             mode = { "n", "v", "i", "t" }, desc = "Toggle Terminal" },
-            { "<C-h>", function() require("bbrain.helpers").next_term(true) end,  mode = { "t" },                desc = "Next Terminal" },
-            { "<C-l>", function() require("bbrain.helpers").next_term(false) end, mode = { "t" },                desc = "Previous Terminal" },
+            { "<A-h>", function() require("bbrain.helpers").next_term(true) end,  mode = { "t" },                desc = "Next Terminal" },
+            { "<A-l>", function() require("bbrain.helpers").next_term(false) end, mode = { "t" },                desc = "Previous Terminal" },
         }
     },
     {
@@ -204,6 +204,10 @@ local plugins = {
     },
     {
         'mrjones2014/smart-splits.nvim',
+        event = 'VeryLazy',
+        dependencies = {
+            'pogyomo/submode.nvim',
+        },
         opts = {
             default_amount = 5,
             resize_mode = {
@@ -211,12 +215,40 @@ local plugins = {
                 resize_keys = { "<Left>", "<Down>", "<Up>", "<Right>" },
             }
         },
+        config = function(_, opts)
+            local submode = require('submode')
+            submode.create('WinResize', {
+                mode = 'n',
+                enter = '<leader>sr',
+                leave = { '<Esc>', 'q', '<C-c>' },
+                hook = {
+                    on_enter = function()
+                        vim.notify('Use { h, j, k, l } or { <Left>, <Down>, <Up>, <Right> } to resize the window')
+                    end,
+                    on_leave = function()
+                        vim.notify('')
+                    end,
+                },
+                default = function(register)
+                    register('h', require('smart-splits').resize_left, { desc = 'Resize left' })
+                    register('j', require('smart-splits').resize_down, { desc = 'Resize down' })
+                    register('k', require('smart-splits').resize_up, { desc = 'Resize up' })
+                    register('l', require('smart-splits').resize_right, { desc = 'Resize right' })
+                    register('<Left>', require('smart-splits').resize_left, { desc = 'Resize left' })
+                    register('<Down>', require('smart-splits').resize_down, { desc = 'Resize down' })
+                    register('<Up>', require('smart-splits').resize_up, { desc = 'Resize up' })
+                    register('<Right>', require('smart-splits').resize_right, { desc = 'Resize right' })
+                end,
+            })
+            require("smart-splits").setup(opts)
+        end,
     },
-    {
-        "lukas-reineke/indent-blankline.nvim",
-        main = "ibl",
-        opts = {}
-    },
+    { 'pogyomo/submode.nvim' },
+    -- {
+    --     "lukas-reineke/indent-blankline.nvim",
+    --     main = "ibl",
+    --     opts = {}
+    -- },
     {
         "ramilito/kubectl.nvim",
         opts = {

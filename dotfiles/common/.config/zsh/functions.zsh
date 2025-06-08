@@ -1,4 +1,19 @@
 #
+# bat (less) with yaml highlighting
+#
+function yaml() {
+    bat -l yaml "$@"
+}
+
+#
+# paged jq
+#
+function json() {
+    jq -C "$@" | less -FR
+}
+
+
+#
 # Get the value of an alias.
 #
 # Arguments:

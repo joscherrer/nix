@@ -52,7 +52,7 @@ return {
             cwd_change_handling = true,
             pre_cwd_changed_cmds = {
                 function()
-                    vim.notify("Changing directory")
+                    vim.notify("Changing directory", vim.log.levels.DEBUG)
                     require("bbrain.helpers").close_terminals()
                     require("nvim-tree.api").tree.close()
                     require("dapui").close()
@@ -70,14 +70,14 @@ return {
             no_restore_cmds = {
                 function()
                     if #vim.fn.argv() == 0 then
-                        vim.notify("Restoring last session")
+                        vim.notify("Restoring last session", vim.log.levels.DEBUG)
                         require("auto-session").RestoreSession()
                     end
                 end,
             },
             pre_save_cmds = {
                 function()
-                    vim.notify("Saving session")
+                    vim.notify("Saving session", vim.log.levels.DEBUG)
                     require("bbrain.helpers").close_terminals()
                     require("nvim-tree.api").tree.close()
                     require("dapui").close()
@@ -88,9 +88,27 @@ return {
                     require("auto-session").AutoSaveSession()
                     local root = vim.fn.fnamemodify(vim.fn.getcwd(), ":t")
                     local relfile = require("plenary.path"):new(vim.fn.expand("%:.")):shorten(8, { -1, -2, -3 })
+                    local helpers = require("bbrain.helpers")
 
                     vim.o.title = true
                     vim.o.titlestring = root .. " - " .. relfile
+
+                    local cwd = require("plenary.path"):new(vim.loop.cwd())
+                    if vim.tbl_contains(cwd:parents(), cwd.path.home .. "/dev/jumbomana") then
+                        vim.notify("Jumbomana detected, setting up workspaces", vim.log.levels.INFO)
+                        vim.fn.system({ "hyprctl", "dispatch", "tagwindow", "--", "-bbrain", "pid:" ..
+                        tostring(helpers.get_ppid()) })
+                        vim.fn.system({ "hyprctl", "dispatch", "tagwindow", "--", "+work", "pid:" ..
+                        tostring(helpers.get_ppid()) })
+                        helpers.signal_hyprfollow()
+                    else
+                        vim.notify("No Jumbomana detected, setting up bbrain workspaces", vim.log.levels.INFO)
+                        vim.fn.system({ "hyprctl", "dispatch", "tagwindow", "--", "-work", "pid:" ..
+                        tostring(helpers.get_ppid()) })
+                        vim.fn.system({ "hyprctl", "dispatch", "tagwindow", "--", "+bbrain", "pid:" ..
+                        tostring(helpers.get_ppid()) })
+                        require("bbrain.helpers").signal_hyprfollow()
+                    end
                 end,
             }
         }

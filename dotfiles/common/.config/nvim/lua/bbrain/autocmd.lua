@@ -63,6 +63,14 @@ vim.api.nvim_create_autocmd({ "FileChangedShellPost" }, {
             title = "File changed",
             icon = "",
         })
+
+        if file:make_relative(vim.loop.cwd()) == ".vscode/launch.json" then
+            -- Reload the launch.json file for DAP
+            local dap = require('dap')
+            dap.configurations = {}
+            dap.adapters = {}
+            dap.discover_configs()
+        end
     end,
 })
 -- vim.api.nvim_create_autocmd({ 'InsertLeave', 'TextChanged' }, {

@@ -193,6 +193,11 @@ rec {
   };
 
   wayland.windowManager.hyprland = {
+    plugins = [
+      pkgs.hyprlandPlugins.hyprexpo
+      pkgs.hyprlandPlugins.hyprsplit
+    ];
+
     enable = true;
     xwayland.enable = true;
     extraConfig = ''
@@ -309,6 +314,10 @@ rec {
         # no_cursor_warps = true;
       };
 
+      source = [
+        "~/.config/hypr/tests.conf"
+      ];
+
       group = {
         "col.border_active" = "rgb(${colors.color5})";
         "col.border_inactive" = "rgb(${colors.contrast})";
@@ -379,7 +388,7 @@ rec {
       };
 
       master = {
-        new_status = "inherit";
+        new_status = "slave";
         mfact = 0.66;
       };
 
@@ -400,6 +409,7 @@ rec {
         "$mainMod, Space, exec, rofi -show drun"
         "$mainMod SHIFT, R, exec, hyprdispatch"
         "$mainMod, P, togglefloating,"
+        "$mainMod SHIFT, P, pin,"
         "$mainMod, J, togglesplit, # dwindle"
         "$mainMod, L, exec, loginctl lock-session"
         "$mainMod, left, movefocus, l"
@@ -428,12 +438,15 @@ rec {
         "$mainMod SHIFT, 0, movetoworkspace, 10"
         "$mainMod, mouse_down, workspace, e+1"
         "$mainMod, mouse_up, workspace, e-1"
+        "$mainMod CTRL, B, tagwindow, pin:bbrain"
+        "$mainMod CTRL, W, tagwindow, pin:work"
         ",Print, exec, slurp | grim -g - - | wl-copy"
         "SHIFT, Print, exec, hyprctl -j activewindow | jq -r '\"\\(.at[0]),\\(.at[1]) \\(.size[0])x\\(.size[1])\"' | grim -g - - | wl-copy"
         "CTRL, Print, exec, ${screenrecorder}/bin/screenrecorder region"
         "SUPER CTRL ALT SHIFT, DELETE, exit,"
         "$mainMod SHIFT, Q, exec, wlogout -p layer-shell"
         "CTRL ALT, DELETE, exec, wlogout -p layer-shell"
+        "SUPER, grave, hyprexpo:expo, toggle"
       ];
 
       bindm = [
@@ -491,6 +504,9 @@ rec {
         # "move 50% 50%,class:^(firefox)$,floating:1"
 
         # "nomaximizerequest,class:^(firefox)$"
+
+        # "bordercolor rgb(${colors.color9}), tag:pin:bbrain"
+        # "bordercolor g${colors.color9}) color(${colors.color1}) 270deg, tag:pin:work"
 
         "noshadow, floating:0"
 

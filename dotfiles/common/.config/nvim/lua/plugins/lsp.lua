@@ -12,26 +12,31 @@ local function lspconfig_config()
             local palette = require('bbrain.palette')
             palette.add("LSP", "LSPHover", {
                 cmd = { name = "vim.lsp.buf.hover()", cmd = function() vim.lsp.buf.hover() end },
-                keys = { { mode = "n", lhs = "<S-k>", opts = { buffer = event.buf } } },
+                keys = {
+                    { mode = "n",          lhs = "<S-k>", opts = { buffer = event.buf } },
+                    { mode = { "n", "i" }, lhs = "<C-k>", opts = { buffer = event.buf } },
+                },
                 desc = "LSP: Display hover information about symbol"
             })
-            vim.keymap.set('n', 'K', '<cmd>lua vim.lsp.buf.hover()<cr>',
-                { buffer = event.buf, desc = "LSP: Display hover information about symbol" })
+
+
+            -- vim.keymap.set('n', 'K', '<cmd>lua vim.lsp.buf.hover()<cr>',
+            --     { buffer = event.buf, desc = "LSP: Display hover information about symbol" })
             -- vim.keymap.set('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<cr>',
             --     { buffer = event.buf, desc = "LSP: Show definition" })
-            vim.keymap.set('n', 'gd', function() require('trouble').open({ mode = 'lsp_definitions' }) end,
+            vim.keymap.set('n', 'gd', function() require('trouble').toggle({ mode = 'lsp_definitions' }) end,
                 { buffer = event.buf, desc = "LSP: Show definition" })
-            vim.keymap.set('n', 'gD', function() require('trouble').open({ mode = 'lsp_declarations' }) end,
+            vim.keymap.set('n', 'gD', function() require('trouble').toggle({ mode = 'lsp_declarations' }) end,
                 { buffer = event.buf, desc = "LSP: Show declaration" })
-            vim.keymap.set('n', 'gi', function() require('trouble').open({ mode = 'lsp_implementations' }) end,
+            vim.keymap.set('n', 'gi', function() require('trouble').toggle({ mode = 'lsp_implementations' }) end,
                 { buffer = event.buf, desc = "LSP: Show implementation" })
-            vim.keymap.set('n', 'go', function() require('trouble').open({ mode = 'lsp_type_definitions' }) end,
+            vim.keymap.set('n', 'go', function() require('trouble').toggle({ mode = 'lsp_type_definitions' }) end,
                 { buffer = event.buf, desc = "LSP: Show type definition" })
             vim.keymap.set('n', 'gs', function() vim.lsp.buf.signature_help() end,
                 { buffer = event.buf, desc = "LSP: Show signature help" })
             vim.keymap.set('n', '<C-k>', function() vim.lsp.buf.signature_help() end,
                 { buffer = event.buf, desc = "LSP: Show signature help" })
-            vim.keymap.set('n', 'gr', function() require('trouble').open({ mode = 'lsp_references' }) end,
+            vim.keymap.set('n', 'gr', function() require('trouble').toggle({ mode = 'lsp_references' }) end,
                 { buffer = event.buf, desc = "LSP: Show references" })
             vim.keymap.set('n', '<F2>', '<cmd>lua vim.lsp.buf.rename()<cr>',
                 { buffer = event.buf, desc = "LSP: Rename" })
@@ -86,7 +91,7 @@ local function lspconfig_config()
     vim.lsp.client.offset_encoding = 'utf-8'
 
     if not vim.env.JFROG_IDE_URL then
-        go_lsp_capabilities = require('cmp_nvim_lsp').default_capabilities()
+        local go_lsp_capabilities = require('cmp_nvim_lsp').default_capabilities()
         go_lsp_capabilities = vim.tbl_deep_extend('force', go_lsp_capabilities, {
             workspace = {
                 didChangeWatchedFiles = {
@@ -150,6 +155,7 @@ local function lspconfig_config()
                     library = {
                         vim.env.VIMRUNTIME,
                         "${3rd}/luv/library",
+                        -- vim.fn.stdpath('data') .. '/lazy',
                         -- vim.fn.stdpath('data') .. '/lazy/noice.nvim',
                     }
                 }

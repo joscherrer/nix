@@ -15,6 +15,30 @@ vim.api.nvim_create_user_command('ToggleTheme', ToggleTheme, {})
 
 M.MaxTabs = {}
 
+function M.toggle_maximize()
+    Maximize()
+end
+
+function M.is_maximized()
+    local ok, max = pcall(vim.api.nvim_tabpage_get_var, 0, "maximized")
+    if ok and max then
+        return true
+    end
+
+    if ok and not max then
+        return false
+    end
+
+    -- When restoring a session, the maximized variable is not kept
+    local tabs = vim.api.nvim_list_tabpages()
+    local tab = vim.api.nvim_get_current_tabpage()
+    if #tabs > 1 and tabs[#tabs] == tab then
+        return true
+    end
+
+    return false
+end
+
 function Maximize()
     if vim.print(vim.api.nvim_get_option_value("buftype", { buf = 0 })) == "terminal" then
         return
@@ -38,18 +62,25 @@ function Maximize()
         return
     end
 
-    if tabCount > 1 and winCount == 1 then
+    if M.is_maximized() then
         vim.notify("Unmaximizing...", vim.log.levels.INFO, { title = "Maximize" })
-        vim.cmd("tabclose")
+        vim.cmd.tabclose('$')
         return
     end
+
+    -- if not ok and tabCount > 1 then
+    --     vim.notify("Unmaximizing...", vim.log.levels.INFO, { title = "Maximize" })
+    --     vim.cmd.tabclose('$')
+    --     return
+    -- end
 
     if tabCount == 1 and winCount > 1 then
         vim.notify("Maximizing...", vim.log.levels.INFO, { title = "Maximize" })
         local buf = vim.api.nvim_get_current_buf()
         local cursor = vim.api.nvim_win_get_cursor(0)
-        vim.cmd("tabnew")
+        vim.cmd.tabnew()
         local win = vim.api.nvim_get_current_win()
+        vim.api.nvim_tabpage_set_var(0, "maximized", true)
         vim.api.nvim_win_set_buf(win, buf)
         vim.api.nvim_win_set_cursor(win, cursor)
     end
@@ -141,10 +172,11 @@ function M.close_terminals()
 end
 
 function M.close_all_buffers()
-    local bufs = vim.api.nvim_list_bufs()
-    for _, i in ipairs(bufs) do
-        vim.api.nvim_buf_delete(i, {})
-    end
+    require('snacks').bufdelete.all()
+    -- local bufs = vim.api.nvim_list_bufs()
+    -- for _, i in ipairs(bufs) do
+    --     vim.api.nvim_buf_delete(i, {})
+    -- end
 end
 
 function M.load_maxtabs()
@@ -377,6 +409,58 @@ function M.close_term()
 
     if next_term then
         next_term:__restore_mode()
+    end
+end
+
+function M.pgrep(pattern)
+    local handle = io.popen("pgrep -f " .. pattern)
+    if not handle then
+        vim.notify("Failed to open process handle for '" .. pattern .. "'", vim.log.levels.ERROR)
+        return nil
+    end
+
+    local pid = handle:read("*l")
+    handle:close()
+
+    if pid then
+        return tonumber(pid)
+    else
+        print("Process '" .. pattern .. "' not found.")
+        return nil
+    end
+end
+
+function M.signal_hyprfollow()
+    local pid = tonumber(M.pgrep("hyprfollow"))
+    if not pid or type(pid) ~= "number" then
+        vim.notify("Process 'hyprfollow' not found.", vim.log.levels.ERROR)
+        return
+    end
+
+    local sig = "sigusr1"
+    local ok, err = vim.uv.kill(pid, sig)
+    if ok then
+        vim.notify("Sent SIGUSR1 to hyprfollow (PID: " .. pid .. ")", vim.log.levels.DEBUG)
+    else
+        vim.notify("Failed to send signal: " .. tostring(err), vim.log.levels.ERROR)
+    end
+end
+
+function M.get_ppid()
+    local handle = io.popen("ps -o ppid= -p " .. tostring(vim.fn.getpid()))
+    if not handle then
+        vim.notify("Failed to open process handle for PID: " .. tostring(vim.fn.getpid()), vim.log.levels.ERROR)
+        return nil
+    end
+
+    local ppid = handle:read("*l")
+    handle:close()
+
+    if ppid then
+        return tonumber(ppid)
+    else
+        print("Parent process not found.")
+        return nil
     end
 end
 

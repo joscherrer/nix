@@ -35,9 +35,9 @@
   environment.systemPackages = [
     pkgs.qemu-user
     pkgs.jetbrains.jdk
-    pkgs.jetbrains.idea-ultimate
+    # pkgs.jetbrains.idea-ultimate
     # pkgs.jetbrains.gateway
-    pkgs.jetbrains.goland
+    # pkgs.jetbrains.goland
     pkgs.usbutils
     pkgs.qt6.qtwayland
     pkgs.qt5.qtwayland
@@ -106,9 +106,9 @@
       # xorg.libXrandr
     ]);
 
-  fonts.packages =
-    [ ]
-    ++ builtins.filter lib.attrsets.isDerivation (builtins.attrValues pkgs.nerd-fonts);
+  fonts.packages = [
+    pkgs.corefonts
+  ] ++ builtins.filter lib.attrsets.isDerivation (builtins.attrValues pkgs.nerd-fonts);
 
   # Need to create /etc/nixos/smb-secrets with the following content:
   # username=<USERNAME>
@@ -203,6 +203,7 @@
   boot.kernel.sysctl = {
     "net.ipv4.ip_unprivileged_port_start" = 80;
     "fs.inotify.max_user_instances" = 1024;
+    "fs.file-max" = 9223372036854775807;
   };
 
   i18n.extraLocaleSettings = {

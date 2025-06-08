@@ -163,6 +163,15 @@
             ./hosts/jumbo
           ];
         };
+        bbrain-vbox = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          specialArgs = {
+            inherit self inputs outputs;
+          };
+          modules = [
+            ./hosts/bbrain-vbox
+          ];
+        };
         jo-home = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           specialArgs = {

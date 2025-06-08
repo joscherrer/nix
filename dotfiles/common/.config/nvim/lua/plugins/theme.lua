@@ -19,16 +19,6 @@ return {
                     dark = {
                         bg = '#282a36',
                         black = '#282a36',
-                        -- fg = '#eff0eb',
-                        -- red = '#ff5c57',
-                        -- yellow = '#f3f99d',
-                        -- green = '#5af78e',
-                        -- blue = '#57c7ff',
-                        -- cyan = '#9aedfe',
-                        -- purple = '#ff6ac1',
-                        -- orange = '#ff9f43',
-                        -- brown = '#b2643c',
-                        -- pink = '#FF5370'
                     },
                 }
             })
@@ -148,5 +138,33 @@ return {
         config = function(_, opts)
             require("noice").setup(opts)
         end,
-    }
+    },
+    {
+        "folke/snacks.nvim",
+        priority = 1000,
+        lazy = false,
+        opts = {
+            bigfile = {
+                enabled = true,
+                notify = true,
+            },
+            dashboard = { enabled = false },
+            explorer = { enabled = false },
+            indent = { enabled = true },
+            input = { enabled = true },
+            picker = {
+                enabled = true,
+                ui_select = true,
+                win = {
+
+                }
+            },
+            notifier = { enabled = false },
+            quickfile = { enabled = false },
+            scope = { enabled = false },
+            scroll = { enabled = false },
+            statuscolumn = { enabled = false },
+            words = { enabled = false },
+        }
+    },
 }
