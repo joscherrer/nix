@@ -53,14 +53,12 @@
           system = prev.system;
           config.allowUnfree = true;
         };
-        # unstable = nixpkgs-unstable.legacyPackages.${prev.system};
       };
       overlay-stable = final: prev: {
         stable = import nixpkgs-stable {
           system = prev.system;
           config.allowUnfree = true;
         };
-        # stable = nixpkgs-stable.legacyPackages.${prev.system};
       };
       overlay-kubectx = final: prev: {
         kubectx = prev.kubectx.overrideAttrs (old: {
@@ -81,36 +79,11 @@
         });
       };
 
-      # overlay-pdm = final: prev: {
-      #   pdm = prev.pdm.overrideAttrs (old: {
-      #     python = (prev.python3.withPackages (ps: with ps; [ virtualenv ]));
-      #   });
-      # };
-
       overlay-pdm = final: prev: {
         pdm = prev.pdm.overrideAttrs (old: {
           propagatedBuildInputs = old.propagatedBuildInputs ++ [ prev.python3.pkgs.truststore ];
         });
       };
-
-      overlay-jetbrains =
-        final: prev:
-        let
-          tools = [
-            "goland"
-            "idea-ultimate"
-          ];
-          makeToolOverlay = tool: {
-            ${tool} = prev.jetbrains.${tool}.overrideAttrs (old: {
-              patches = (old.patches or [ ]) ++ [
-                ./patches/jetbrains/remote-dev-server-fontconfig.patch
-              ];
-            });
-          };
-        in
-        {
-          jetbrains = prev.jetbrains // builtins.foldl' (acc: tool: acc // makeToolOverlay tool) { } tools;
-        };
 
       supportedSystems = [
         "x86_64-linux"
@@ -122,14 +95,12 @@
     in
     rec {
       nixosModules = import ./modules/nixos;
-      homeManagerModules = import ./modules/home-manager;
+      homeManagerModules = import ./modules;
       overlays = import ./overlays // {
         unstable = overlay-unstable;
         stable = overlay-stable;
         inherit overlay-kubectx;
         inherit overlay-terraform;
-        # inherit overlay-jetbrains;
-        # inherit overlay-pdm;
       };
 
       packages = forAllSystems (

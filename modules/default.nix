@@ -1,0 +1,3 @@
+{
+  hyprfollow = import ./hyprfollow;
+}

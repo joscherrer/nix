@@ -156,7 +156,14 @@ in
       accent = "mauve";
       variant = "mocha";
     })
+    hyprfollow
   ];
+
+  services.hyprfollow = {
+    enable = true;
+    package = pkgs.hyprfollow;
+    systemdTarget = "hyprland-session.target";
+  };
 
   programs.mpv = {
     enable = true;
