@@ -71,7 +71,6 @@ local function lspconfig_config()
 
     if not vim.env.JFROG_IDE_URL then
         table.insert(lsp_server_list, 'gopls')
-        table.insert(lsp_server_list, 'volar')
         table.insert(lsp_server_list, 'ts_ls')
     else
         table.insert(lsp_server_list, 'basedpyright')
@@ -203,8 +202,6 @@ local function lspconfig_config()
     -- local vue_language_server_path = mason_registry.get_package('vue-language-server'):get_install_path() ..
     --     '/node_modules/@vue/language-server'
 
-    lspconfig.volar.setup({})
-
     lspconfig.ts_ls.setup({
         capabilities = lsp_capabilities,
         -- init_options = {
@@ -231,30 +228,26 @@ local function lspconfig_config()
 
     vim.diagnostic.config({ virtual_text = false })
     local signs = {
-        DiagnosticSignError = {
-            texthl = "DiagnosticSignError",
-            text = ''
-        },
-        DiagnosticSignWarn = {
-            texthl = "DiagnosticSignWarn",
-            text = " ",
-        },
-        DiagnosticSignHint = {
-            texthl = "DiagnosticSignHint",
-            text = " "
-        },
-        DiagnosticSignInformation = {
-            texthl = "DiagnosticSignInformation",
-            text = " "
-        },
         DapBreakpoint = {
             texthl = "DebugBreakpoint",
             text = ""
         }
     }
+
     for hl, sign in pairs(signs) do
         vim.fn.sign_define(hl, sign)
     end
+
+    vim.diagnostic.config({
+        signs = {
+            text = {
+                [vim.diagnostic.severity.ERROR] = "",
+                [vim.diagnostic.severity.WARN] = "",
+                [vim.diagnostic.severity.HINT] = "",
+                [vim.diagnostic.severity.INFO] = "",
+            }
+        }
+    })
 end
 
 return {

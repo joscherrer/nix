@@ -93,6 +93,10 @@ return {
                     vim.o.title = true
                     vim.o.titlestring = root .. " - "
 
+                    if not vim.g.neovide then
+                        return
+                    end
+
                     local cwd = require("plenary.path"):new(vim.loop.cwd())
                     if vim.tbl_contains(cwd:parents(), cwd.path.home .. "/dev/jumbomana") then
                         vim.notify("Jumbomana detected, setting up workspaces", vim.log.levels.INFO)
