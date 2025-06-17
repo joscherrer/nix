@@ -16,7 +16,6 @@
     wget
     pciutils
     git
-    virt-manager
   ];
 
   time.timeZone = "Europe/Paris";

@@ -16,7 +16,6 @@ let
 in
 {
   imports = [
-    ../../../modules/alacritty
     ./dunst.nix
     ./hyprland.nix
     ./rofi.nix

@@ -11,8 +11,6 @@
   networking.localHostName = "bbrain-mbp";
 
   environment.systemPackages = [
-    pkgs.alacritty
-    pkgs.discord
     pkgs.skhd
   ];
 
@@ -113,12 +111,14 @@
     "kitty"
     "obsidian"
     "neovide"
+    "discord"
   ];
 
   homebrew.brews = [
     "tiger-vnc"
     "koekeishiya/formulae/yabai"
     "openjdk@17"
+    "virt-manager"
   ];
 
   homebrew.onActivation.autoUpdate = true;
