@@ -16,13 +16,16 @@
     pkgs.skhd
   ];
 
-  services.nix-daemon.enable = true;
+  nix = {
+    enable = false;
+  };
 
   fonts.packages = [
-    pkgs.nerdfonts
+    pkgs.nerd-fonts.caskaydia-cove
+    pkgs.nerd-fonts.jetbrains-mono
   ];
 
-  security.pam.enableSudoTouchIdAuth = true;
+  system.stateVersion = 6;
 
   services.dnsmasq = {
     enable = true;
@@ -32,7 +35,7 @@
   };
 
   services.skhd = {
-    enable = true;
+    enable = false;
     skhdConfig = ''
       cmd + shift - p : if [ "$(yabai -m config layout)" = "float" ]; then yabai -m config layout bsp; else yabai -m config layout float; fi
       cmd + 1 : yabai -m space --focus 1

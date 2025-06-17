@@ -24,7 +24,6 @@
   nix = {
     package = lib.mkDefault pkgs.nix;
     settings = {
-      auto-optimise-store = true;
       experimental-features = [
         "nix-command"
         "flakes"
@@ -54,7 +53,6 @@
   # };
 
   users.users.jscherrer = {
-    isNormalUser = true;
     openssh.authorizedKeys.keys =
       let
         authorizedKeys = pkgs.fetchurl {
