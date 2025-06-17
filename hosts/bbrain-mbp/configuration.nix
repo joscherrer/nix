@@ -109,6 +109,7 @@
     "bluesnooze"
     "kitty"
     "obsidian"
+    "neovide"
   ];
 
   homebrew.brews = [
