@@ -155,6 +155,7 @@ local function lspconfig_config()
                     library = {
                         vim.env.VIMRUNTIME,
                         "${3rd}/luv/library",
+                        vim.fn.stdpath('config') .. '/lua/lib',
                         -- vim.fn.stdpath('data') .. '/lazy',
                         -- vim.fn.stdpath('data') .. '/lazy/noice.nvim',
                     }
@@ -284,7 +285,8 @@ return {
         dependencies = { "rafamadriz/friendly-snippets" },
         config = function()
             require("luasnip.loaders.from_vscode").lazy_load()
-            require("luasnip.loaders.from_vscode").lazy_load({ paths = { vim.fn.stdpath('config') .. '/snippets' } })
+            require("luasnip.loaders.from_vscode").lazy_load({ paths = { vim.fn.stdpath('config') .. '/snippets/vscode' } })
+            require("luasnip.loaders.from_lua").load({ paths = { vim.fn.stdpath('config') .. '/snippets/lua' } })
         end,
     },
     { 'saadparwaiz1/cmp_luasnip' },

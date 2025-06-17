@@ -135,8 +135,6 @@
       [ "${automount_opts},credentials=/etc/nixos/smb-secrets,${user_opts}" ];
   };
 
-  nixpkgs.config.allowUnfree = true;
-
   networking.hostName = "bbrain-linux"; # Define your hostname.
   networking.networkmanager.enable = true;
 

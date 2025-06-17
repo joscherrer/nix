@@ -28,6 +28,7 @@ in
     ./thunderbird.nix
     ./nvim-remote.nix
     inputs.catppuccin.homeModules.catppuccin
+    inputs.self.homeModules.hyprfollow
   ];
 
   programs.firefox.enable = true;
@@ -38,6 +39,12 @@ in
   catppuccin = {
     accent = "mauve";
     flavor = "mocha";
+    kvantum = {
+      enable = true;
+    };
+    gtk = {
+      enable = true;
+    };
   };
 
   home.pointerCursor = {
@@ -62,13 +69,6 @@ in
       package = pkgs.bibata-cursors;
     };
 
-    catppuccin = {
-      enable = true;
-      # accent = "mauve";
-      # flavor = "mocha";
-      size = "compact";
-    };
-
     gtk2.extraConfig = ''
       gtk-application-prefer-dark-theme = 1
     '';
@@ -80,11 +80,11 @@ in
     };
   };
 
-  qt = {
-    style = {
-      catppuccin.enable = true;
-    };
-  };
+  # qt = {
+  #   style = {
+  #     catppuccin.enable = true;
+  #   };
+  # };
 
   # catppuccin.enable = true;
 

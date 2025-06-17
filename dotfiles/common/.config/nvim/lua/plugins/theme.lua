@@ -40,6 +40,7 @@ return {
     -- },
     {
         'rcarriga/nvim-notify',
+        lazy = false,
         priority = 999,
         config = function()
             -- notify handled by noice.nvim
@@ -86,6 +87,7 @@ return {
         -- version = "4.4.7",
         -- pin = true,
         enabled = true,
+        lazy = false,
         event = "VeryLazy",
         opts = {
             lsp = {

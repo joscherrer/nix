@@ -112,6 +112,29 @@ func (e DestroyWorkspaceV2Event) SetData(data string) (HyprlandEvent, error) {
 	return e, nil
 }
 
+type MoveWorkspaceV2Event struct {
+	WorkspaceId   int
+	WorkspaceName string
+	MonitorName   string
+}
+
+func (e MoveWorkspaceV2Event) SetData(data string) (HyprlandEvent, error) {
+	parts := strings.SplitN(data, ",", 3)
+	if len(parts) < 3 {
+		return nil, fmt.Errorf("invalid data for MoveWorkspaceV2Event: %s", data)
+	}
+
+	id, err := strconv.Atoi(parts[0])
+	if err != nil {
+		return nil, fmt.Errorf("invalid MoveWorkspaceV2 ID: %s", parts[0])
+	}
+
+	e.WorkspaceId = id
+	e.WorkspaceName = parts[1]
+	e.MonitorName = parts[2]
+	return e, nil
+}
+
 type MonitorAddedV2Event struct {
 	MonitorId          int
 	MonitorName        string
@@ -155,5 +178,15 @@ func (e MonitorRemovedV2Event) SetData(data string) (HyprlandEvent, error) {
 	e.MonitorId = id
 	e.MonitorName = parts[1]
 	e.MonitorDescription = parts[2]
+	return e, nil
+}
+
+type ClientTagUpdatedEvent struct {
+	Client  Client
+	Added   []string
+	Removed []string
+}
+
+func (e ClientTagUpdatedEvent) SetData(data string) (HyprlandEvent, error) {
 	return e, nil
 }

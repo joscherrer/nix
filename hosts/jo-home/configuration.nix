@@ -1,27 +1,31 @@
-{ inputs, outputs, self, ... }:
 {
-   imports = [
+  inputs,
+  outputs,
+  self,
+  ...
+}:
+{
+  imports = [
     inputs.nixos-wsl.nixosModules.default
   ];
-
 
   wsl = {
     enable = true;
     defaultUser = "jscherrer";
   };
 
-  nixpkgs.config.allowUnfree = true;
-
   users.users.jscherrer = {
     isNormalUser = true;
     description = "Jonathan Scherrer";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+    ];
   };
 
   system.stateVersion = "24.05"; # Did you read the comment?
 
   home-manager = {
-    useGlobalPkgs = true;
     useUserPackages = true;
     users.jscherrer = import "${self}/home/jscherrer/jo-home.nix";
     users.root = import "${self}/home/root";

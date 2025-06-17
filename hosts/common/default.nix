@@ -37,6 +37,10 @@
   nixpkgs.config.allowUnfree = true;
   nixpkgs.overlays = builtins.attrValues outputs.overlays;
 
+  # home-manager = {
+  #   pkgs = pkgs // outputs.packages.${config.system};
+  # };
+
   # On Darwin, replace /etc/zshrc with
   #   if test -e /etc/static/zshrc; then source /etc/static/zshrc; fi
   # And change the default shell with

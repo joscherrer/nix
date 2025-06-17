@@ -1,17 +1,28 @@
-{ inputs, lib, pkgs, config, outputs, default, ... }:
-with lib; let
+{
+  inputs,
+  lib,
+  pkgs,
+  config,
+  outputs,
+  default,
+  ...
+}:
+with lib;
+let
   OSLogo = builtins.fetchurl rec {
     name = "OSLogo-${sha256}.png";
     sha256 = "14mbpw8jv1w2c5wvfvj8clmjw0fi956bq5xf9s2q3my14far0as8";
-    url =
-      "https://raw.githubusercontent.com/NixOS/nixos-artwork/master/logo/nix-snowflake.svg";
+    url = "https://raw.githubusercontent.com/NixOS/nixos-artwork/master/logo/nix-snowflake.svg";
   };
   xcolors = default.xcolors;
 in
 {
+  catppuccin.waybar = {
+    enable = true;
+  };
+
   programs.waybar = {
     enable = true;
-    catppuccin.enable = true;
 
     settings = {
       mainBar = {
@@ -84,8 +95,7 @@ in
           format = "{icon}";
           return-type = "json";
           max-length = 25;
-          exec = ''
-            playerctl -a metadata --format '{"text": "{{artist}} - {{markup_escape(title)}}", "tooltip": "{{playerName}} : {{markup_escape(title)}}", "alt": "{{status}}", "class": "{{status}}"}' -F'';
+          exec = ''playerctl -a metadata --format '{"text": "{{artist}} - {{markup_escape(title)}}", "tooltip": "{{playerName}} : {{markup_escape(title)}}", "alt": "{{status}}", "class": "{{status}}"}' -F'';
           on-click-middle = "playerctl play-pause";
           on-click = "playerctl previous";
           on-click-right = "playerctl next";
@@ -99,8 +109,7 @@ in
           format = "<span>{}</span>";
           return-type = "json";
           max-length = 25;
-          exec = ''
-            playerctl -a metadata --format '{"text": "{{artist}} - {{markup_escape(title)}}", "tooltip": "{{playerName}} : {{markup_escape(title)}}", "alt": "{{status}}", "class": "{{status}}"}' -F'';
+          exec = ''playerctl -a metadata --format '{"text": "{{artist}} - {{markup_escape(title)}}", "tooltip": "{{playerName}} : {{markup_escape(title)}}", "alt": "{{status}}", "class": "{{status}}"}' -F'';
           on-click-middle = "playerctl play-pause";
           on-click = "playerctl previous";
           on-click-right = "playerctl next";
@@ -111,9 +120,9 @@ in
         };
 
         "custom/lock" = {
-            tooltip = false;
-            on-click = "loginctl lock-session";
-            format = "";
+          tooltip = false;
+          on-click = "loginctl lock-session";
+          format = "";
         };
 
         memory = {
@@ -153,7 +162,13 @@ in
         pulseaudio = {
           format = "{icon}  {volume}%";
           format-muted = "";
-          format-icons = { default = [ "" "" "" ]; };
+          format-icons = {
+            default = [
+              ""
+              ""
+              ""
+            ];
+          };
           on-click = "pamixer --toggle-mute";
           on-scroll-up = "pamixer --increase 5";
           on-scroll-down = "pamixer --decrease 5";
@@ -195,7 +210,7 @@ in
         font-size: 17px;
         min-height: 0px;
       }
-      
+
       #waybar {
         /* background: transparent; */
         background: rgba(0,0,0,0.7);
@@ -204,19 +219,19 @@ in
         border: 0px solid rgba(0, 0, 0, 0);
         border-radius: 0rem;
       }
-      
+
       :hover {
           background: rgba(0,0,0,0);
       }
-      
-      
+
+
       .modules {
         margin: 0px;
         padding: 0px;
         outline-width: 0px;
       }
-      
-      
+
+
       .modules-right,
       .modules-center,
       .modules-left {
@@ -226,14 +241,14 @@ in
         outline-width: 0px;
         /* background-color: @surface0; */
       }
-      
-      
-      
+
+
+
       #workspaces {
         margin-left: 0px;
         margin-right: 0px;
       }
-      
+
       #workspaces button {
         color: @white;
         border-radius: 0rem;
@@ -241,21 +256,21 @@ in
         padding-right: 0.95rem;
         border-bottom: 2px solid rgba(0, 0, 0, 0);
       }
-      
+
       #workspaces button.active {
         color: @white;
         border-radius: 0rem;
         border-bottom: 2px solid @white;
       }
-      
+
       #workspaces button:hover {
         color: @white;
         border-radius: 0rem;
         background: rgba(255,255,255,0.1);
         box-shadow: 0px 0px 0px 0px @white;
       }
-      
-      
+
+
       #custom-music,
       #tray,
       #backlight,
@@ -270,34 +285,34 @@ in
         margin: 0;
         font-size: 15px;
       }
-      
+
       #window label {
         color: @white;
         font-size: 14px;
       }
-      
+
       #clock {
         color: @white;
         border-radius: 0px 1rem 1rem 0px;
         margin-right: 1rem;
       }
-      
+
       #pulseaudio {
         color: @white;
         border-radius: 1rem 0px 0px 1rem;
         margin-left: 1rem;
       }
-      
+
       #custom-music {
         color: @mauve;
         border-radius: 1rem;
       }
-      
+
       #custom-lock {
           border-radius: 0;
           color: @white;
       }
-      
+
       #tray {
         margin-right: 0rem;
         border-radius: 0rem;

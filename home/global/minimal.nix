@@ -12,10 +12,6 @@ in
     ./tmux.nix
   ];
 
-  nixpkgs = {
-    config.allowUnfree = true;
-  };
-
   nix = {
     package = lib.mkDefault pkgs.nix;
     settings = {

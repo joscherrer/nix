@@ -425,7 +425,7 @@ function M.pgrep(pattern)
     if pid then
         return tonumber(pid)
     else
-        print("Process '" .. pattern .. "' not found.")
+        vim.notify("Process '" .. pattern .. "' not found.", vim.log.levels.DEBUG)
         return nil
     end
 end

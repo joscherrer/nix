@@ -94,8 +94,9 @@
       colorlib = import ./colors.nix nixpkgs.lib;
     in
     rec {
-      nixosModules = import ./modules/nixos;
+      nixosModules = import ./modules;
       homeManagerModules = import ./modules;
+      homeModules = import ./modules;
       overlays = import ./overlays // {
         unstable = overlay-unstable;
         stable = overlay-stable;

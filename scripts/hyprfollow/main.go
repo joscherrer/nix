@@ -11,6 +11,7 @@ import (
 	"slices"
 	"strings"
 	"syscall"
+	"time"
 )
 
 type UnknownEventError struct {
@@ -37,6 +38,7 @@ var ctrlSock = os.Getenv("XDG_RUNTIME_DIR") +
 var hyprctl = HyprCtl{CtrlSock: ctrlSock}
 
 func parseEvent(raw string) (HyprlandEvent, error) {
+	slog.Debug("Parsing event", "raw", raw)
 	p := strings.SplitN(raw, ">>", 2)
 	if len(p) < 2 {
 		return nil, &InvalidEventError{Data: raw}
@@ -58,7 +60,7 @@ func parseEvent(raw string) (HyprlandEvent, error) {
 		slog.Debug("ClosewindowEvent", "data", data)
 		return ClosewindowEvent{}.SetData(data)
 	default:
-		return nil, &UnknownEventError{}
+		return nil, &UnknownEventError{Name: ev, Data: data}
 	}
 }
 
@@ -88,56 +90,104 @@ func triggerPinnedMove(ws *Workspace) {
 		return
 	}
 
-	tag := ""
-	notag := ""
+	var tagWeight map[string]int = make(map[string]int)
+
 	for _, client := range *clients {
-		if slices.Contains(client.Tags, "bbrain") {
-			tag = "bbrain"
-			notag = "work"
-			break
-		}
-		if slices.Contains(client.Tags, "work") {
-			tag = "work"
-			notag = "bbrain"
-			break
+		for _, tag := range client.Tags {
+			if strings.HasPrefix(tag, "pin:") {
+				continue
+			}
+			if _, ok := tagWeight[tag]; !ok {
+				tagWeight[tag] = 0
+			}
+			tagWeight[tag]++
 		}
 	}
 
-	if tag == "" {
+	mainTag := struct {
+		name   string
+		weight int
+	}{
+		name:   "",
+		weight: 0,
+	}
+	for tag, weight := range tagWeight {
+		if weight > mainTag.weight {
+			mainTag.name = tag
+			mainTag.weight = weight
+		}
+	}
+	slog.Debug(fmt.Sprintf("%#v", tagWeight))
+
+	if mainTag.name == "" {
 		slog.Info("No relevant tag found, skipping workspace move")
 		return
 	}
 
-	hyprctl.GetClientWithTag(notag)
+	delete(tagWeight, mainTag.name)
 
-	slog.Info("Moving tag", "tag", "pin:"+tag, "to workspace", ws.Name)
-	hyprctl.MoveTagToWorkspace("pin:"+tag, ws)
-}
-
-func handleEvent(line string) {
-	ev, err := parseEvent(line)
-	if err != nil {
-		if _, ok := err.(*InvalidEventError); ok {
-			slog.Error("Invalid event data", "error", err, "line", line)
-		} else if _, ok := err.(*UnknownEventError); ok {
-			slog.Debug("Unknown event type", "error", err, "line", line)
+	for _, c := range *clients {
+		if slices.Contains(c.Tags, "pin:"+mainTag.name) || slices.Contains(c.Tags, mainTag.name) {
+			slog.Info("Skipping client", "client", c.Title, "tag", mainTag.name)
+			continue
 		}
-		return
+		for _, tag := range c.Tags {
+			if !strings.HasPrefix(tag, "pin:") {
+				slog.Info("Not moving client", "client", c.Title)
+				continue
+			}
+			search := strings.TrimPrefix(tag, "pin:")
+			nc, err := hyprctl.GetClientWithTag(search)
+			if err != nil {
+				slog.Error("Failed to get client with tag", "tag", search, "error", err)
+				continue
+			}
+			slog.Info("Moving client", "client", c.Title, "tag", search, "to workspace", nc.Workspace.Id)
+			hyprctl.MoveClientToWorkspace(&c, nc.Workspace.Full(&hyprctl))
+			break
+		}
+		// If we reach here, it means we didn't find a pin:tag for this client, so we move it to workspace 9
+		slog.Info("Moving client to default workspace")
+		wid := 9
+		if ws.Id == wid {
+			wid = 4
+		}
+		defaultWorkspace, err := hyprctl.GetWorkspaceById(wid)
+		if err != nil {
+			slog.Error("Failed to get default workspace", "id", 4, "error", err)
+			continue
+		}
+		hyprctl.MoveClientToWorkspace(&c, defaultWorkspace)
 	}
 
+	slog.Info("Moving tag", "tag", "pin:"+mainTag.name, "to workspace", ws.Name)
+	hyprctl.MoveTagToWorkspace("pin:"+mainTag.name, ws)
+}
+
+func handleEvent(ev HyprlandEvent) {
+	slog.Debug("Received event", "type", fmt.Sprintf("%T", &ev))
 	switch e := ev.(type) {
 	case WorkspaceV2Event:
-		if e.WorkspaceId%2 == 1 {
-			triggerPinnedMove(nil)
+		if e.WorkspaceId%2 != 1 {
+			return
 		}
+		ws, err := hyprctl.GetWorkspaceById(e.WorkspaceId)
+		if err != nil {
+			slog.Error("Failed to get workspace by ID", "id", e.WorkspaceId, "error", err)
+			return
+		}
+		triggerPinnedMove(ws)
 	case OpenwindowEvent, ClosewindowEvent:
 		hyprctl.UpdateClients()
-	case CreateWorkspaceV2Event, DestroyWorkspaceV2Event:
+	case CreateWorkspaceV2Event, DestroyWorkspaceV2Event, MoveWorkspaceV2Event:
 		hyprctl.UpdateWorkspaces()
 	case MonitorAddedV2Event, MonitorRemovedV2Event:
 		hyprctl.UpdateMonitors()
+	case ClientTagUpdatedEvent:
+		slog.Info("Client tag updated", "client", e.Client, "added", e.Added, "removed", e.Removed)
+		triggerPinnedMove(e.Client.Workspace.Full(&hyprctl))
 	default:
-		slog.Debug(fmt.Sprintf("Unhandled event type: %T", e))
+		slog.Debug(fmt.Sprintf("Unhandled event type: %T", &e))
 	}
 }
 
@@ -172,12 +222,22 @@ func main() {
 	signal.Notify(refreshPin, syscall.SIGUSR1)
 
 	done := make(chan struct{})
+	eventChan := make(chan HyprlandEvent)
 
 	go func() {
 		scanner := bufio.NewScanner(conn)
 		for scanner.Scan() {
 			line := scanner.Text()
-			handleEvent(line)
+
+			ev, err := parseEvent(line)
+			if err != nil {
+				if _, ok := err.(*InvalidEventError); ok {
+					slog.Error(err.Error())
+				} else if _, ok := err.(*UnknownEventError); ok {
+					slog.Debug(err.Error())
+				}
+			}
+			eventChan <- ev
 		}
 		if err := scanner.Err(); err != nil {
 			fmt.Fprintf(os.Stderr, "Scanner error: %v\n", err)
@@ -190,6 +250,28 @@ func main() {
 			<-refreshPin
 			slog.Info("Received SIGUSR1, triggering pinned move")
 			triggerPinnedMove(nil)
+		}
+	}()
+
+	go func() {
+		for {
+			ev := <-eventChan
+			handleEvent(ev)
+		}
+	}()
+
+	go func() {
+		for {
+			time.Sleep(1 * time.Second)
+			o := hyprctl.Clients()
+			n, err := hyprctl.UpdateClients()
+			if err != nil {
+				slog.Error("Failed to update clients", "error", err)
+				continue
+			}
+			DispatchClientTagUpdated(o, n, eventChan)
+
+			hyprctl.UpdateWorkspaces()
 		}
 	}()
 

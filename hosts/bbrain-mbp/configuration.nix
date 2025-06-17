@@ -1,4 +1,12 @@
-{ self, inputs, outputs, config, pkgs, lib, ... }:
+{
+  self,
+  inputs,
+  outputs,
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 {
   networking.localHostName = "bbrain-mbp";
 
@@ -24,15 +32,15 @@
   };
 
   services.skhd = {
-      enable = true;
-      skhdConfig = ''
-        cmd + shift - p : if [ "$(yabai -m config layout)" = "float" ]; then yabai -m config layout bsp; else yabai -m config layout float; fi
-        cmd + 1 : yabai -m space --focus 1
-        cmd + 2 : yabai -m space --focus 2
-        cmd + 3 : yabai -m space --focus 3
-        cmd + 4 : yabai -m space --focus 4
-        cmd + 5 : yabai -m space --focus 5
-      '';
+    enable = true;
+    skhdConfig = ''
+      cmd + shift - p : if [ "$(yabai -m config layout)" = "float" ]; then yabai -m config layout bsp; else yabai -m config layout float; fi
+      cmd + 1 : yabai -m space --focus 1
+      cmd + 2 : yabai -m space --focus 2
+      cmd + 3 : yabai -m space --focus 3
+      cmd + 4 : yabai -m space --focus 4
+      cmd + 5 : yabai -m space --focus 5
+    '';
   };
 
   # services.yabai.enable = true;

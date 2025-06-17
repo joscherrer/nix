@@ -11,14 +11,8 @@ pkgs.buildGoModule {
     "-w"
   ];
 
-  # nativeBuildInputs = [ pkgs.installShellFiles ];
-
-  # postInstall = ''
-  #   installBin $out/bin/hyprfollow
-  # '';
-
   meta = {
     description = "A tool to follow Hyprland windows";
-    mainProgam = "hyprfollow";
+    mainProgram = "hyprfollow";
   };
 }

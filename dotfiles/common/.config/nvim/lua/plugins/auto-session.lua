@@ -86,27 +86,31 @@ return {
             post_restore_cmds = {
                 function()
                     require("auto-session").AutoSaveSession()
-                    local root = vim.fn.fnamemodify(vim.fn.getcwd(), ":t")
+                    local root = vim.fn.fnamemodify(vim.fn.getcwd(), ":~")
                     local relfile = require("plenary.path"):new(vim.fn.expand("%:.")):shorten(8, { -1, -2, -3 })
                     local helpers = require("bbrain.helpers")
 
                     vim.o.title = true
-                    vim.o.titlestring = root .. " - " .. relfile
+                    vim.o.titlestring = root .. " - "
 
                     local cwd = require("plenary.path"):new(vim.loop.cwd())
                     if vim.tbl_contains(cwd:parents(), cwd.path.home .. "/dev/jumbomana") then
                         vim.notify("Jumbomana detected, setting up workspaces", vim.log.levels.INFO)
-                        vim.fn.system({ "hyprctl", "dispatch", "tagwindow", "--", "-bbrain", "pid:" ..
-                        tostring(helpers.get_ppid()) })
-                        vim.fn.system({ "hyprctl", "dispatch", "tagwindow", "--", "+work", "pid:" ..
-                        tostring(helpers.get_ppid()) })
+                        vim.fn.system({
+                            "hyprctl", "dispatch", "tagwindow", "--", "-bbrain", "pid:" .. tostring(helpers.get_ppid())
+                        })
+                        vim.fn.system({
+                            "hyprctl", "dispatch", "tagwindow", "--", "+work", "pid:" .. tostring(helpers.get_ppid())
+                        })
                         helpers.signal_hyprfollow()
                     else
                         vim.notify("No Jumbomana detected, setting up bbrain workspaces", vim.log.levels.INFO)
-                        vim.fn.system({ "hyprctl", "dispatch", "tagwindow", "--", "-work", "pid:" ..
-                        tostring(helpers.get_ppid()) })
-                        vim.fn.system({ "hyprctl", "dispatch", "tagwindow", "--", "+bbrain", "pid:" ..
-                        tostring(helpers.get_ppid()) })
+                        vim.fn.system({
+                            "hyprctl", "dispatch", "tagwindow", "--", "-work", "pid:" .. tostring(helpers.get_ppid())
+                        })
+                        vim.fn.system({
+                            "hyprctl", "dispatch", "tagwindow", "--", "+bbrain", "pid:" .. tostring(helpers.get_ppid())
+                        })
                         require("bbrain.helpers").signal_hyprfollow()
                     end
                 end,
