@@ -90,6 +90,7 @@ local plugins = {
     },
     {
         "akinsho/toggleterm.nvim",
+        lazy = false,
         opts = {
             direction = "horizontal",
             shading_factor = 10,

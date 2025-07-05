@@ -7,5 +7,6 @@
     ./rust.nix
     ./nix.nix
     ./python.nix
+    ./dart.nix
   ];
 }

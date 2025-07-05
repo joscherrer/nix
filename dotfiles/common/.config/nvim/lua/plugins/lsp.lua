@@ -222,6 +222,9 @@ local function lspconfig_config()
     local js = require('bbrain.lsp.js')
     js.setup()
 
+    local dart = require('bbrain.lsp.dart')
+    dart.setup()
+
     vim.api.nvim_set_hl(0, "@odp.function.builtin.python", { link = "pythonBuiltin" })
     vim.api.nvim_set_hl(0, "@odp.import_module.python", { link = "Type" })
     vim.api.nvim_set_hl(0, "@keyword.operator.lua", { link = "Keyword" })
