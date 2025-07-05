@@ -8,10 +8,10 @@
 }:
 {
   programs.go.enable = true;
-  programs.go.package = pkgs.go;
+  programs.go.package = pkgs.unstable.go;
 
   home.packages = with pkgs; [
-    gopls
+    unstable.gopls
     go-outline
     delve
     go-task

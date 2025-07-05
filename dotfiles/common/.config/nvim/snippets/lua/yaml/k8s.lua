@@ -67,6 +67,17 @@ return {
         t({ "apiVersion: kustomize.config.k8s.io/v1beta1", "kind: Kustomization", "", "namespace: " }),
         i(1, "your-namespace"),
     }),
+    s({ trig = "namespace" }, fmt([[
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {namespace}
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: "disabled"
+    ]],
+        {
+            namespace = i(1, "default")
+        })),
     s({ trig = "livenessExec" }, getProbeFmt("liveness", probeExec, probeExecParams())),
     s({ trig = "livenessHttp" }, getProbeFmt("liveness", probeHttp, probeHttpParams())),
     s({ trig = "readinessExec" }, getProbeFmt("readiness", probeExec, probeExecParams())),

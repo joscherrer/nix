@@ -22,11 +22,11 @@
 
   programs.keychain.enable = true;
   services.gnome-keyring.enable = true;
-  security.pam.services = {
-      sudo_local = {
-        touchIdAuth = true;
-      };
-  };
+  # security.pam.services = {
+  #     sudo_local = {
+  #       touchIdAuth = true;
+  #     };
+  # };
 
   systemd.user.services."nvim-server" = {
     Unit = {
