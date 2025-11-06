@@ -2,7 +2,7 @@
 let
   delta-themes = builtins.fetchurl {
     url = "https://raw.githubusercontent.com/dandavison/delta/refs/heads/main/themes.gitconfig";
-    sha256 = "sha256:18z0c3skdxzpvh3z0ml280zkmkykq8m5dhdc1bdh11nacxw0n41l";
+    sha256 = "sha256:1pkqd36ls3cc6xgycd6sawpnwvgbchs54dkgg007algkhqxv7wch";
   };
 in
 {
