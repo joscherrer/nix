@@ -256,7 +256,10 @@ function M.add(category, name, opts)
         for _, mod in ipairs(mods) do
             keybind = keybind .. mod .. "+"
         end
-        keybind = keybind .. kc .. " "
+        if kc ~= "" then
+            keybind = keybind .. kc .. " "
+        end
+
         if #parts ~= 0 then
             keybind = keybind .. table.concat(parts, "")
         end

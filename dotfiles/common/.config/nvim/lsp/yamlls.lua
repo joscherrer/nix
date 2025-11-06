@@ -1,11 +1,9 @@
-local M = {}
-
 local http = require('bbrain.http')
 local fs = require('luvit.fs')
 local helpers = require('bbrain.helpers')
 
 local localSchemaRoot = vim.fn.expand("$HOME/.datree/crdSchemas")
-M.lsp_autocmd = 0
+local lsp_autocmd = 0
 
 local function getSymbol(symbols, key)
     local objs = {}
@@ -53,7 +51,6 @@ local lsp_symbol_callback = function(client, bufnr, _, result)
 
     vim.notify("Found " .. #kinds .. " resources", vim.log.levels.DEBUG)
 
-    local schemas = vim.fn.expand("$HOME/.datree/crdSchemas")
     local schemaSequencePath = vim.fs.joinpath("/tmp", "schemaSequence_" ..
         helpers.random_string(10) .. ".json")
 
@@ -114,7 +111,7 @@ local lsp_symbol_callback = function(client, bufnr, _, result)
     })
 end
 
-function M.on_attach(client, bufnr)
+local function on_attach(client, bufnr)
     local findClientByName = function(bufnr, name)
         for _, v in pairs(vim.lsp.get_clients({ bufnr = bufnr })) do
             if v.name == name then
@@ -125,8 +122,8 @@ function M.on_attach(client, bufnr)
     end
 
     -- trigger on_attach everytime we leave insert mode for yaml files
-    if M.lsp_autocmd == 0 then
-        M.lsp_autocmd = vim.api.nvim_create_autocmd({ "InsertLeave" }, {
+    if lsp_autocmd == 0 then
+        lsp_autocmd = vim.api.nvim_create_autocmd({ "InsertLeave" }, {
             pattern = { "*.yaml", "*.yml" },
             callback = function(ev)
                 vim.notify("on_attach", vim.log.levels.DEBUG)
@@ -134,8 +131,8 @@ function M.on_attach(client, bufnr)
                 if #clients ~= 1 then
                     return
                 end
-                local client = clients[1]
-                client.on_attach(ev.buf)
+                local c = clients[1]
+                c:on_attach(ev.buf)
             end
         })
     end
@@ -149,4 +146,29 @@ function M.on_attach(client, bufnr)
     )
 end
 
-return M
+local lsp_capabilities = require('cmp_nvim_lsp').default_capabilities()
+lsp_capabilities.textDocument.foldingRange = {
+    dynamicRegistration = false,
+    lineFoldingOnly = true
+}
+
+return {
+    capabilities = vim.tbl_deep_extend('force', lsp_capabilities, {
+        workspace = {
+            didChangeConfiguration = {
+                dynamicRegistration = true
+            }
+        }
+    }),
+    on_attach = on_attach,
+    settings = {
+        yaml = {
+            format = {
+                enable = true
+            },
+            completion = {
+                enable = true
+            },
+        }
+    }
+}

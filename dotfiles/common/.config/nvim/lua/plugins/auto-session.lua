@@ -64,7 +64,7 @@ return {
                     if not as.session_exists_for_cwd() then
                         require("bbrain.helpers").close_all_buffers()
                     end
-                    as.AutoSaveSession()
+                    as.auto_save_session()
                 end
             },
             no_restore_cmds = {
@@ -85,7 +85,7 @@ return {
             },
             post_restore_cmds = {
                 function()
-                    require("auto-session").AutoSaveSession()
+                    require("auto-session").auto_save_session()
                     local root = vim.fn.fnamemodify(vim.fn.getcwd(), ":~")
                     local relfile = require("plenary.path"):new(vim.fn.expand("%:.")):shorten(8, { -1, -2, -3 })
                     local helpers = require("bbrain.helpers")
@@ -98,8 +98,8 @@ return {
                     end
 
                     local cwd = require("plenary.path"):new(vim.loop.cwd())
-                    if vim.tbl_contains(cwd:parents(), cwd.path.home .. "/dev/jumbomana") then
-                        vim.notify("Jumbomana detected, setting up workspaces", vim.log.levels.INFO)
+                    if vim.tbl_contains(cwd:parents(), cwd.path.home .. "/dev/closduhaslach") then
+                        vim.notify("Work detected, setting up workspaces", vim.log.levels.INFO)
                         vim.fn.system({
                             "hyprctl", "dispatch", "tagwindow", "--", "-bbrain", "pid:" .. tostring(helpers.get_ppid())
                         })
@@ -108,7 +108,7 @@ return {
                         })
                         helpers.signal_hyprfollow()
                     else
-                        vim.notify("No Jumbomana detected, setting up bbrain workspaces", vim.log.levels.INFO)
+                        vim.notify("No work detected, setting up bbrain workspaces", vim.log.levels.INFO)
                         vim.fn.system({
                             "hyprctl", "dispatch", "tagwindow", "--", "-work", "pid:" .. tostring(helpers.get_ppid())
                         })
@@ -122,6 +122,6 @@ return {
         }
     end,
     keys = {
-        { '<leader>pw', '<cmd>SessionSearch<CR>', desc = 'Session search' },
+        { '<leader>pw', '<cmd>AutoSession search<CR>', desc = 'Session search' },
     },
 }
