@@ -89,9 +89,9 @@ in
       size = 9999999;
     };
     shellAliases = {
-      ls = "lsd";
+      ls = lib.mkForce "lsd";
       l = "lsd -lah";
-      ll = "lsd -lh";
+      ll = lib.mkForce "lsd -lh";
       tldr = "cht.sh";
       vim = "nvim";
       vi = "nvim";

@@ -59,7 +59,6 @@
         pywinrm
       ]
     ))
-    inputs.hyprswitch.packages.x86_64-linux.default
   ];
 
   hardware.bluetooth.enable = true;
@@ -108,7 +107,8 @@
 
   fonts.packages = [
     pkgs.corefonts
-  ] ++ builtins.filter lib.attrsets.isDerivation (builtins.attrValues pkgs.nerd-fonts);
+  ]
+  ++ builtins.filter lib.attrsets.isDerivation (builtins.attrValues pkgs.nerd-fonts);
 
   # Need to create /etc/nixos/smb-secrets with the following content:
   # username=<USERNAME>
@@ -180,21 +180,6 @@
       #     }
       #   ];
       # };
-      wg1 = {
-        ips = [ "10.8.0.6/32" ];
-        listenPort = 51820;
-        privateKeyFile = "/home/jscherrer/.config/wireguard/tcs";
-        peers = [
-          {
-            publicKey = "M3VkDBj7p1uY/HFBAsB8z4Wh7hOh2BVukAFGnxP0Rx8=";
-            allowedIPs = [
-              "10.8.0.0/16"
-            ];
-            endpoint = "wg.jumbomana.io:31532";
-            persistentKeepalive = 25;
-          }
-        ];
-      };
     };
   };
 
@@ -280,11 +265,11 @@
   # valid for wayland installations despite it's name
   services.xserver.videoDrivers = [ "nvidia" ];
   services.flatpak.enable = true;
-  services.logind.extraConfig = ''
-    HandlePowerKey=suspend
-    IdleAction=suspend
-    IdleActionSec=60
-  '';
+  services.logind.settings.Login = {
+    HandlePowerKey = "suspend";
+    IdleAction = "suspend";
+    IdleActionSec = 60;
+  };
 
   security.rtkit.enable = true;
 

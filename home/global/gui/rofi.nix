@@ -1,7 +1,14 @@
-{ inputs, lib, pkgs, config, outputs, ... }:
+{
+  inputs,
+  lib,
+  pkgs,
+  config,
+  outputs,
+  ...
+}:
 {
   programs.rofi.enable = true;
-  programs.rofi.package = pkgs.rofi-wayland;
+  programs.rofi.package = pkgs.rofi;
   programs.rofi.extraConfig = {
     modi = "drun,run,filebrowser";
     show-icons = true;
@@ -77,7 +84,11 @@
         border-radius = mkLiteral "0px 0px 0px 0px";
         border-color = mkLiteral "@border-colour";
         background-color = mkLiteral "transparent";
-        children = map mkLiteral [ "inputbar" "message" "listview" ];
+        children = map mkLiteral [
+          "inputbar"
+          "message"
+          "listview"
+        ];
       };
 
       inputbar = {
@@ -90,7 +101,11 @@
         border-color = mkLiteral "@border-colour";
         background-color = mkLiteral "transparent";
         text-color = mkLiteral "@foreground-colour";
-        children = map mkLiteral [ "textbox-prompt-colon" "entry" "mode-switcher" ];
+        children = map mkLiteral [
+          "textbox-prompt-colon"
+          "entry"
+          "mode-switcher"
+        ];
       };
 
       prompt = {
@@ -231,7 +246,9 @@
         horizontal-align = mkLiteral "0.0";
       };
 
-      /*****----- Mode Switcher -----*****/
+      /**
+        ***----- Mode Switcher -----****
+      */
       mode-switcher = {
         enabled = mkLiteral "true";
         spacing = mkLiteral "10px";

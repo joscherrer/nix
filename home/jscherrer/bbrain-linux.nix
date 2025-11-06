@@ -16,7 +16,7 @@
 
   nix.gc = {
     automatic = true;
-    frequency = "hourly";
+    dates = "weekly";
     options = "--delete-older-than 10d";
   };
 
@@ -89,7 +89,7 @@
   wayland.windowManager.hyprland = {
     settings = {
       workspace = [
-        "1, monitor:desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675, persistent:true, default:true"
+        "1, monitor:desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675, persistent:true"
         "2, monitor:desc:Dell Inc. DELL U2415 7MT0167B2YNL, persistent:true, default:true, layoutopt:orientation:top"
         "3, monitor:desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675, persistent:true, default:false"
         "4, monitor:desc:Dell Inc. DELL U2415 7MT0167B2YNL, persistent:true, default:false, layoutopt:orientation:top"
@@ -99,7 +99,7 @@
         "8, monitor:desc:Dell Inc. DELL U2415 7MT0167B2YNL, persistent:true, default:false, layoutopt:orientation:top"
         "9, monitor:desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675, persistent:true, default:false"
         "10, monitor:desc:Dell Inc. DELL U2415 7MT0167B2YNL, persistent:true, default:false, layoutopt:orientation:top"
-        "11, monitor:desc:AOC 28E850, persistent:true, default:true"
+        # "11, monitor:desc:AOC 28E850, persistent:true, default:true"
       ];
     };
   };

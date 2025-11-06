@@ -137,125 +137,27 @@ rec {
     };
   };
 
-  xdg.configFile."hyprswitch/style.css" = {
-    enable = true;
-    text = ''
-      .client-image {
-          margin: 15px;
-      }
-
-      .client-index {
-          margin: 6px;
-          padding: 5px;
-          font-size: 30px;
-          font-weight: bold;
-          border-radius: 15px;
-          border: 3px solid rgba(80, 90, 120, 0.80);
-          background-color: rgba(20, 20, 20, 1);
-      }
-
-      .client {
-          border-radius: 15px;
-          border: 3px solid rgba(80, 90, 120, 0.80);
-          background-color: rgba(25, 25, 25, 0.90);
-      }
-
-      .client:hover {
-          background-color: rgba(40, 40, 50, 1);
-      }
-
-      .client_active {
-          border: 3px solid rgba(239, 9, 9, 0.94);
-      }
-
-      .workspace {
-          font-size: 25px;
-          font-weight: bold;
-          border-radius: 15px;
-          border: 3px solid rgba(70, 80, 90, 0.80);
-          background-color: rgba(20, 20, 25, 0.90);
-      }
-
-      .workspace_special {
-          border: 3px solid rgba(0, 255, 0, 0.4);
-      }
-
-      .workspaces {
-          margin: 10px;
-      }
-
-      window {
-          border-radius: 15px;
-          opacity: 0.85;
-          border: 6px solid rgba(17, 171, 192, 0.85);
-      }
-    '';
-  };
-
   wayland.windowManager.hyprland = {
     plugins = [
-      pkgs.hyprlandPlugins.hyprexpo
-      pkgs.hyprlandPlugins.hyprsplit
+      # pkgs.hyprlandPlugins.hyprexpo
+      # pkgs.hyprlandPlugins.hyprsplit
     ];
 
     enable = true;
     xwayland.enable = true;
-    extraConfig = ''
-      $flags = --filter-current-monitor 
-      $key = TAB
-      $modifier = ALT
-      $modifier_release = ALT_L
-      $reverse = SHIFT
-
-      # allows repeated switching with same keypress that starts the submap
-      binde = $modifier, $key, exec, hyprswitch gui --do-initial-execute $flags
-      bind = $modifier, $key, submap, switch
-
-      # allows repeated switching with same keypress that starts the submap
-      binde = $modifier $reverse, $key, exec, hyprswitch gui --do-initial-execute -r $flags
-      bind = $modifier $reverse, $key, submap, switch
-
-      submap = switch
-      # allow repeated window switching in submap (same keys as repeating while starting)
-      binde = $modifier, $key, exec, hyprswitch gui $flags
-      binde = $modifier $reverse, $key, exec, hyprswitch gui -r $flags
-
-      # switch to specific window offset (TODO replace with a more dynamic solution)
-      bind = $modifier, 1, exec, hyprswitch gui --offset=1 $flags
-      bind = $modifier, 2, exec, hyprswitch gui --offset=2 $flags
-      bind = $modifier, 3, exec, hyprswitch gui --offset=3 $flags
-      bind = $modifier, 4, exec, hyprswitch gui --offset=4 $flags
-      bind = $modifier, 5, exec, hyprswitch gui --offset=5 $flags
-
-      bind = $modifier $reverse, 1, exec, hyprswitch gui --offset=1 -r $flags
-      bind = $modifier $reverse, 2, exec, hyprswitch gui --offset=2 -r $flags
-      bind = $modifier $reverse, 3, exec, hyprswitch gui --offset=3 -r $flags
-      bind = $modifier $reverse, 4, exec, hyprswitch gui --offset=4 -r $flags
-      bind = $modifier $reverse, 5, exec, hyprswitch gui --offset=5 -r $flags
-
-
-      # exit submap and stop hyprswitch
-      bindrt = $modifier, $modifier_release, exec, hyprswitch close
-      bindrt = $modifier, $modifier_release, submap, reset
-
-      # if it somehow doesn't close on releasing $switch_release, escape can kill (doesnt switch)
-      bindr = ,escape, exec, hyprswitch close --kill
-      bindr = ,escape, submap, reset
-      submap = reset
-    '';
     settings = {
       exec-once = [
         "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
         "${pkgs.wl-clipboard}/bin/wl-paste --type text --watch cliphist store"
         "${pkgs.wl-clipboard}/bin/wl-paste --type image --watch cliphist store"
         "${waybar-wrapper}/bin/waybar-wrapper"
-        "hyprswitch init --show-title --custom-css ${config.xdg.configHome}/hyprswitch/style.css &"
+        # "hyprswitch init --show-title --custom-css ${config.xdg.configHome}/hyprswitch/style.css &"
       ];
 
       monitor = [
         "desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675,3840x1600@144,1200x160,1.25"
         "desc:Dell Inc. DELL U2415 7MT0167B2YNL,1920x1200@60,0x0,auto,transform,1"
-        "desc:AOC 28E850,disable"
+        # "desc:AOC 28E850,disable"
       ];
 
       env = [
@@ -288,19 +190,19 @@ rec {
         accel_profile = "flat";
       };
 
-      # workspace = [
-      #   "1, monitor:desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675, persistent:true, default:true"
-      #   "2, monitor:desc:Dell Inc. DELL U2415 7MT0167B2YNL, persistent:true, default:true, layoutopt:orientation:top"
-      #   "3, monitor:desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675, persistent:true, default:false"
-      #   "4, monitor:desc:Dell Inc. DELL U2415 7MT0167B2YNL, persistent:true, default:false, layoutopt:orientation:top"
-      #   "5, monitor:desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675, persistent:true, default:false"
-      #   "6, monitor:desc:Dell Inc. DELL U2415 7MT0167B2YNL, persistent:true, default:false, layoutopt:orientation:top"
-      #   "7, monitor:desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675, persistent:true, default:false"
-      #   "8, monitor:desc:Dell Inc. DELL U2415 7MT0167B2YNL, persistent:true, default:false, layoutopt:orientation:top"
-      #   "9, monitor:desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675, persistent:true, default:false"
-      #   "10, monitor:desc:Dell Inc. DELL U2415 7MT0167B2YNL, persistent:true, default:false, layoutopt:orientation:top"
-      #   "11, monitor:desc:AOC 28E850, persistent:true, default:true"
-      # ];
+      workspace = [
+        # "1, monitor:desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675, persistent:true, default:true"
+        # "2, monitor:desc:Dell Inc. DELL U2415 7MT0167B2YNL, persistent:true, default:true, layoutopt:orientation:top"
+        # "3, monitor:desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675, persistent:true, default:false"
+        # "4, monitor:desc:Dell Inc. DELL U2415 7MT0167B2YNL, persistent:true, default:false, layoutopt:orientation:top"
+        # "5, monitor:desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675, persistent:true, default:false"
+        # "6, monitor:desc:Dell Inc. DELL U2415 7MT0167B2YNL, persistent:true, default:false, layoutopt:orientation:top"
+        # "7, monitor:desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675, persistent:true, default:false"
+        # "8, monitor:desc:Dell Inc. DELL U2415 7MT0167B2YNL, persistent:true, default:false, layoutopt:orientation:top"
+        # "9, monitor:desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675, persistent:true, default:false"
+        # "10, monitor:desc:Dell Inc. DELL U2415 7MT0167B2YNL, persistent:true, default:false, layoutopt:orientation:top"
+        # "11, monitor:desc:AOC 28E850, persistent:true, default:true"
+      ];
 
       general = {
         gaps_in = 5;
@@ -446,7 +348,7 @@ rec {
         "SUPER CTRL ALT SHIFT, DELETE, exit,"
         "$mainMod SHIFT, Q, exec, wlogout -p layer-shell"
         "CTRL ALT, DELETE, exec, wlogout -p layer-shell"
-        "SUPER, grave, hyprexpo:expo, toggle"
+        # "SUPER, grave, hyprexpo:expo, toggle"
       ];
 
       bindm = [

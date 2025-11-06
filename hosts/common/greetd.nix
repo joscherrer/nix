@@ -1,8 +1,16 @@
-{ inputs, lib, outputs, config, pkgs, default, ... }:
+{
+  inputs,
+  lib,
+  outputs,
+  config,
+  pkgs,
+  default,
+  ...
+}:
 let
   cage-kiosk = pkgs.writeShellScriptBin "cage-kiosk" ''
     dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
-    exec ${pkgs.cage}/bin/cage -s -- ${pkgs.greetd.gtkgreet}/bin/gtkgreet -l -s /etc/greetd/gtkgreet.css
+    exec ${pkgs.cage}/bin/cage -s -- ${pkgs.gtkgreet}/bin/gtkgreet -l -s /etc/greetd/gtkgreet.css
   '';
 
   hyprland-kiosk = pkgs.writeShellScriptBin "hyprland-kiosk" ''
@@ -22,8 +30,12 @@ let
 in
 {
   services.logind = {
-    lidSwitch = "suspend";
-    lidSwitchExternalPower = "lock";
+    settings = {
+      Login = {
+        HandleLidSwitch = "suspend";
+        HandleLidSwitchExternalPower = "lock";
+      };
+    };
   };
 
   services.greetd = {
@@ -51,7 +63,7 @@ in
   environment.systemPackages = [
     cage-kiosk
     hyprland-kiosk
-    pkgs.greetd.gtkgreet
+    pkgs.gtkgreet
     pkgs.cage
     pkgs.fluent-gtk-theme
     # pkgs.qt6.qtwayland
@@ -71,7 +83,6 @@ in
   environment.etc."greetd/hyprland.conf".text = ''
     source = /etc/hypr/default.conf
     exec-once=dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
-    exec = systemd-cat --identifier=regreet ${pkgs.greetd.regreet}/bin/regreet; hyprctl dispatch exit ""
+    exec = systemd-cat --identifier=regreet ${pkgs.regreet}/bin/regreet; hyprctl dispatch exit ""
   '';
 }
-

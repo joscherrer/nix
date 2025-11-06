@@ -41,9 +41,9 @@ in
     kvantum = {
       enable = true;
     };
-    gtk = {
-      enable = true;
-    };
+    # gtk = {
+    #   enable = true;
+    # };
   };
 
   home.pointerCursor = {

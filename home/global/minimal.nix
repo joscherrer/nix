@@ -122,12 +122,14 @@ in
     dig
     tcpdump
     pinentry-curses
-    lua
+    lua51Packages.lua # required for nvim-dap-python
+    lua51Packages.luarocks # required for nvim-dap-python
     htop
     hclfmt
     scalr-cli
     openssl
     urlencode
     rclone
+    zip
   ];
 }
