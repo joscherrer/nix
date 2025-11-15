@@ -135,7 +135,7 @@ in
     imv
     playerctl
     pamixer
-    webcord
+    # webcord
     discord
     vesktop
     slurp
@@ -148,7 +148,7 @@ in
     libsForQt5.qtstyleplugin-kvantum
     chromium
     dbeaver-bin
-    bitwarden
+    bitwarden-desktop
     telegram-desktop
     pandoc
     (catppuccin-kvantum.override {

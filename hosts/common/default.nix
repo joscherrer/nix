@@ -56,7 +56,7 @@
       let
         authorizedKeys = pkgs.fetchurl {
           url = "https://github.com/joscherrer.keys";
-          hash = "sha256-do86BT7VmTlQDRXoPgnUORTH56axo8UroQLDcP52lgE=";
+          hash = "sha256-RTDdotI9tuRXysKKtLIrX0BVMpR6vLKsroyj9g1cNF4=";
         };
       in
       pkgs.lib.splitString "\n" (builtins.readFile authorizedKeys);

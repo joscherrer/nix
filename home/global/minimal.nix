@@ -116,7 +116,7 @@ in
     jwt-cli
     gettext
     argbash
-    du-dust
+    dust
     findutils
     xdg-utils
     dig

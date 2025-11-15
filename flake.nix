@@ -28,7 +28,7 @@
 
     nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
 
-    hyprswitch.url = "github:h3rmt/hyprswitch/release";
+    # hyprswitch.url = "github:h3rmt/hyprswitch/release";
   };
 
   outputs =
@@ -43,7 +43,7 @@
       nil,
       catppuccin,
       nixos-wsl,
-      hyprswitch,
+      # hyprswitch,
       ...
     }@inputs:
     let
@@ -62,11 +62,9 @@
       };
       overlay-kubectx = final: prev: {
         kubectx = prev.kubectx.overrideAttrs (old: {
-          postInstall =
-            old.postInstall
-            + ''
-              ln -s $out/bin/kubens $out/bin/kubectl-ns
-            '';
+          postInstall = old.postInstall + ''
+            ln -s $out/bin/kubens $out/bin/kubectl-ns
+          '';
         });
       };
 

@@ -42,7 +42,7 @@
     pkgs.qt6.qtwayland
     pkgs.qt5.qtwayland
     pkgs.libva
-    pkgs.unstable.kdePackages.xwaylandvideobridge
+    # pkgs.unstable.kdePackages.xwaylandvideobridge
     pkgs.wineWowPackages.waylandFull
     pkgs.cifs-utils
     pkgs.qmk
