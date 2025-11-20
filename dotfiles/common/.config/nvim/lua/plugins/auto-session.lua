@@ -37,6 +37,7 @@ return {
             auto_restore = true,
             auto_restore_last_session = #vim.fn.argv() == 0 or
                 (vim.loop.cwd() == vim.loop.os_homedir() and vim.g.neovide),
+            auto_delete_empty_sessions = false,
             lazy_support = true,
             close_unsupported_windows = true,
             lsp_stop_on_restore = true,
