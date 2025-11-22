@@ -50,3 +50,6 @@ alpine:
 
 jumbo:
 	sudo nixos-rebuild switch --flake "/root/nix#jumbo" $(EXTRA_ARGS)
+
+rds:
+	sudo nixos-rebuild switch --flake "$(PWD)/#rds" $(EXTRA_ARGS)

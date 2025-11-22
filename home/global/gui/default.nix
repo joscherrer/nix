@@ -5,6 +5,7 @@
   config,
   pkgs,
   default,
+  lib,
   ...
 }:
 let
@@ -98,24 +99,23 @@ in
 
   xdg.mimeApps.enable = true;
   xdg.mimeApps.defaultApplications = {
-    "application/x-extension-htm" = browser;
-    "application/x-extension-html" = browser;
-    "application/x-extension-shtml" = browser;
-    "application/x-extension-xht" = browser;
-    "application/x-extension-xhtml" = browser;
-    "application/xhtml+xml" = browser;
-    "text/html" = browser;
-    "x-scheme-handler/about" = browser;
+    "application/x-extension-htm" = lib.mkDefault browser;
+    "application/x-extension-html" = lib.mkDefault browser;
+    "application/x-extension-shtml" = lib.mkDefault browser;
+    "application/x-extension-xht" = lib.mkDefault browser;
+    "application/x-extension-xhtml" = lib.mkDefault browser;
+    "application/xhtml+xml" = lib.mkDefault browser;
+    "text/html" = lib.mkDefault browser;
+    "x-scheme-handler/about" = lib.mkDefault browser;
+    "x-scheme-handler/ftp" = lib.mkDefault browser;
+    "x-scheme-handler/http" = lib.mkDefault browser;
+    "x-scheme-handler/https" = lib.mkDefault browser;
+    "x-scheme-handler/unknown" = lib.mkDefault browser;
+    "application/json" = lib.mkDefault browser;
     "x-scheme-handler/chrome" = [ "chromium-browser.desktop" ];
-    "x-scheme-handler/ftp" = browser;
-    "x-scheme-handler/http" = browser;
-    "x-scheme-handler/https" = browser;
-    "x-scheme-handler/unknown" = browser;
-
     "audio/*" = [ "mpv.desktop" ];
     "video/*" = [ "mpv.dekstop" ];
     "image/*" = [ "imv.desktop" ];
-    "application/json" = browser;
     "application/pdf" = [ "org.pwmt.zathura.desktop.desktop" ];
     "x-scheme-handler/discord" = [ "webcord.desktop" ];
     "x-scheme-handler/spotify" = [ "spotify.desktop" ];
@@ -147,6 +147,7 @@ in
     filezilla
     libsForQt5.qtstyleplugin-kvantum
     chromium
+    google-chrome
     dbeaver-bin
     bitwarden-desktop
     telegram-desktop

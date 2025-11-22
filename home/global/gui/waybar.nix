@@ -202,6 +202,22 @@ in
           on-click = "hyprpicker -a -f hex";
           on-click-right = "hyprpicker -a -f rgb";
         };
+
+        battery = {
+          interval = 60;
+          format = "{icon}  {capacity}%";
+          format-full = "{icon}  {capacity}%";
+          format-charging = " {capacity}%";
+          format-plugged = " {capacity}%";
+          format-alt = "{icon} {time}";
+          format-icons = [
+            ""
+            ""
+            ""
+            ""
+            ""
+          ];
+        };
       };
     };
     style = ''
@@ -295,6 +311,10 @@ in
         color: @white;
         border-radius: 0px 1rem 1rem 0px;
         margin-right: 1rem;
+      }
+
+      #battery {
+        color: @white;
       }
 
       #pulseaudio {

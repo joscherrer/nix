@@ -28,6 +28,12 @@
 
     nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
 
+    sops-nix.url = "github:Mic92/sops-nix";
+    sops-nix.inputs.nixpkgs.follows = "nixpkgs";
+
+    zen-browser.url = "github:youwen5/zen-browser-flake";
+    zen-browser.inputs.nixpkgs.follows = "nixpkgs";
+
     # hyprswitch.url = "github:h3rmt/hyprswitch/release";
   };
 
@@ -131,6 +137,15 @@
           };
           modules = [
             ./hosts/jumbo
+          ];
+        };
+        rds = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          specialArgs = {
+            inherit self inputs outputs;
+          };
+          modules = [
+            ./hosts/rds
           ];
         };
         bbrain-vbox = nixpkgs.lib.nixosSystem {

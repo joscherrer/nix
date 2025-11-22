@@ -13,6 +13,7 @@ in
 {
   imports = [
     inputs.home-manager.nixosModules.home-manager
+    inputs.sops-nix.nixosModules.sops
   ];
 
   networking = {
@@ -29,6 +30,7 @@ in
         "podman1"
         "enp39s0"
         "vboxnet0"
+        "br-+"
       ];
       interfaces."vboxnet+".allowedTCPPorts = [
         5985

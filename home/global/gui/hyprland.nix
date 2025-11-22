@@ -128,11 +128,11 @@ rec {
           on-timeout = "loginctl lock-session";
           on-resume = "${hyprdispatch}/bin/hyprdispatch";
         }
-        # {
-        #   timeout = 600;
-        #   on-timeout = "systemctl suspend";
-        #   on-resume = "${hyprdispatch}/bin/hyprdispatch";
-        # }
+        {
+          timeout = 600;
+          on-timeout = "systemctl suspend";
+          on-resume = "${hyprdispatch}/bin/hyprdispatch";
+        }
       ];
     };
   };

@@ -29,14 +29,14 @@ let
   '';
 in
 {
-  services.logind = {
-    settings = {
-      Login = {
-        HandleLidSwitch = "suspend";
-        HandleLidSwitchExternalPower = "lock";
-      };
-    };
-  };
+  # services.logind = {
+  #   settings = {
+  #     Login = {
+  #       HandleLidSwitch = "suspend";
+  #       HandleLidSwitchExternalPower = "lock";
+  #     };
+  #   };
+  # };
 
   services.greetd = {
     enable = true;
