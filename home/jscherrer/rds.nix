@@ -1,0 +1,125 @@
+{
+  inputs,
+  config,
+  pkgs,
+  lib,
+  ...
+}:
+let
+  # ilyama = "desc:Iiyama North America PL2474H 1166810210132";
+  # mon1 = ilyama;
+  mon1 = "eDP-1";
+  mon2 = "desc:Lenovo Group Limited L27qe UTP02GR4";
+  mon3 = "desc:Lenovo Group Limited L27qe UTP02GR9";
+in
+{
+  imports = [
+    ../global
+    ../global/gui
+  ];
+
+  home.username = lib.mkDefault "jscherrer";
+  home.homeDirectory = lib.mkDefault "/home/jscherrer";
+
+  # programs.keychain.enable = true;
+  # services.gnome-keyring.enable = true;
+  # security.pam.services = {
+  #     login.u2fAuth = true;
+  #     sudo.u2fAuth = true;
+  # };
+
+  programs.git = {
+    userEmail = "jonathan.scherrer@rdsdiag.com";
+  };
+
+  xdg.mimeApps.enable = true;
+  xdg.mimeApps.defaultApplications = {
+    "x-scheme-handler/chrome" = [ "google-chrome.desktop" ];
+    "application/x-extension-htm" = "google-chrome.desktop";
+    "application/x-extension-html" = "google-chrome.desktop";
+    "application/x-extension-shtml" = "google-chrome.desktop";
+    "application/x-extension-xht" = "google-chrome.desktop";
+    "application/x-extension-xhtml" = "google-chrome.desktop";
+    "application/xhtml+xml" = "google-chrome.desktop";
+    "x-scheme-handler/ftp" = "google-chrome.desktop";
+    "application/json" = "google-chrome.desktop";
+    "text/html" = "google-chrome.desktop";
+    "x-scheme-handler/http" = "google-chrome.desktop";
+    "x-scheme-handler/https" = "google-chrome.desktop";
+    "x-scheme-handler/about" = "google-chrome.desktop";
+    "x-scheme-handler/unknown" = "google-chrome.desktop";
+  };
+  home.packages = [
+    #pkgs.kanshi
+    #pkgs.buildah
+    #pkgs.pdm
+    #pkgs.vagrant
+    #pkgs.yubikey-manager-qt
+    pkgs.obsidian
+    pkgs.brightnessctl
+    inputs.zen-browser.packages.${pkgs.system}.default
+  ];
+
+  programs.waybar.settings.mainBar = {
+    modules-right = lib.mkForce [
+      "tray"
+      "custom/lock"
+      "pulseaudio"
+      "battery"
+      "clock"
+    ];
+  };
+
+  services.hyprfollow.enable = lib.mkForce false;
+
+  wayland.windowManager.hyprland = {
+    settings = {
+      exec-once = [
+        ''systemd-inhibit --who="Hyprland config" --why="wlogout keybind" --what=handle-power-key --mode=block sleep infinity & echo $! > /tmp/.hyprland-systemd-inhibit''
+      ];
+
+      exec-shutdown = [
+        ''kill -9 "$(cat /tmp/.hyprland-systemd-inhibit)"''
+      ];
+
+      bind = [
+        ",XF86PowerOff, exec, systemctl suspend"
+      ];
+
+      bindl = [
+        ",switch:on:Lid Switch, exec, hyprctl keyword monitor 'eDP-1, disable' && brightnessctl set 0% --device='tpacpi::kbd_backlight' && sudo systemctl restart ipsec.service"
+        ",switch:off:Lid Switch, exec, hyprctl keyword monitor 'eDP-1, 1920x1200, 0x0, 1.2' && brightnessctl set 100% --device='tpacpi::kbd_backlight' && brightnessctl set 70% --device='amdgpu_bl1'"
+      ];
+
+      bindel = [
+        ",XF86MonBrightnessUp, exec, brightnessctl set +10% --device='amdgpu_bl1'"
+        ",XF86MonBrightnessDown, exec, brightnessctl set 10%- --device='amdgpu_bl1'"
+        ",XF86AudioRaiseVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"
+        ",XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+        ",XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+      ];
+
+      monitor = [
+        "${mon1},1920x1200,1440x0,1.2"
+        "${mon2},preferred,1440x1200,1"
+        "${mon3},preferred,0x1200,auto,transform,1"
+        # ", preferred, auto-up, 1"
+        # "desc:Acer Technologies V277 E 842614EC23W01,1920x1080@100,1080x160,1"
+        # "desc:Acer Technologies V277 E 842614D663W01,1920x1080@100,0x0,auto,transform,1"
+      ];
+      workspace = [
+        "1, monitor:${mon2}, persistent:true, default:true"
+        "2, monitor:${mon3}, persistent:true, default:true, layoutopt:orientation:top"
+        "3, monitor:${mon2}, persistent:true, default:false"
+        "4, monitor:${mon3}, persistent:true, default:false, layoutopt:orientation:top"
+        "5, monitor:${mon2}, persistent:true, default:false"
+        "6, monitor:${mon3}, persistent:true, default:false, layoutopt:orientation:top"
+        "7, monitor:${mon2}, persistent:true, default:false"
+        "8, monitor:${mon3}, persistent:true, default:false, layoutopt:orientation:top"
+        "9, monitor:${mon2}, persistent:true, default:false"
+        "10, monitor:${mon3}, persistent:true, default:false, layoutopt:orientation:top"
+      ];
+    };
+  };
+
+}
