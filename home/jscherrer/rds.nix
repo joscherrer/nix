@@ -58,6 +58,7 @@ in
     pkgs.obsidian
     pkgs.brightnessctl
     inputs.zen-browser.packages.${pkgs.system}.default
+    pkgs.python311
   ];
 
   programs.waybar.settings.mainBar = {
