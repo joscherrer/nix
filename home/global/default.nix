@@ -21,11 +21,12 @@
     # IaC/Cloud
     terraform
     opentofu
+    tofu-ls
     terraform-ls
     terraform-docs
     packer
-    ansible
-    ansible-lint
+    # ansible
+    # ansible-lint
     hcloud
     google-cloud-sdk
     gh

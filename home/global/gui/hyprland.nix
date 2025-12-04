@@ -151,6 +151,7 @@ rec {
         "${pkgs.wl-clipboard}/bin/wl-paste --type text --watch cliphist store"
         "${pkgs.wl-clipboard}/bin/wl-paste --type image --watch cliphist store"
         "${waybar-wrapper}/bin/waybar-wrapper"
+        "${pkgs.networkmanagerapplet}/bin/nm-applet --indicator"
         # "hyprswitch init --show-title --custom-css ${config.xdg.configHome}/hyprswitch/style.css &"
       ];
 
@@ -221,8 +222,8 @@ rec {
       ];
 
       group = {
-        "col.border_active" = "rgb(${colors.color5})";
-        "col.border_inactive" = "rgb(${colors.contrast})";
+        # "col.border_active" = "rgb(${colors.color5})";
+        # "col.border_inactive" = "rgb(${colors.contrast})";
       };
       debug = {
         disable_logs = false;
@@ -296,6 +297,10 @@ rec {
 
       "$mainMod" = "SUPER";
 
+      binds = {
+        movefocus_cycles_fullscreen = true;
+      };
+
       bind = [
         "$mainMod, Q, exec, kitty"
         "$mainMod, C, killactive,"
@@ -357,6 +362,10 @@ rec {
       ];
 
       windowrulev2 = [
+        # "bordercolor rgb(${colors.color9}) rgb(${colors.color9}) 270deg, fullscreen:1"
+        # "bordercolor rgb(${colors.color9}) rgb(${colors.color9}) 270deg, fullscreenstate:2 2"
+        # "bordercolor rgb(${colors.color9}) rgb(${colors.color9}) 270deg, fullscreenstate:3 3"
+
         "fullscreenstate -1 2, title:^(notion)$"
         "fullscreenstate -1 2, title:^(notion-calendar)$"
         "opacity 0.90 0.90,class:^(org.wezfurlong.wezterm)$"
@@ -434,10 +443,14 @@ rec {
         "noinitialfocus,class:^(xwaylandvideobridge)$"
         "noblur,class:^(xwaylandvideobridge)$"
         "noshadow,class:^(xwaylandvideobridge)$"
-        "bordersize 0, floating:0, onworkspace:w[tv1]"
-        "rounding 0, floating:0, onworkspace:w[tv1]"
-        "bordersize 0, floating:0, onworkspace:f[1]"
-        "rounding 0, floating:0, onworkspace:f[1]"
+        # "bordersize 0, floating:0, onworkspace:w[tv1]"
+        # "rounding 0, floating:0, onworkspace:w[tv1]"
+        # "bordersize 0, floating:0, onworkspace:f[1]"
+        # "rounding 0, floating:0, onworkspace:f[1]"
+
+        # "bordercolor rgb(${colors.color9}), fullscreenstate:* 1"
+        # "bordercolor rgb(${colors.color9}), fullscreenstate:* 2"
+        "bordercolor rgb(${colors.color9}) rgb(${colors.color9}), fullscreen:1"
       ];
       layerrule = [
         "blur, ^(gtk-layer-shell|anyrun)$"
@@ -446,5 +459,6 @@ rec {
         "blur, launcher"
       ];
     };
+    extraConfig = '''';
   };
 }

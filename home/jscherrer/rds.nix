@@ -20,13 +20,18 @@ in
 
   home.username = lib.mkDefault "jscherrer";
   home.homeDirectory = lib.mkDefault "/home/jscherrer";
+  services.gnome-keyring.enable = true;
 
   # programs.keychain.enable = true;
-  # services.gnome-keyring.enable = true;
   # security.pam.services = {
   #     login.u2fAuth = true;
   #     sudo.u2fAuth = true;
   # };
+
+  services.ssh-agent = {
+    enable = true;
+    enableZshIntegration = true;
+  };
 
   programs.git = {
     userEmail = "jonathan.scherrer@rdsdiag.com";
@@ -58,7 +63,6 @@ in
     pkgs.obsidian
     pkgs.brightnessctl
     inputs.zen-browser.packages.${pkgs.system}.default
-    pkgs.python311
   ];
 
   programs.waybar.settings.mainBar = {

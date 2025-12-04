@@ -164,9 +164,9 @@ in
   systemd.user.extraConfig = "DefaultLimitNOFILE=131070";
 
   programs.gnupg.agent = {
-    enable = true;
+    enable = false;
     # pinentryFlavor = "gnome3";
-    enableSSHSupport = true;
+    enableSSHSupport = false;
   };
 
   environment.systemPackages = with pkgs; [

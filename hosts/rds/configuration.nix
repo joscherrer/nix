@@ -69,6 +69,25 @@
     enable = true;
   };
 
+  environment.systemPackages = with pkgs; [
+    pkgs.python311
+    (pkgs.python3.withPackages (
+      ps: with ps; [
+        flake8
+        ruamel-yaml
+        requests
+        toml
+        types-toml
+        sh
+        debugpy
+        pywinrm
+        boto3
+        botocore
+        dbus-python
+      ]
+    ))
+  ];
+
   services.logind = {
     settings = {
       Login = {
