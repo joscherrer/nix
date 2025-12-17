@@ -22,6 +22,44 @@ let
     fi
   '';
 
+  toggle-browser = pkgs.writeShellScriptBin "toggle-browser" ''
+    #!/usr/bin/env bash
+    wname=$(hyprctl clients -j | jq -e -r '.[] | select(.class == "google-chrome") | .workspace.name')
+    # currw=$(hyprctl activeworkspace -j | jq -r '.name')
+    if [ "$wname" != "special:browser" ]; then
+      hyprctl dispatch togglespecialworkspace browser 
+      hyprctl dispatch movetoworkspace special:browser,class:google-chrome
+    else 
+      cposx=$(hyprctl cursorpos -j | jq -e -r '.x')
+      cposy=$(hyprctl cursorpos -j | jq -e -r '.y')
+      hyprctl dispatch togglespecialworkspace browser 
+      hyprctl dispatch movetoworkspace 2,class:google-chrome
+      hyprctl dispatch movecursor $cposx $cposy
+    fi
+  '';
+
+  toggle-win = pkgs.writeShellScriptBin "toggle-win" ''
+    selector=$1
+    selname=$(cut -d":" -f1 <<< "$selector")
+    selnamelower=$(awk '{print tolower($0)}' <<< "$selname")
+    selvalue=$(cut -d":" -f2 <<< "$selector")
+    workspace_name=$2
+    workspace_num=''${3:=2}
+    wname=$(hyprctl clients -j | jq -e -r '.[] | select(.'$selname' == "'"$selvalue"'") | .workspace.name')
+    if [ $? -ne 0 ]; then exit 0; fi
+
+    if [ "$wname" != "special:$workspace_name" ]; then
+      hyprctl dispatch togglespecialworkspace $workspace_name 
+      hyprctl dispatch movetoworkspace "special:$workspace_name,$selnamelower:$selvalue"
+    else 
+      cposx=$(hyprctl cursorpos -j | jq -e -r '.x')
+      cposy=$(hyprctl cursorpos -j | jq -e -r '.y')
+      hyprctl dispatch togglespecialworkspace $workspace_name 
+      hyprctl dispatch movetoworkspacesilent "$workspace_num,$selnamelower:$selvalue"
+      hyprctl dispatch movecursor $cposx $cposy
+    fi
+  '';
+
   screenrecorder = pkgs.writeShellScriptBin "screenrecorder" ''
     #!/usr/bin/env bash
 
@@ -63,6 +101,8 @@ rec {
     hyprdispatch
     pkgs.bibata-cursors
     pkgs.hyprpicker
+    toggle-win
+    pkgs.hyprlauncher
   ];
 
   services.hyprpaper = {
@@ -137,6 +177,8 @@ rec {
     };
   };
 
+  services.network-manager-applet.enable = true;
+
   wayland.windowManager.hyprland = {
     plugins = [
       # pkgs.hyprlandPlugins.hyprexpo
@@ -148,10 +190,12 @@ rec {
     settings = {
       exec-once = [
         "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
-        "${pkgs.wl-clipboard}/bin/wl-paste --type text --watch cliphist store"
-        "${pkgs.wl-clipboard}/bin/wl-paste --type image --watch cliphist store"
+        # "${pkgs.wl-clipboard}/bin/wl-paste --type text --watch cliphist store"
+        # "${pkgs.wl-clipboard}/bin/wl-paste --type image --watch cliphist store"
         "${waybar-wrapper}/bin/waybar-wrapper"
-        "${pkgs.networkmanagerapplet}/bin/nm-applet --indicator"
+        "hyprlauncher -d"
+        # "${pkgs.vicinae}/bin/vicinae server"
+        # "${pkgs.networkmanagerapplet}/bin/nm-applet --indicator"
         # "hyprswitch init --show-title --custom-css ${config.xdg.configHome}/hyprswitch/style.css &"
       ];
 
@@ -190,6 +234,13 @@ rec {
         sensitivity = 0;
         accel_profile = "flat";
       };
+
+      device = [
+        {
+          name = "at-translated-set-2-keyboard";
+          kb_options = "caps:swapescape";
+        }
+      ];
 
       workspace = [
         # "1, monitor:desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675, persistent:true, default:true"
@@ -231,6 +282,7 @@ rec {
 
       misc = {
         disable_hyprland_logo = true;
+        focus_on_activate = true;
       };
 
       xwayland = {
@@ -309,11 +361,12 @@ rec {
         "$mainMod, M, fullscreen, 1"
         "$mainMod SHIFT, F, fullscreenstate, -1, 2"
         "$mainMod, S, layoutmsg, swapwithmaster master"
-        "$mainMod, V, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy && wtype -M ctrl -M shift v -m ctrl -m shift"
+        # "$mainMod, V, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy && wtype -M ctrl -M shift v -m ctrl -m shift"
+        "$mainMod, V, exec, vicinae vicinae://extensions/vicinae/clipboard/history"
         "$mainMod ALT, C, exec, hyprpicker -a --no-fancy -r"
         "$mainMod, period, exec, rofi -modi 'emoji:rofimoji' -show emoji | wl-copy"
         "$mainMod, W, layoutmsg, toggle split"
-        "$mainMod, Space, exec, rofi -show drun"
+        # "$mainMod, Space, exec, rofi -show drun"
         "$mainMod SHIFT, R, exec, hyprdispatch"
         "$mainMod, P, togglefloating,"
         "$mainMod SHIFT, P, pin,"
@@ -351,9 +404,10 @@ rec {
         "SHIFT, Print, exec, hyprctl -j activewindow | jq -r '\"\\(.at[0]),\\(.at[1]) \\(.size[0])x\\(.size[1])\"' | grim -g - - | wl-copy"
         "CTRL, Print, exec, ${screenrecorder}/bin/screenrecorder region"
         "SUPER CTRL ALT SHIFT, DELETE, exit,"
-        "$mainMod SHIFT, Q, exec, wlogout -p layer-shell"
         "CTRL ALT, DELETE, exec, wlogout -p layer-shell"
         # "SUPER, grave, hyprexpo:expo, toggle"
+        "$mainMod, Space, exec, ${pkgs.vicinae}/bin/vicinae toggle"
+        "$mainMod, T, exec, ${pkgs.vicinae}/bin/vicinae vicinae://extensions/vicinae/wm/switch-windows"
       ];
 
       bindm = [
@@ -457,6 +511,9 @@ rec {
         "ignorezero, ^(gtk-layer-shell|anyrun)$"
         "blur, notifications"
         "blur, launcher"
+        "blur, vicinae"
+        "ignorealpha 0, vicinae"
+        "noanim, vicinae"
       ];
     };
     extraConfig = '''';

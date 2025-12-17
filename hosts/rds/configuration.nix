@@ -65,6 +65,10 @@
 
   nixpkgs.config.allowUnfree = true;
 
+  services.gnome.gnome-keyring = {
+    enable = true;
+  };
+
   services.tlp = {
     enable = true;
   };
@@ -84,6 +88,8 @@
         boto3
         botocore
         dbus-python
+        ansible-core
+        ansible
       ]
     ))
   ];

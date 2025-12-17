@@ -11,6 +11,10 @@ let
   mon1 = "eDP-1";
   mon2 = "desc:Lenovo Group Limited L27qe UTP02GR4";
   mon3 = "desc:Lenovo Group Limited L27qe UTP02GR9";
+
+  start-kitty-dropdown = ''hyprctl clients -j | jq -e '.[] | select(.class == "kitty-dropdown")' || kitty --app-id kitty-dropdown'';
+  move-kitty-dropdown = ''hyprctl dispatch movetoworkspace special:terminal,class:kitty-dropdown'';
+  toggle-browser = '''';
 in
 {
   imports = [
@@ -20,7 +24,15 @@ in
 
   home.username = lib.mkDefault "jscherrer";
   home.homeDirectory = lib.mkDefault "/home/jscherrer";
-  services.gnome-keyring.enable = true;
+
+  # services.gnome-keyring = {
+  #   enable = true;
+  #   components = [
+  #     "secrets"
+  #     "ssh"
+  #     "pkcs11"
+  #   ];
+  # };
 
   # programs.keychain.enable = true;
   # security.pam.services = {
@@ -108,10 +120,10 @@ in
         "${mon1},1920x1200,1440x0,1.2"
         "${mon2},preferred,1440x1200,1"
         "${mon3},preferred,0x1200,auto,transform,1"
+        ", preferred, auto, 1, mirror, eDP-1"
         # ", preferred, auto-up, 1"
-        # "desc:Acer Technologies V277 E 842614EC23W01,1920x1080@100,1080x160,1"
-        # "desc:Acer Technologies V277 E 842614D663W01,1920x1080@100,0x0,auto,transform,1"
       ];
+
       workspace = [
         "1, monitor:${mon2}, persistent:true, default:true"
         "2, monitor:${mon3}, persistent:true, default:true, layoutopt:orientation:top"
@@ -124,6 +136,18 @@ in
         "9, monitor:${mon2}, persistent:true, default:false"
         "10, monitor:${mon3}, persistent:true, default:false, layoutopt:orientation:top"
       ];
+
+      # windowrulev2 = float,class:(qalculate-gtk)
+      # windowrulev2 = workspace special:calculator,class:(qalculate-gtk)
+      # bind = SUPER, Q, exec, pgrep qalculate-gtk && hyprctl dispatch togglespecialworkspace calculator || qalculate-gtk &
+
+      windowrulev2 = [
+        "workspace 2, initialTitle:^(Gmail)$"
+        "workspace 4, initialTitle:^(Google Calendar)$"
+        "workspace 4, initialTitle:^(Google Chat)$"
+        "workspace special:terminal,class:(kitty-dropdown)"
+      ];
+
     };
   };
 

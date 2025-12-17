@@ -18,7 +18,7 @@ rec {
 
   home.file.".local/share/applications/neovide-remote.desktop".text = ''
     [Desktop Entry]
-    Name=Neovide (Home)
+    Name=ZNeovide (Home)
     Type=Application
     Exec=nvim-remote
     Icon=neovide
