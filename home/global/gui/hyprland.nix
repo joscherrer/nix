@@ -194,7 +194,7 @@ rec {
         # "${pkgs.wl-clipboard}/bin/wl-paste --type image --watch cliphist store"
         "${waybar-wrapper}/bin/waybar-wrapper"
         "hyprlauncher -d"
-        # "${pkgs.vicinae}/bin/vicinae server"
+        "${pkgs.vicinae}/bin/vicinae server"
         # "${pkgs.networkmanagerapplet}/bin/nm-applet --indicator"
         # "hyprswitch init --show-title --custom-css ${config.xdg.configHome}/hyprswitch/style.css &"
       ];
@@ -487,7 +487,7 @@ rec {
         "idleinhibit fullscreen, class:^(firefox)$"
         "idleinhibit fullscreen,class:^(Brave-browser)$"
 
-        "rounding 0, xwayland:1, floating:1"
+        # "rounding 0, xwayland:1, floating:1"
         "center, class:^(.*jetbrains.*)$, title:^(Confirm Exit|Open Project|win424|win201|splash)$"
         "size 640 400, class:^(.*jetbrains.*)$, title:^(splash)$"
 

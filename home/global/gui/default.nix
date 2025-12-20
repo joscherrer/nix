@@ -9,7 +9,7 @@
   ...
 }:
 let
-  browser = [ "firefox.desktop" ];
+  browser = [ "zen.desktop" ];
   notion-icon = builtins.fetchurl {
     url = "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Notion-logo.svg/480px-Notion-logo.svg.png";
     sha256 = "sha256:0liksflpwv14q4fqg36syaa2sbxc2nwksf0j6gpr36qaji7mnwwk";
@@ -33,8 +33,8 @@ in
 
   programs.firefox.enable = true;
   home.sessionVariables.BROWSER = "${pkgs.firefox}/bin/firefox";
-  home.sessionVariables.GTK_THEME = "catppuccin-mocha-mauve-compact+normal";
   home.sessionVariables.DEFAULT_BROWSER = "${pkgs.firefox}/bin/firefox";
+  home.sessionVariables.GTK_THEME = "catppuccin-mocha-mauve-compact+normal";
 
   catppuccin = {
     accent = "mauve";
@@ -200,6 +200,7 @@ in
       variant = "mocha";
     })
     hyprfollow
+    uwsm
   ];
 
   services.hyprfollow = {
@@ -211,10 +212,6 @@ in
   programs.vicinae = {
     enable = true;
     useLayerShell = true;
-    systemd = {
-      enable = true;
-      autoStart = true;
-    };
     settings = {
       closeOnFocusLoss = true;
       considerPreedit = false;

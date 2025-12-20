@@ -74,6 +74,7 @@
   };
 
   environment.systemPackages = with pkgs; [
+    pkgs.networkmanager-l2tp
     pkgs.python311
     (pkgs.python3.withPackages (
       ps: with ps; [
@@ -93,6 +94,10 @@
       ]
     ))
   ];
+
+  environment.sessionVariables = {
+    NIXOS_OZONE_WL = "1";
+  };
 
   services.logind = {
     settings = {

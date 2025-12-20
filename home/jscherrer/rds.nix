@@ -12,6 +12,8 @@ let
   mon2 = "desc:Lenovo Group Limited L27qe UTP02GR4";
   mon3 = "desc:Lenovo Group Limited L27qe UTP02GR9";
 
+  browser = "google-chrome.desktop";
+
   start-kitty-dropdown = ''hyprctl clients -j | jq -e '.[] | select(.class == "kitty-dropdown")' || kitty --app-id kitty-dropdown'';
   move-kitty-dropdown = ''hyprctl dispatch movetoworkspace special:terminal,class:kitty-dropdown'';
   toggle-browser = '''';
@@ -51,20 +53,20 @@ in
 
   xdg.mimeApps.enable = true;
   xdg.mimeApps.defaultApplications = {
-    "x-scheme-handler/chrome" = [ "google-chrome.desktop" ];
-    "application/x-extension-htm" = "google-chrome.desktop";
-    "application/x-extension-html" = "google-chrome.desktop";
-    "application/x-extension-shtml" = "google-chrome.desktop";
-    "application/x-extension-xht" = "google-chrome.desktop";
-    "application/x-extension-xhtml" = "google-chrome.desktop";
-    "application/xhtml+xml" = "google-chrome.desktop";
-    "x-scheme-handler/ftp" = "google-chrome.desktop";
-    "application/json" = "google-chrome.desktop";
-    "text/html" = "google-chrome.desktop";
-    "x-scheme-handler/http" = "google-chrome.desktop";
-    "x-scheme-handler/https" = "google-chrome.desktop";
-    "x-scheme-handler/about" = "google-chrome.desktop";
-    "x-scheme-handler/unknown" = "google-chrome.desktop";
+    "x-scheme-handler/chrome" = [ "${browser}" ];
+    "application/x-extension-htm" = "${browser}";
+    "application/x-extension-html" = "${browser}";
+    "application/x-extension-shtml" = "${browser}";
+    "application/x-extension-xht" = "${browser}";
+    "application/x-extension-xhtml" = "${browser}";
+    "application/xhtml+xml" = "${browser}";
+    "x-scheme-handler/ftp" = "${browser}";
+    "application/json" = "${browser}";
+    "text/html" = "${browser}";
+    "x-scheme-handler/http" = "${browser}";
+    "x-scheme-handler/https" = "${browser}";
+    "x-scheme-handler/about" = "${browser}";
+    "x-scheme-handler/unknown" = "${browser}";
   };
   home.packages = [
     #pkgs.kanshi
@@ -76,6 +78,11 @@ in
     pkgs.brightnessctl
     inputs.zen-browser.packages.${pkgs.system}.default
   ];
+
+  # home.sessionVariables = {
+  #   BROWSER = lib.mkForce "${inputs.zen-browser.packages.${pkgs.system}.default}/bin/zen";
+  #   DEFAULT_BROWSER = lib.mkForce "${inputs.zen-browser.packages.${pkgs.system}.default}/bin/zen";
+  # };
 
   programs.waybar.settings.mainBar = {
     modules-right = lib.mkForce [
