@@ -54,23 +54,25 @@ in
     package = pkgs.gnupg;
   };
 
+  programs.delta = {
+    enable = true;
+    enableGitIntegration = true;
+    options = {
+      navigate = true;
+      side-by-side = true;
+      syntax-theme = "TwoDark";
+      diff-args = "-U999";
+    };
+  };
+
   programs.git = {
     enable = true;
-    userName = "Jonathan Scherrer";
-    userEmail = lib.mkDefault "jonathan.s.scherrer@gmail.com";
-    delta = {
-      enable = true;
-      options = {
-        navigate = true;
-        side-by-side = true;
-        syntax-theme = "TwoDark";
-        diff-args = "-U999";
-      };
-    };
     includes = [
       { path = delta-themes; }
     ];
-    extraConfig = {
+    settings = {
+      user.name = "Jonathan Scherrer";
+      user.email = lib.mkDefault "jonathan.s.scherrer@gmail.com";
       init = {
         defaultBranch = "main";
       };

@@ -1,4 +1,12 @@
-{ self, inputs, outputs, config, pkgs, lib, ... }:
+{
+  self,
+  inputs,
+  outputs,
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 let
   hyprland-wrapper = pkgs.writeShellScriptBin "hyprland" ''
     # XDG
@@ -34,19 +42,21 @@ let
     cd ~ && exec systemd-cat --identifier=Hyprland ${config.programs.hyprland.package}/bin/Hyprland "$@"
   '';
 
-  hyprland-log = pkgs.writeTextFile {
-    name = "hyprland-log";
-    destination = "/share/wayland-sessions/hyprland-log.desktop";
-    text = ''
-      [Desktop Entry]
-      Name=Hyprland Log
-      Comment=An intelligent dynamic tiling Wayland compositor
-      Exec=${hyprland-wrapper}/bin/hyprland
-      Type=Application
-    '';
-  } // {
-    providedSessions = ["hyprland-log"];
-  };
+  hyprland-log =
+    pkgs.writeTextFile {
+      name = "hyprland-log";
+      destination = "/share/wayland-sessions/hyprland-log.desktop";
+      text = ''
+        [Desktop Entry]
+        Name=Hyprland Log
+        Comment=An intelligent dynamic tiling Wayland compositor
+        Exec=${hyprland-wrapper}/bin/hyprland
+        Type=Application
+      '';
+    }
+    // {
+      providedSessions = [ "hyprland-log" ];
+    };
 in
 {
   imports = [
@@ -54,8 +64,11 @@ in
   ];
 
   nix.settings = {
-    substituters = ["https://hyprland.cachix.org" "https://cache.nixos.org"];
-    trusted-public-keys = ["hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="];
+    substituters = [
+      "https://hyprland.cachix.org/"
+      "https://cache.nixos.org/"
+    ];
+    trusted-public-keys = [ "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc=" ];
   };
 
   programs = {
@@ -86,7 +99,7 @@ in
     monitor=desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675,3840x1600@144,1920x0,auto
     monitor=desc:Dell Inc. DELL U2415 7MT0167B2YNL,disable
     monitor=desc:AOC 28E850,disable
-  
+
     $mainMod=SUPER
     bind=$mainMod, M, exit,
     misc {

@@ -27,8 +27,10 @@ in
     ./waybar.nix
     ./thunderbird.nix
     ./nvim-remote.nix
+    ./wayland-ashell.nix
     inputs.catppuccin.homeModules.catppuccin
     inputs.self.homeModules.hyprfollow
+    inputs.vicinae.homeManagerModules.default
   ];
 
   programs.firefox.enable = true;
@@ -204,14 +206,32 @@ in
   ];
 
   services.hyprfollow = {
-    enable = true;
+    enable = false;
     package = pkgs.hyprfollow;
     systemdTarget = "hyprland-session.target";
   };
 
-  programs.vicinae = {
+  services.vicinae = {
     enable = true;
+    autoStart = true;
     useLayerShell = true;
+    package = pkgs.vicinae;
+    extensions = [
+      inputs.vicinae-extensions.packages.${pkgs.stdenv.hostPlatform.system}.nix
+    ];
+    # extensions = [
+    #   (inputs.vicinae.packages.${pkgs.stdenv.hostPlatform.system}.mkVicinaeExtension {
+    #     pname = "nix";
+    #     src =
+    #       pkgs.fetchFromGitHub {
+    #         owner = "vicinaehq";
+    #         repo = "extensions";
+    #         rev = "main";
+    #         sha256 = "sha256-jhlWZ6WfFBjS7CXbUOreZ2zEnYiVYfeqKOaZguFFslA=";
+    #       }
+    #       + "extensions/nix";
+    #   })
+    # ];
     settings = {
       closeOnFocusLoss = true;
       considerPreedit = false;
@@ -229,11 +249,36 @@ in
       };
       window = {
         csd = true;
-        opacity = 0.98;
-        rounding = 10;
+        opacity = 0.90;
+        rounding = 15;
       };
     };
   };
+
+  # programs.vicinae = {
+  #   enable = true;
+  #   settings = {
+  #     closeOnFocusLoss = true;
+  #     considerPreedit = false;
+  #     faviconService = "twenty";
+  #     font = {
+  #       size = 10.5;
+  #     };
+  #     keybinding = "default";
+  #     popToRootOnClose = true;
+  #     rootSearch = {
+  #       searchFiles = false;
+  #     };
+  #     theme = {
+  #       name = "vicinae-dark";
+  #     };
+  #     window = {
+  #       csd = true;
+  #       opacity = 0.98;
+  #       rounding = 10;
+  #     };
+  #   };
+  # };
 
   programs.mpv = {
     enable = true;

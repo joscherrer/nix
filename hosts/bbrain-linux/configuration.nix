@@ -150,6 +150,7 @@
   };
   services.coredns = {
     enable = true;
+    package = pkgs.stable.coredns;
     config = ''
       . {
         bind 127.0.0.1 ::1

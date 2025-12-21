@@ -22,7 +22,7 @@ in
   };
 
   programs.waybar = {
-    enable = true;
+    enable = false;
 
     settings = {
       mainBar = {

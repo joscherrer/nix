@@ -13,7 +13,7 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
     darwin.url = "github:LnL7/nix-darwin";
-    darwin.inputs.nixpkgs.follows = "nixpkgs-darwin";
+    # darwin.inputs.nixpkgs.follows = "nixpkgs-darwin";
 
     # kmonad.url = "git+https://github.com/kmonad/kmonad?submodules=1&dir=nix";
     # kmonad.inputs.nixpkgs.follows = "nixpkgs";
@@ -29,10 +29,15 @@
     nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
 
     sops-nix.url = "github:Mic92/sops-nix";
-    sops-nix.inputs.nixpkgs.follows = "nixpkgs";
+    # sops-nix.inputs.nixpkgs.follows = "nixpkgs";
 
     zen-browser.url = "github:youwen5/zen-browser-flake";
-    zen-browser.inputs.nixpkgs.follows = "nixpkgs";
+    # zen-browser.inputs.nixpkgs.follows = "nixpkgs";
+
+    ashell.url = "github:MalpenZibo/ashell";
+
+    vicinae.url = "github:vicinaehq/vicinae";
+    vicinae-extensions.url = "github:vicinaehq/extensions";
 
     # hyprswitch.url = "github:h3rmt/hyprswitch/release";
   };

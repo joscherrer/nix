@@ -65,7 +65,7 @@ in
 
   programs.zsh = {
     enable = true;
-    dotDir = ".config/zsh";
+    dotDir = "${config.xdg.configHome}/zsh";
     autosuggestion = {
       enable = true;
     };
@@ -115,7 +115,7 @@ in
       ltmux = "tmuxp load -d $(find ~/.config/tmuxp -name \"*.yaml\" -exec basename {} .yaml \\;)";
       open = "xdg-open";
     };
-    initExtra = initExtra;
+    initContent = initExtra;
     envExtra = envExtra;
     sessionVariables = {
       KUBECACHEDIR = "${config.xdg.cacheHome}/kube";

@@ -24,12 +24,25 @@
   nix = {
     package = lib.mkDefault pkgs.nix;
     settings = {
+      # cores = 6;
+      # max-jobs = 2;
       experimental-features = [
         "nix-command"
         "flakes"
       ];
       warn-dirty = false;
-      substituters = [ "https://cache.nixos.org/" ];
+      substituters = [
+        "https://cache.nixos.org/"
+        "https://vicinae.cachix.org"
+      ];
+      trusted-public-keys = [
+        "vicinae.cachix.org-1:1kDrfienkGHPYbkpNj1mWTr7Fm1+zcenzgTizIcI3oc="
+      ];
+
+      trusted-substituters = [
+        "https://cache.nixos.org/"
+        "https://vicinae.cachix.org"
+      ];
     };
   };
 

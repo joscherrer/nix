@@ -433,7 +433,7 @@ end
 function M.signal_hyprfollow()
     local pid = tonumber(M.pgrep("hyprfollow"))
     if not pid or type(pid) ~= "number" then
-        vim.notify("Process 'hyprfollow' not found.", vim.log.levels.WARN)
+        vim.notify("Process 'hyprfollow' not found.", vim.log.levels.DEBUG)
         return
     end
 
