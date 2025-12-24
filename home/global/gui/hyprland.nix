@@ -194,15 +194,15 @@ rec {
         # "${pkgs.wl-clipboard}/bin/wl-paste --type image --watch cliphist store"
         # "${waybar-wrapper}/bin/waybar-wrapper"
         # "hyprlauncher -d"
+        "${pkgs.vicinae}/bin/vicinae server"
         "ashell"
-        # "${pkgs.vicinae}/bin/vicinae server"
         # "${pkgs.networkmanagerapplet}/bin/nm-applet --indicator"
         # "hyprswitch init --show-title --custom-css ${config.xdg.configHome}/hyprswitch/style.css &"
       ];
 
       monitor = [
-        "desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675,3840x1600@144,1200x160,1.25"
-        "desc:Dell Inc. DELL U2415 7MT0167B2YNL,1920x1200@60,0x0,auto,transform,1"
+        # "desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675,3840x1600@144,1200x160,1.25"
+        # "desc:Dell Inc. DELL U2415 7MT0167B2YNL,1920x1200@60,0x0,auto,transform,1"
         # "desc:AOC 28E850,disable"
       ];
 

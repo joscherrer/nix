@@ -98,6 +98,7 @@ vim.keymap.set("t", "<Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode", norem
 -- Search, and replace
 vim.keymap.set("n", "<C-f>", "/\\V", { desc = "Search" })
 vim.keymap.set("n", "<C-h>", ":s/\\v", { desc = "Search and replace" })
+vim.keymap.set("n", "<C-S-h>", ":%s/<C-r>0//g<left><left>", { desc = "Replace yanked text" })
 
 -- Use <Esc> in normal mode
 vim.keymap.set("n", "<Esc>",

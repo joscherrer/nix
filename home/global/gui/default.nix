@@ -213,7 +213,7 @@ in
 
   services.vicinae = {
     enable = true;
-    autoStart = true;
+    autoStart = false;
     useLayerShell = true;
     package = pkgs.vicinae;
     extensions = [

@@ -124,24 +124,30 @@ in
       ];
 
       monitor = [
-        "${mon1},1920x1200,1440x0,1.2"
-        "${mon2},preferred,1440x1200,1"
-        "${mon3},preferred,0x1200,auto,transform,1"
-        ", preferred, auto, 1, mirror, eDP-1"
-        # ", preferred, auto-up, 1"
+        # "${mon1},1920x1200,1440x0,1.2"
+        # "${mon2},2560x1440,1440x1200,1"
+        # "${mon3},2560x1440,0x1200,auto,transform,1"
+        "desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675,3840x1600@75,auto-up,1"
+        ", preferred, 0x0, 1"
+        # ", preferred, auto, 1, mirror, eDP-1"
       ];
 
+      # monitor = [
+      # "desc:Dell Inc. DELL U2415 7MT0167B2YNL,1920x1200@60,0x0,auto,transform,1"
+      # "desc:AOC 28E850,disable"
+      # ];
+
       workspace = [
-        "1, monitor:${mon2}, persistent:true, default:true"
-        "2, monitor:${mon3}, persistent:true, default:true, layoutopt:orientation:top"
-        "3, monitor:${mon2}, persistent:true, default:false"
-        "4, monitor:${mon3}, persistent:true, default:false, layoutopt:orientation:top"
-        "5, monitor:${mon2}, persistent:true, default:false"
-        "6, monitor:${mon3}, persistent:true, default:false, layoutopt:orientation:top"
-        "7, monitor:${mon2}, persistent:true, default:false"
-        "8, monitor:${mon3}, persistent:true, default:false, layoutopt:orientation:top"
-        "9, monitor:${mon2}, persistent:true, default:false"
-        "10, monitor:${mon3}, persistent:true, default:false, layoutopt:orientation:top"
+        # "1, monitor:${mon2}, persistent:true, default:true"
+        # "2, monitor:${mon3}, persistent:true, default:true, layoutopt:orientation:top"
+        # "3, monitor:${mon2}, persistent:true, default:false"
+        # "4, monitor:${mon3}, persistent:true, default:false, layoutopt:orientation:top"
+        # "5, monitor:${mon2}, persistent:true, default:false"
+        # "6, monitor:${mon3}, persistent:true, default:false, layoutopt:orientation:top"
+        # "7, monitor:${mon2}, persistent:true, default:false"
+        # "8, monitor:${mon3}, persistent:true, default:false, layoutopt:orientation:top"
+        # "9, monitor:${mon2}, persistent:true, default:false"
+        # "10, monitor:${mon3}, persistent:true, default:false, layoutopt:orientation:top"
       ];
 
       # windowrulev2 = float,class:(qalculate-gtk)
