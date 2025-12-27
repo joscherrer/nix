@@ -73,9 +73,11 @@
       };
       overlay-kubectx = final: prev: {
         kubectx = prev.kubectx.overrideAttrs (old: {
-          postInstall = old.postInstall + ''
-            ln -s $out/bin/kubens $out/bin/kubectl-ns
-          '';
+          postInstall =
+            old.postInstall
+            + ''
+              ln -s $out/bin/kubens $out/bin/kubectl-ns
+            '';
         });
       };
 
@@ -121,6 +123,20 @@
       );
 
       nixosConfigurations = {
+        bbrain-utm = nixpkgs.lib.nixosSystem {
+          system = "aarch64-linux";
+          specialArgs = {
+            default = import ./lib/theme {
+              inherit colorlib;
+              lib = nixpkgs.lib;
+            };
+            inherit self inputs outputs;
+          };
+          modules = [
+            ./hosts/bbrain-utm
+            catppuccin.nixosModules.catppuccin
+          ];
+        };
         bbrain-linux = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           specialArgs = {
