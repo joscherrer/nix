@@ -129,7 +129,7 @@
       [ "${automount_opts},credentials=/etc/nixos/smb-secrets,${user_opts}" ];
   };
 
-  networking.hostName = "bbrain-linux"; # Define your hostname.
+  networking.hostName = "bbrain-utm"; # Define your hostname.
   networking.networkmanager.enable = true;
 
   # Local k8s cluster with direct access
@@ -227,7 +227,7 @@
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
-    users.jscherrer = import "${self}/home/jscherrer/bbrain-linux.nix";
+    users.jscherrer = import "${self}/home/jscherrer/bbrain-utm.nix";
     users.root = import "${self}/home/root";
     extraSpecialArgs = {
       inherit inputs outputs;
