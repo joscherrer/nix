@@ -47,6 +47,12 @@ in
       };
     };
   };
+
+  users.users.greeter = {
+    home = "/home/greeter";
+    createHome = true;
+  };
+
   programs.regreet.enable = true;
   programs.regreet.settings = {
     background = {

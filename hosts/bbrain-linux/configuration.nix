@@ -107,8 +107,7 @@
 
   fonts.packages = [
     pkgs.corefonts
-  ]
-  ++ builtins.filter lib.attrsets.isDerivation (builtins.attrValues pkgs.nerd-fonts);
+  ] ++ builtins.filter lib.attrsets.isDerivation (builtins.attrValues pkgs.nerd-fonts);
 
   # Need to create /etc/nixos/smb-secrets with the following content:
   # username=<USERNAME>
@@ -221,11 +220,6 @@
       "wheel"
     ];
     packages = with pkgs; [ ];
-  };
-
-  users.users.greeter = {
-    home = "/home/greeter";
-    createHome = true;
   };
 
   system.stateVersion = "23.05"; # Did you read the comment?

@@ -212,11 +212,6 @@
     packages = with pkgs; [ ];
   };
 
-  users.users.greeter = {
-    home = "/home/greeter";
-    createHome = true;
-  };
-
   system.stateVersion = "23.05"; # Did you read the comment?
 
   home-manager = {
