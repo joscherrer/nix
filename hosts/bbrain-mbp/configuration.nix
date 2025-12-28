@@ -47,6 +47,8 @@
   # services.yabai.enable = true;
   # services.yabai.enableScriptingAddition = true;
 
+  system.primaryUser = "jscherrer";
+
   system.defaults = {
     ".GlobalPreferences" = {
       "com.apple.mouse.scaling" = -1.0;

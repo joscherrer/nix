@@ -10,14 +10,14 @@
 }:
 {
   boot.loader.systemd-boot.enable = true;
-  boot.loader.systemd-boot.configurationLimit = 4;
-  boot.loader.efi.canTouchEfiVariables = true;
-  boot.kernelParams = [ ];
-  boot.kernelModules = [ "coretemp" ];
-  boot.initrd.kernelModules = [
-    "dm-raid"
-    "raid1"
-  ];
+  # boot.loader.systemd-boot.configurationLimit = 4;
+  # boot.loader.efi.canTouchEfiVariables = true;
+  # boot.kernelParams = [ ];
+  # boot.kernelModules = [ "coretemp" ];
+  # boot.initrd.kernelModules = [
+  #   "dm-raid"
+  #   "raid1"
+  # ];
   # boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
   # boot.binfmt.registrations."aarch64-linux".fixBinary = true;
   # boot.binfmt.registrations."aarch64-linux".matchCredentials = true;
@@ -34,7 +34,7 @@
 
   environment.systemPackages = [
     pkgs.qemu-user
-    pkgs.jetbrains.jdk
+    # pkgs.jetbrains.jdk
     pkgs.usbutils
     pkgs.qt6.qtwayland
     pkgs.qt5.qtwayland
@@ -56,19 +56,14 @@
     ))
   ];
 
-  hardware.bluetooth.enable = true;
-  hardware.bluetooth.powerOnBoot = true;
-  services.blueman.enable = true;
-  hardware.keyboard.qmk.enable = true;
-
-  programs.thunar.enable = true;
-  services.gvfs.enable = true;
-  services.tumbler.enable = true;
-  programs.xfconf.enable = true;
-  programs.thunar.plugins = with pkgs.xfce; [
-    thunar-archive-plugin
-    thunar-volman
-  ];
+  # programs.thunar.enable = true;
+  # services.gvfs.enable = true;
+  # services.tumbler.enable = true;
+  # programs.xfconf.enable = true;
+  # programs.thunar.plugins = with pkgs.xfce; [
+  #   thunar-archive-plugin
+  #   thunar-volman
+  # ];
   programs.nix-ld.enable = true;
   programs.nix-ld.libraries =
     options.programs.nix-ld.libraries.default
@@ -107,27 +102,27 @@
   # Need to create /etc/nixos/smb-secrets with the following content:
   # username=<USERNAME>
   # password=<PASSWORD>
-  fileSystems."/mnt/Freebox/Backup" = {
-    device = "//192.168.1.254/Backup";
-    fsType = "cifs";
-    options =
-      let
-        user_opts = "uid=1000";
-        automount_opts = "x-systemd.automount,noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s";
-      in
-      [ "${automount_opts},credentials=/etc/nixos/smb-secrets,${user_opts}" ];
-  };
-
-  fileSystems."/mnt/Freebox/HDD_2TiB" = {
-    device = "//192.168.1.254/HDD 2TiB";
-    fsType = "cifs";
-    options =
-      let
-        user_opts = "uid=1000";
-        automount_opts = "x-systemd.automount,noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s";
-      in
-      [ "${automount_opts},credentials=/etc/nixos/smb-secrets,${user_opts}" ];
-  };
+  # fileSystems."/mnt/Freebox/Backup" = {
+  #   device = "//192.168.1.254/Backup";
+  #   fsType = "cifs";
+  #   options =
+  #     let
+  #       user_opts = "uid=1000";
+  #       automount_opts = "x-systemd.automount,noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s";
+  #     in
+  #     [ "${automount_opts},credentials=/etc/nixos/smb-secrets,${user_opts}" ];
+  # };
+  #
+  # fileSystems."/mnt/Freebox/HDD_2TiB" = {
+  #   device = "//192.168.1.254/HDD 2TiB";
+  #   fsType = "cifs";
+  #   options =
+  #     let
+  #       user_opts = "uid=1000";
+  #       automount_opts = "x-systemd.automount,noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s";
+  #     in
+  #     [ "${automount_opts},credentials=/etc/nixos/smb-secrets,${user_opts}" ];
+  # };
 
   networking.hostName = "bbrain-utm"; # Define your hostname.
   networking.networkmanager.enable = true;
@@ -232,11 +227,6 @@
     extraSpecialArgs = {
       inherit inputs outputs;
     };
-  };
-
-  hardware.graphics = {
-    enable = true;
-    enable32Bit = true;
   };
 
   environment.sessionVariables = {
