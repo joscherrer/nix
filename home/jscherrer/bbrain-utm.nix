@@ -8,7 +8,7 @@
 {
   imports = [
     ../global
-    ../global/gui
+    # ../global/gui
   ];
 
   home.username = lib.mkDefault "jscherrer";
