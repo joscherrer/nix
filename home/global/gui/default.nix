@@ -171,39 +171,43 @@ in
     ];
   };
 
-  home.packages = with pkgs; [
-    qalculate-qt
-    cliphist
-    rofimoji
-    wl-clipboard
-    pavucontrol
-    imv
-    playerctl
-    pamixer
-    # webcord
-    discord
-    vesktop
-    slurp
-    grim
-    wf-recorder
-    wtype
-    zathura
-    spotify
-    filezilla
-    libsForQt5.qtstyleplugin-kvantum
-    chromium
-    google-chrome
-    dbeaver-bin
-    bitwarden-desktop
-    telegram-desktop
-    pandoc
-    (catppuccin-kvantum.override {
-      accent = "mauve";
-      variant = "mocha";
-    })
-    hyprfollow
-    uwsm
-  ];
+  home.packages =
+    with pkgs;
+    [
+      qalculate-qt
+      cliphist
+      rofimoji
+      wl-clipboard
+      pavucontrol
+      imv
+      playerctl
+      pamixer
+      # webcord
+      vesktop
+      slurp
+      grim
+      wf-recorder
+      wtype
+      zathura
+      filezilla
+      libsForQt5.qtstyleplugin-kvantum
+      chromium
+      dbeaver-bin
+      bitwarden-desktop
+      telegram-desktop
+      pandoc
+      (catppuccin-kvantum.override {
+        accent = "mauve";
+        variant = "mocha";
+      })
+      hyprfollow
+      uwsm
+    ]
+    ++ lib.optionals stdenv.isx86_64 [
+      spotify
+      discord
+      google-cheom
+    ];
 
   services.hyprfollow = {
     enable = false;
