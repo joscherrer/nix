@@ -214,15 +214,15 @@
 
   system.stateVersion = "23.05"; # Did you read the comment?
 
-  home-manager = {
-    useGlobalPkgs = true;
-    useUserPackages = true;
-    users.jscherrer = import "${self}/home/jscherrer/bbrain-utm.nix";
-    users.root = import "${self}/home/root";
-    extraSpecialArgs = {
-      inherit inputs outputs;
-    };
-  };
+  # home-manager = {
+  #   useGlobalPkgs = true;
+  #   useUserPackages = true;
+  #   users.jscherrer = import "${self}/home/jscherrer/bbrain-utm.nix";
+  #   users.root = import "${self}/home/root";
+  #   extraSpecialArgs = {
+  #     inherit inputs outputs;
+  #   };
+  # };
 
   environment.sessionVariables = {
     NIXOS_OZONE_WL = "1";
