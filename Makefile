@@ -55,4 +55,4 @@ rds:
 	sudo nixos-rebuild switch --flake "$(PWD)/#rds" $(EXTRA_ARGS)
 
 utm:
-	sudo nixos-rebuild switch --flake "$(PWD)/#utm" $(EXTRA_ARGS)
+	sudo nixos-rebuild switch --flake "$(PWD)/#bbrain-utm" $(EXTRA_ARGS)
