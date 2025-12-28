@@ -1,4 +1,11 @@
-{ inputs, lib, pkgs, config, outputs, ... }:
+{
+  inputs,
+  lib,
+  pkgs,
+  config,
+  outputs,
+  ...
+}:
 {
 
   home.file = {
@@ -8,11 +15,15 @@
     ".local/opt/jdk21".source = pkgs.jdk21;
   };
 
-  home.packages = with pkgs; [
-    gradle
-    maven
-    kotlin
-    kotlin-native
-    kotlin-language-server
-  ];
+  home.packages =
+    with pkgs;
+    [
+      gradle
+      maven
+      kotlin
+      kotlin-language-server
+    ]
+    ++ lib.optionals stdenv.isx86_64 [
+      kotlin-native
+    ];
 }
