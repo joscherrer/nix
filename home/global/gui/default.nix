@@ -206,7 +206,7 @@ in
     ++ lib.optionals stdenv.isx86_64 [
       spotify
       discord
-      google-cheom
+      google-chrome
     ];
 
   services.hyprfollow = {
