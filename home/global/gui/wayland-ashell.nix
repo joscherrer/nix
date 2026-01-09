@@ -10,6 +10,10 @@
   programs.ashell = {
     enable = true;
     # package = inputs.ashell.packages.${pkgs.system}.default;
+    systemd = {
+      enable = true;
+      # target = "hyprland-session.target";
+    };
     settings = {
       appearance = {
         scale_factor = 1.25;
@@ -25,9 +29,9 @@
         center = [ "WindowTitle" ];
         right = [
           "SystemInfo"
+          "Tray"
           [
             "Clock"
-            "Tray"
             "Privacy"
             "Settings"
           ]
@@ -35,4 +39,8 @@
       };
     };
   };
+  services.network-manager-applet.enable = true;
+  home.packages = [
+    pkgs.networkmanagerapplet
+  ];
 }

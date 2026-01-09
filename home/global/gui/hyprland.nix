@@ -195,7 +195,6 @@ rec {
         # "${waybar-wrapper}/bin/waybar-wrapper"
         # "hyprlauncher -d"
         "${pkgs.vicinae}/bin/vicinae server"
-        "ashell"
         # "${pkgs.networkmanagerapplet}/bin/nm-applet --indicator"
         # "hyprswitch init --show-title --custom-css ${config.xdg.configHome}/hyprswitch/style.css &"
       ];
