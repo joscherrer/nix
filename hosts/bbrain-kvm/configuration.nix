@@ -16,8 +16,37 @@
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
-  # Enable networking
-  networking.networkmanager.enable = true;
+  networking = {
+    # Enable networking
+    networkmanager.enable = true;
+    defaultGateway = "192.168.1.1";
+    useDHCP = false;
+    nameservers = [
+      "8.8.8.8"
+      "1.1.1.1"
+    ];
+
+    interfaces = {
+      eno1 = {
+        useDHCP = false;
+      };
+      br0 = {
+        useDHCP = false;
+        ipv4.addresses = [
+          {
+            address = "192.168.1.111";
+            prefixLength = 24;
+          }
+        ];
+      };
+    };
+    bridges = {
+      br0 = {
+        interfaces = [ "eno1" ];
+        rstp = true;
+      };
+    };
+  };
 
   # Set your time zone.
   time.timeZone = "Europe/Paris";
