@@ -9,7 +9,7 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  networking.hostName = "nixos"; # Define your hostname.
+  networking.hostName = "bbrain-kvm"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
@@ -43,6 +43,8 @@
     variant = "";
   };
 
+  programs.dconf.enable = true;
+
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.jscherrer = {
     isNormalUser = true;
@@ -50,6 +52,8 @@
     extraGroups = [
       "networkmanager"
       "wheel"
+      "libvirtd"
+      "kvm"
     ];
     packages = with pkgs; [ ];
   };
@@ -60,9 +64,26 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-    #  wget
+    vim
+    git
+    virt-manager
+    virt-viewer
+    spice
+    spice-protocol
   ];
+
+  virtualisation = {
+    libvirtd = {
+      enable = true;
+      qemu = {
+        swtpm.enable = true;
+        ovmf.enable = true;
+        ovmf.packages = [ pkgs.OVMFFull.fd ];
+      };
+      spiceUSBRedirection.enable = true;
+    };
+    services.spice-vdagentd.enable = true;
+  };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
