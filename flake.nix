@@ -204,6 +204,19 @@
             ./hosts/rds-wsl
           ];
         };
+        bbrain-kvm = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          specialArgs = {
+            default = import ./lib/theme {
+              inherit colorlib;
+              lib = nixpkgs.lib;
+            };
+            inherit self inputs outputs;
+          };
+          modules = [
+            ./hosts/bbrain-kvm
+          ];
+        };
       };
 
       darwinConfigurations = {
