@@ -47,6 +47,7 @@
     pkgs.cifs-utils
     pkgs.qmk
     pkgs.python311
+    pkgs.libvirt
     (pkgs.python3.withPackages (
       ps: with ps; [
         flake8
@@ -107,13 +108,14 @@
 
   fonts.packages = [
     pkgs.corefonts
-  ] ++ builtins.filter lib.attrsets.isDerivation (builtins.attrValues pkgs.nerd-fonts);
+  ]
+  ++ builtins.filter lib.attrsets.isDerivation (builtins.attrValues pkgs.nerd-fonts);
 
   # Need to create /etc/nixos/smb-secrets with the following content:
   # username=<USERNAME>
   # password=<PASSWORD>
   fileSystems."/mnt/Freebox/Backup" = {
-    device = "//192.168.1.254/Backup";
+    device = "//192.168.1.1/Backup";
     fsType = "cifs";
     options =
       let
@@ -124,7 +126,7 @@
   };
 
   fileSystems."/mnt/Freebox/HDD_2TiB" = {
-    device = "//192.168.1.254/HDD 2TiB";
+    device = "//192.168.1.1/HDD 2TiB";
     fsType = "cifs";
     options =
       let
@@ -140,9 +142,9 @@
   # Local k8s cluster with direct access
   networking.search = [ "dns.podman" ];
   networking.nameservers = [
-    # "127.0.0.1"
-    # "::1"
-    "8.8.8.8"
+    "127.0.0.1"
+    "::1"
+    # "8.8.8.8"
   ];
   networking.hosts = {
     "172.16.0.200" = [ "kind-ingress.dns.podman" ];
@@ -151,10 +153,22 @@
     enable = true;
     package = pkgs.stable.coredns;
     config = ''
+      dns.podman {
+        bind 127.0.0.1 ::1
+        forward . 172.16.0.1
+        log
+      }
+
+      local {
+        bind 127.0.0.1 ::1
+        forward . 192.168.1.1
+        log
+      }
+
       . {
         bind 127.0.0.1 ::1
-        forward dns.podman 172.16.0.1
-        forward . 1.1.1.1 1.0.0.1 192.168.1.254 fd0f:ee:b0::1
+        forward . 1.1.1.1 1.0.0.1
+        log
       }
     '';
   };

@@ -39,6 +39,8 @@
     vicinae.url = "github:vicinaehq/vicinae";
     vicinae-extensions.url = "github:vicinaehq/extensions";
 
+    nix-index-database.url = "github:nix-community/nix-index-database";
+
     # hyprswitch.url = "github:h3rmt/hyprswitch/release";
   };
 
@@ -73,11 +75,9 @@
       };
       overlay-kubectx = final: prev: {
         kubectx = prev.kubectx.overrideAttrs (old: {
-          postInstall =
-            old.postInstall
-            + ''
-              ln -s $out/bin/kubens $out/bin/kubectl-ns
-            '';
+          postInstall = old.postInstall + ''
+            ln -s $out/bin/kubens $out/bin/kubectl-ns
+          '';
         });
       };
 

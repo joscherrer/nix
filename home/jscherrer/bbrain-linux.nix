@@ -88,6 +88,11 @@
 
   wayland.windowManager.hyprland = {
     settings = {
+      monitor = [
+        "desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675,3840x1600@144,1200x160,1.25"
+        "desc:Dell Inc. DELL U2415 7MT0167B2YNL,1920x1200@60,0x0,auto,transform,1"
+        "desc:AOC 28E850,disable"
+      ];
       workspace = [
         "1, monitor:desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675, persistent:true"
         "2, monitor:desc:Dell Inc. DELL U2415 7MT0167B2YNL, persistent:true, default:true, layoutopt:orientation:top"
