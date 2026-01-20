@@ -1,12 +1,19 @@
-{ self, inputs, lib, pkgs, config, outputs, ... }:
+{
+  self,
+  inputs,
+  lib,
+  pkgs,
+  config,
+  outputs,
+  ...
+}:
 let
-    sqlite-lib = if pkgs.stdenv.isDarwin then "libsqlite3.dylib" else "libsqlite3.so";
+  sqlite-lib = if pkgs.stdenv.isDarwin then "libsqlite3.dylib" else "libsqlite3.so";
 in
 {
   programs.neovim = {
     enable = true;
   };
-
 
   # xdg.configFile.nvim = {
   #   enable = false;
@@ -19,7 +26,7 @@ in
   #   recursive = true;
   # };
   xdg.configFile."nvim/lua/nix/sqlite.lua" = {
-      text = "vim.g.sqlite_clib_path = '${pkgs.sqlite.out}/lib/${sqlite-lib}'";
+    text = "vim.g.sqlite_clib_path = '${pkgs.sqlite.out}/lib/${sqlite-lib}'";
   };
 
   home.packages = [
@@ -27,6 +34,7 @@ in
     pkgs.gcc
     pkgs.unzip
     pkgs.lua-language-server
+    pkgs.copilot-language-server
     # Needed for smart-open plugin
     pkgs.sqlite
   ];

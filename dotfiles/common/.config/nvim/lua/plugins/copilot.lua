@@ -7,7 +7,6 @@ return {
         "zbirenbaum/copilot.lua",
         cmd = { "Copilot" },
         event = { "InsertEnter" },
-        lazy = true,
         config = function()
             require("copilot").setup({
                 suggestion = {
@@ -17,6 +16,13 @@ return {
                 filetypes = {
                     yaml = true,
                     markdown = true,
+                },
+                logger = {
+                    file_log_level = vim.log.levels.WARN
+                },
+                server = {
+                    type = "binary",
+                    custom_server_filepath = "copilot-language-server"
                 }
             })
         end,

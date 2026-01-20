@@ -21,7 +21,8 @@ return {
                 "query",
                 "vue",
                 "javascript",
-                "dockerfile"
+                "dockerfile",
+                "vue"
             },
 
             -- Install parsers synchronously (only applied to `ensure_installed`)

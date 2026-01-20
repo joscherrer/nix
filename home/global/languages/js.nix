@@ -9,5 +9,7 @@
     typescript
     typescript-language-server
     tailwindcss-language-server
+    vue-language-server
+    vtsls
   ];
 }

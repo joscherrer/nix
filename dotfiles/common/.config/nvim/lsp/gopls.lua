@@ -60,12 +60,17 @@ return {
             },
             staticcheck = true,
             gofumpt = true,
+            build = {
+                directoryFilters = {
+                    "**/node_modules"
+                }
+            }
         },
     },
     init_options = {
         usePlaceholders = true,
     },
-    on_attach = function(client, _)
-        client.capabilities.workspace.didChangeWatchedFiles.dynamicRegistration = true
-    end
+    -- on_attach = function(client, _)
+    --     client.capabilities.workspace.didChangeWatchedFiles.dynamicRegistration = true
+    -- end
 }
