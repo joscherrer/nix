@@ -65,6 +65,26 @@ in
     };
   };
 
+  services.ssh-agent = {
+    enable = true;
+    enableZshIntegration = true;
+  };
+
+  programs.lazygit = {
+    enable = true;
+    enableZshIntegration = true;
+    settings = {
+      git = {
+        pagers = [
+          {
+            colorArg = "always";
+            pager = "delta --dark --paging=never --line-numbers --hyperlinks --hyperlinks-file-link-format=\"lazygit-edit://{path}:{line}\"";
+          }
+        ];
+      };
+    };
+  };
+
   programs.git = {
     enable = true;
     includes = [
