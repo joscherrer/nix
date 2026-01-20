@@ -43,6 +43,7 @@ let
     complete -o nospace -C ${pkgs.terraform}/bin/terraform terraform
     complete -o nospace -C ${pkgs.awscli2}/bin/aws_completer aws
     complete -o nospace -C ${pkgs.minio-client}/bin/mc mc
+    complete -o nospace -C ${pkgs.opentofu}/bin/tofu tofu
   '';
 
   envExtra = ''
@@ -61,7 +62,13 @@ in
 {
   imports = [
     ./fzf.nix
+    inputs.nix-index-database.homeModules.default
   ];
+
+  programs.nix-index = {
+    enable = true;
+    enableZshIntegration = true;
+  };
 
   programs.zsh = {
     enable = true;
