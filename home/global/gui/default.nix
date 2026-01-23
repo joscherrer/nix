@@ -36,7 +36,7 @@ in
   programs.firefox.enable = true;
   home.sessionVariables.BROWSER = "${pkgs.firefox}/bin/firefox";
   home.sessionVariables.DEFAULT_BROWSER = "${pkgs.firefox}/bin/firefox";
-  home.sessionVariables.GTK_THEME = "catppuccin-mocha-mauve-compact+normal";
+  home.sessionVariables.GTK_THEME = "rose-pine";
 
   catppuccin = {
     accent = "mauve";
@@ -59,6 +59,10 @@ in
 
   gtk = {
     enable = true;
+    theme = {
+      name = "rose-pine";
+      package = pkgs.rose-pine-gtk-theme;
+    };
     font = {
       name = "Roboto";
       package = pkgs.roboto;
@@ -90,14 +94,15 @@ in
 
   # catppuccin.enable = true;
 
-  dconf = {
-    enable = true;
-    settings = {
-      "org/gnome/desktop/interface" = {
-        color-scheme = "prefer-dark";
-      };
-    };
-  };
+  # dconf = {
+  #   enable = true;
+  #   settings = {
+  #     "org/gnome/desktop/interface" = {
+  #       color-scheme = "prefer-dark";
+  #       gtk-theme = "catppuccin-mocha-mauve-compact+normal";
+  #     };
+  #   };
+  # };
 
   xdg.mimeApps.enable = true;
   xdg.mimeApps.defaultApplications = {
@@ -118,10 +123,12 @@ in
     "audio/*" = [ "mpv.desktop" ];
     "video/*" = [ "mpv.dekstop" ];
     "image/*" = [ "imv.desktop" ];
-    "application/pdf" = [ "org.pwmt.zathura.desktop.desktop" ];
+    "application/pdf" = [ "org.pwmt.zathura.desktop" ];
     "x-scheme-handler/discord" = [ "webcord.desktop" ];
     "x-scheme-handler/spotify" = [ "spotify.desktop" ];
     "x-scheme-handler/tg" = [ "telegramdesktop.desktop" ];
+    "application/gzip" = [ "org.kde.ark.desktop" ];
+    "application/zip" = [ "org.kde.ark.desktop" ];
   };
 
   programs.wlogout = {
@@ -196,6 +203,7 @@ in
       bitwarden-desktop
       telegram-desktop
       pandoc
+      rose-pine-gtk-theme
       (catppuccin-kvantum.override {
         accent = "mauve";
         variant = "mocha";

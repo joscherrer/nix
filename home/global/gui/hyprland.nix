@@ -103,6 +103,7 @@ rec {
     pkgs.hyprpicker
     toggle-win
     pkgs.hyprlauncher
+    pkgs.nwg-displays
   ];
 
   services.hyprpaper = {
@@ -169,7 +170,7 @@ rec {
           on-resume = "${hyprdispatch}/bin/hyprdispatch";
         }
         {
-          timeout = 600;
+          timeout = 1200;
           on-timeout = "systemctl suspend";
           on-resume = "${hyprdispatch}/bin/hyprdispatch";
         }
@@ -195,6 +196,7 @@ rec {
         # "${waybar-wrapper}/bin/waybar-wrapper"
         # "hyprlauncher -d"
         "${pkgs.vicinae}/bin/vicinae server"
+        "thunar --daemon"
         # "${pkgs.networkmanagerapplet}/bin/nm-applet --indicator"
         # "hyprswitch init --show-title --custom-css ${config.xdg.configHome}/hyprswitch/style.css &"
       ];
@@ -211,7 +213,7 @@ rec {
         "GBM_BACKEND,nvidia-drm"
         "__GLX_VENDOR_LIBRARY_NAME,nvidia"
         "WLR_NO_HARDWARE_CURSORS,1"
-        "GTK_THEME,catppuccin-mocha-mauve-compact+normal"
+        "GTK_THEME,rose-pine"
         "XMODIFIERS=\"\""
         "XCURSOR_SIZE,24"
         "XCURSOR_THEME,Bibata-Modern-Classic"
@@ -270,6 +272,7 @@ rec {
 
       source = [
         "~/.config/hypr/tests.conf"
+        "~/.config/hypr/monitors.conf"
       ];
 
       group = {
@@ -356,7 +359,7 @@ rec {
       bind = [
         "$mainMod, Q, exec, kitty"
         "$mainMod, C, killactive,"
-        "$mainMod, E, exec, ${pkgs.xfce.thunar}/bin/thunar"
+        "$mainMod, E, exec, Thunar"
         "$mainMod, F, fullscreen,"
         "$mainMod, M, fullscreen, 1"
         "$mainMod SHIFT, F, fullscreenstate, -1, 2"
