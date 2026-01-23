@@ -9,8 +9,10 @@ let
   # ilyama = "desc:Iiyama North America PL2474H 1166810210132";
   # mon1 = ilyama;
   mon1 = "eDP-1";
-  mon2 = "desc:Lenovo Group Limited L27qe UTP02GR4";
-  mon3 = "desc:Lenovo Group Limited L27qe UTP02GR9";
+  workmon2 = "desc:Lenovo Group Limited L27qe UTP02GR4";
+  workmon3 = "desc:Lenovo Group Limited L27qe UTP02GR9";
+  homemon2 = "desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675";
+  homemon3 = "desc:Dell Inc. DELL U2415 7MT0167B2YNL";
 
   browser = "google-chrome.desktop";
 
@@ -80,8 +82,8 @@ in
   ];
 
   # home.sessionVariables = {
-  #   BROWSER = lib.mkForce "${inputs.zen-browser.packages.${pkgs.system}.default}/bin/zen";
-  #   DEFAULT_BROWSER = lib.mkForce "${inputs.zen-browser.packages.${pkgs.system}.default}/bin/zen";
+  #   ANSIBLE_CONFIG = "/home/jscherrer/.config/ansible/ansible.cfg";
+  #   ANSIBLE_HOME = "~/.config/ansible";
   # };
 
   programs.waybar.settings.mainBar = {
@@ -124,30 +126,37 @@ in
       ];
 
       monitor = [
-        # "${mon1},1920x1200,1440x0,1.2"
-        # "${mon2},2560x1440,1440x1200,1"
-        # "${mon3},2560x1440,0x1200,auto,transform,1"
-        "desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675,3840x1600@75,auto-up,1"
-        ", preferred, 0x0, 1"
+        "${mon1},1920x1200,0x0,1"
+        # "${homemon3},1920x1200@60,1920x0,auto,transform,1"
+        # "${homemon2},3840x1600@75,auto-center-right,1"
+
+        "${workmon3},2560x1440,1920x0,auto,transform,1"
+        "${workmon2},2560x1440,auto-center-right,1"
+        # ", preferred, 0x0, 1"
         # ", preferred, auto, 1, mirror, eDP-1"
       ];
 
-      # monitor = [
-      # "desc:Dell Inc. DELL U2415 7MT0167B2YNL,1920x1200@60,0x0,auto,transform,1"
-      # "desc:AOC 28E850,disable"
-      # ];
-
       workspace = [
-        # "1, monitor:${mon2}, persistent:true, default:true"
-        # "2, monitor:${mon3}, persistent:true, default:true, layoutopt:orientation:top"
-        # "3, monitor:${mon2}, persistent:true, default:false"
-        # "4, monitor:${mon3}, persistent:true, default:false, layoutopt:orientation:top"
-        # "5, monitor:${mon2}, persistent:true, default:false"
-        # "6, monitor:${mon3}, persistent:true, default:false, layoutopt:orientation:top"
-        # "7, monitor:${mon2}, persistent:true, default:false"
-        # "8, monitor:${mon3}, persistent:true, default:false, layoutopt:orientation:top"
-        # "9, monitor:${mon2}, persistent:true, default:false"
-        # "10, monitor:${mon3}, persistent:true, default:false, layoutopt:orientation:top"
+        "1, monitor:${workmon2}, persistent:true, default:true"
+        "2, monitor:${workmon3}, persistent:true, default:true, layoutopt:orientation:top"
+        "3, monitor:${workmon2}, persistent:true, default:false"
+        "4, monitor:${workmon3}, persistent:true, default:false, layoutopt:orientation:top"
+        "5, monitor:${workmon2}, persistent:true, default:false"
+        "6, monitor:${workmon3}, persistent:true, default:false, layoutopt:orientation:top"
+        "7, monitor:${workmon2}, persistent:true, default:false"
+        "8, monitor:${workmon3}, persistent:true, default:false, layoutopt:orientation:top"
+        "9, monitor:${workmon2}, persistent:true, default:false"
+        "10, monitor:${workmon3}, persistent:true, default:false, layoutopt:orientation:top"
+        # "1, monitor:${homemon2}, persistent:true, default:true"
+        # "2, monitor:${homemon3}, persistent:true, default:true, layoutopt:orientation:top"
+        # "3, monitor:${homemon2}, persistent:true, default:false"
+        # "4, monitor:${homemon3}, persistent:true, default:false, layoutopt:orientation:top"
+        # "5, monitor:${homemon2}, persistent:true, default:false"
+        # "6, monitor:${homemon3}, persistent:true, default:false, layoutopt:orientation:top"
+        # "7, monitor:${homemon2}, persistent:true, default:false"
+        # "8, monitor:${homemon3}, persistent:true, default:false, layoutopt:orientation:top"
+        # "9, monitor:${homemon2}, persistent:true, default:false"
+        # "10, monitor:${homemon3}, persistent:true, default:false, layoutopt:orientation:top"
       ];
 
       # windowrulev2 = float,class:(qalculate-gtk)
@@ -157,11 +166,12 @@ in
       windowrulev2 = [
         "workspace 2, initialTitle:^(Gmail)$"
         "workspace 4, initialTitle:^(Google Calendar)$"
-        "workspace 4, initialTitle:^(Google Chat)$"
+        "workspace 6, initialTitle:^(Google Chat)$"
         "workspace special:terminal,class:(kitty-dropdown)"
       ];
 
     };
   };
 
+  home.file.".ansible.cfg".source = "${inputs.self}/dotfiles/common/.config/ansible/ansible.cfg";
 }

@@ -9,6 +9,7 @@
   config,
   pkgs,
   lib,
+  options,
   ...
 }:
 {
@@ -21,6 +22,37 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.kernelPackages = pkgs.linuxPackages_6_17;
+
+  programs.nix-ld.enable = true;
+  programs.nix-ld.libraries =
+    options.programs.nix-ld.libraries.default
+    ++ (with pkgs; [
+      libxcrypt
+      glib
+      nss
+      nspr
+      dbus
+      at-spi2-atk
+      cups
+      libdrm
+      libuuid
+      gtk3
+      libnotify
+      pango
+      cairo
+      xorg.libX11
+      xorg.libXcomposite
+      xorg.libXdamage
+      xorg.libXfixes
+      xorg.libxcb
+      libgbm
+      expat
+      alsa-lib
+      xdg-utils
+      # xorg.libXext
+      # xorg.libXi
+      # xorg.libXrandr
+    ]);
 
   networking.hostName = "rds"; # Define your hostname.
 
@@ -74,6 +106,7 @@
   };
 
   environment.systemPackages = with pkgs; [
+    pkgs.uv
     pkgs.networkmanager-l2tp
     pkgs.python311
     (pkgs.python3.withPackages (

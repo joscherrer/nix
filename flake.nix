@@ -90,10 +90,19 @@
         });
       };
 
-      overlay-pdm = final: prev: {
-        pdm = prev.pdm.overrideAttrs (old: {
-          propagatedBuildInputs = old.propagatedBuildInputs ++ [ prev.python3.pkgs.truststore ];
-        });
+      overlay-dolphin = final: prev: {
+        kdePackages = prev.kdePackages.overrideScope (
+          kfinal: kprev: {
+            dolphin = kprev.dolphin.overrideAttrs (oldAttrs: {
+              nativeBuildInputs = (oldAttrs.nativeBuildInputs or [ ]) ++ [ prev.makeWrapper ];
+              postInstall = (oldAttrs.postInstall or "") + ''
+                wrapProgram $out/bin/dolphin \
+                    --set XDG_CONFIG_DIRS "${prev.libsForQt5.kservice}/etc/xdg:$XDG_CONFIG_DIRS" \
+                    --run "${kprev.kservice}/bin/kbuildsycoca6 --noincremental ${prev.libsForQt5.kservice}/etc/xdg/menus/applications.menu"
+              '';
+            });
+          }
+        );
       };
 
       supportedSystems = [
@@ -113,6 +122,7 @@
         stable = overlay-stable;
         inherit overlay-kubectx;
         inherit overlay-terraform;
+        inherit overlay-dolphin;
       };
 
       packages = forAllSystems (
@@ -167,6 +177,7 @@
           };
           modules = [
             ./hosts/rds
+            catppuccin.nixosModules.catppuccin
           ];
         };
         bbrain-vbox = nixpkgs.lib.nixosSystem {
