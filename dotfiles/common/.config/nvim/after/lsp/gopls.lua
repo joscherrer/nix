@@ -70,7 +70,7 @@ return {
     init_options = {
         usePlaceholders = true,
     },
-    -- on_attach = function(client, _)
-    --     client.capabilities.workspace.didChangeWatchedFiles.dynamicRegistration = true
-    -- end
+    on_attach = function(client, _)
+        client.capabilities.workspace.didChangeWatchedFiles = nil
+    end
 }
