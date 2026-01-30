@@ -1,7 +1,3 @@
-if vim.env.JFROG_IDE_URL then
-    return {}
-end
-
 return {
     {
         "zbirenbaum/copilot.lua",
@@ -23,7 +19,8 @@ return {
                 server = {
                     type = "binary",
                     custom_server_filepath = "copilot-language-server"
-                }
+                },
+                copilot_model = ""
             })
         end,
     },

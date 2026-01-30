@@ -39,7 +39,7 @@ let
     export __GLX_VENDOR_LIBRARY_NAME=nvidia
     export WLR_NO_HARDWARE_CURSORS=1
 
-    cd ~ && exec systemd-cat --identifier=Hyprland ${config.programs.hyprland.package}/bin/Hyprland "$@"
+    cd ~ && exec systemd-cat --identifier=Hyprland ${config.programs.hyprland.package}/bin/start-hyprland -- "$@"
   '';
 
   hyprland-log =

@@ -38,7 +38,7 @@ vim.api.nvim_create_autocmd('BufWritePost', {
     callback = function()
         local tscontext = require('treesitter-context')
         tscontext.disable()
-        helpers.format(0, { async = false })
+        helpers.format(0, { async = true, timeout_ms = 5000 })
         vim.defer_fn(tscontext.enable, 500)
     end
 })

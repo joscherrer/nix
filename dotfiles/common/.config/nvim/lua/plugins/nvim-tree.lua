@@ -1,16 +1,17 @@
 return {
     "nvim-tree/nvim-tree.lua",
-    version = "*",
+    version = "1.14.0",
     lazy = false,
     dependencies = {
         "nvim-tree/nvim-web-devicons",
     },
     config = function()
         require("nvim-tree").setup({
+            git = { enable = true },
             sync_root_with_cwd = true,
             sort = { sorter = "case_sensitive", },
             renderer = { group_empty = true, },
-            filters = { dotfiles = false, },
+            filters = { dotfiles = false, git_ignored = true },
             update_focused_file = { enable = true, },
             view = {
                 float = {

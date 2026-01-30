@@ -119,6 +119,9 @@ return {
                         require("bbrain.helpers").signal_hyprfollow()
                     end
                 end,
+                function()
+                    require('copilot.command').enable()
+                end,
             }
         }
     end,

@@ -25,7 +25,7 @@ let
     # export GLFW_IM_MODULE=ibus
 
     dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
-    exec ${config.programs.hyprland.package}/bin/Hyprland --config /etc/greetd/hyprland.conf
+    exec ${config.programs.hyprland.package}/bin/start-hyprland -- --config /etc/greetd/hyprland.conf
   '';
 in
 {

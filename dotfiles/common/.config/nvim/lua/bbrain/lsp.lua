@@ -24,8 +24,7 @@ vim.lsp.enable('yamlls')
 -- vim.lsp.enable('csharp_ls')
 
 -- -- ts/js
--- vim.lsp.enable('vtsls')
-vim.lsp.enable({ 'vue_ls' })
+vim.lsp.enable({ 'vtsls', 'vue_ls' })
 -- vim.lsp.enable('eslint')
 -- vim.lsp.enable('tailwindcss')
 

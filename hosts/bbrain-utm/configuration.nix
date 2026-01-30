@@ -97,7 +97,8 @@
 
   fonts.packages = [
     pkgs.corefonts
-  ] ++ builtins.filter lib.attrsets.isDerivation (builtins.attrValues pkgs.nerd-fonts);
+  ]
+  ++ builtins.filter lib.attrsets.isDerivation (builtins.attrValues pkgs.nerd-fonts);
 
   # Need to create /etc/nixos/smb-secrets with the following content:
   # username=<USERNAME>
@@ -144,7 +145,7 @@
       . {
         bind 127.0.0.1 ::1
         forward dns.podman 172.16.0.1
-        forward . 1.1.1.1 1.0.0.1 192.168.1.254 fd0f:ee:b0::1
+        forward . 1.1.1.1 1.0.0.1 192.168.1.1 fd0f:ee:b0::1
       }
     '';
   };

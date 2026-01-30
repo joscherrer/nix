@@ -107,10 +107,11 @@ return {
                 lsp_doc_border = false,       -- add a border to hover docs and signature help
             },
             routes = {
-                { filter = { event = "msg_show", kind = "search_count" },         opts = { skip = true } },
-                { filter = { event = "msg_show", kind = "", find = "wiped out" }, opts = { skip = true } },
-                { filter = { event = "msg_show", kind = "", find = "written" },   view = "mini" },
-                { filter = { event = "msg_show", kind = "", find = "yanked" },    view = "mini" },
+                { filter = { event = "msg_show", kind = "search_count" },               opts = { skip = true } },
+                { filter = { event = "msg_show", kind = "", find = "wiped out" },       opts = { skip = true } },
+                { filter = { event = "msg_show", kind = "", find = "written" },         view = "mini" },
+                { filter = { event = "msg_show", kind = "", find = "yanked" },          view = "mini" },
+                { filter = { event = "msg_show", kind = "", find = "watch.watchdirs" }, opts = { skip = true } },
                 -- {
                 --     filter = { event = "notify", cond = minify_msg },
                 --     view = "mini"

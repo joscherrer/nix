@@ -1,4 +1,5 @@
-{ colorlib, lib, ...}: rec {
+{ colorlib, lib, ... }:
+rec {
   colors = import ./colors.nix;
   # #RRGGBB
   xcolors = lib.mapAttrs (_: colorlib.x) colors;
@@ -19,8 +20,7 @@
 
   # TODO: Change this later
   wallpaper = builtins.fetchurl {
-    url =
-      "https://w.wallhaven.cc/full/x6/wallhaven-x6919l.jpg";
+    url = "https://w.wallhaven.cc/full/x6/wallhaven-x6919l.jpg";
     sha256 = "sha256:1zy78h1a8r3frx4yfablnzj8x0wvly9zhqgfl6mg0ab4vcgk055d";
   };
 }

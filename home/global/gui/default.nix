@@ -225,8 +225,12 @@ in
 
   services.vicinae = {
     enable = true;
-    autoStart = false;
-    useLayerShell = true;
+    systemd = {
+      enable = false;
+      environment = {
+        USE_LAYER_SHELL = 1;
+      };
+    };
     package = pkgs.vicinae;
     extensions = [
       inputs.vicinae-extensions.packages.${pkgs.stdenv.hostPlatform.system}.nix

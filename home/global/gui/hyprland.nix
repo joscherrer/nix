@@ -8,6 +8,27 @@
   ...
 }:
 let
+  fetchToFarm = w: {
+    name = builtins.baseNameOf w.url;
+    path = builtins.fetchurl w;
+  };
+
+  wallpapers = pkgs.linkFarm "wallpapers" (
+    map fetchToFarm [
+      {
+        url = "https://w.wallhaven.cc/full/x6/wallhaven-x6919l.jpg";
+        sha256 = "sha256:1zy78h1a8r3frx4yfablnzj8x0wvly9zhqgfl6mg0ab4vcgk055d";
+      }
+      {
+        url = "https://w.wallhaven.cc/full/w5/wallhaven-w51eor.png";
+        sha256 = "sha256:1jpzckcny1r0d4jkfrvhq6qj9vdsm2rfkdz131myz2gpvv5xgm98";
+      }
+      {
+        url = "https://w.wallhaven.cc/full/nm/wallhaven-nmmvvk.jpg";
+        sha256 = "sha256:0lba5h6p4pfjwpvnn0gvckrll6kwhs88z49nhlvijc821i1yp19w";
+      }
+    ]
+  );
   common-root = "${inputs.self}/dotfiles/common";
   colors = default.colors;
   screenshot-handler = pkgs.writeShellScriptBin "screenshot-handler" ''
@@ -109,11 +130,13 @@ rec {
   services.hyprpaper = {
     enable = true;
     settings = {
-      preload = [
-        "${default.wallpaper}"
-      ];
+      splash = false;
       wallpaper = [
-        ",${default.wallpaper}"
+        {
+          monitor = "";
+          path = "${wallpapers}";
+          fit_mode = "cover";
+        }
       ];
     };
   };
@@ -179,6 +202,11 @@ rec {
   };
 
   services.network-manager-applet.enable = true;
+
+  home.activation.hyprland = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    touch ${config.xdg.configHome}/hypr/monitors.conf
+    touch ${config.xdg.configHome}/hypr/tests.conf
+  '';
 
   wayland.windowManager.hyprland = {
     plugins = [
@@ -265,7 +293,7 @@ rec {
         "col.active_border" = "rgb(${colors.background}) rgb(${colors.color8}) 270deg";
         "col.inactive_border" = "rgb(${colors.contrast}) rgb(${colors.color4}) 270deg";
         # group borders
-        "no_border_on_floating" = false;
+        # "no_border_on_floating" = false;
         layout = "master";
         # no_cursor_warps = true;
       };
@@ -313,10 +341,6 @@ rec {
           render_power = 3;
           color = "rgba(00000099)";
         };
-        blurls = [
-          "gtk-layer-shell"
-          "lockscreen"
-        ];
       };
 
       animations = {
@@ -512,18 +536,30 @@ rec {
         "bordercolor rgb(${colors.color9}) rgb(${colors.color9}), fullscreen:1"
       ];
       layerrule = [
-        "blur, ^(gtk-layer-shell|anyrun)$"
-        "ignorezero, ^(gtk-layer-shell|anyrun)$"
-        "blur, notifications"
-        "blurpopups, notifications"
-        "ignorealpha 0, notifications"
-        "blur, launcher"
-        "blur, vicinae"
-        "blurpopups, vicinae"
-        "ignorealpha 0.8, vicinae"
-        "noanim, vicinae"
+        {
+          name = "gtk_layer_shell_anyrun_blur";
+          blur = "on";
+          ignore_alpha = 0;
+          "match:namespace" = "^(gtk-layer-shell|anyrun|ashell-main-layer)$";
+        }
+        {
+          name = "vicinae_blur";
+          blur = "on";
+          blur_popups = "on";
+          ignore_alpha = 0.8;
+          no_anim = true;
+          "match:namespace" = "vicinae";
+        }
+        {
+          name = "notifications_blur";
+          blur = "on";
+          blur_popups = "on";
+          ignore_alpha = 0;
+          "match:namespace" = "notifications";
+        }
+        "blur on, match:namespace launcher"
       ];
     };
-    extraConfig = '''';
+    extraConfig = "";
   };
 }
