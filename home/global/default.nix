@@ -76,6 +76,7 @@
     termscp
     marksman
     k6
+    bitwarden-cli
 
     # kube-prometheus
     go-jsonnet

@@ -30,6 +30,7 @@
     # kdePackages.kservice
     # kdePackages.qtwayland
     # shared-mime-info
+
   ];
 
   xdg.menus.enable = true;
@@ -51,11 +52,27 @@
   services.tumbler.enable = true;
   programs.thunar = {
     enable = true;
-    plugins = with pkgs.xfce; [
+    plugins = with pkgs; [
       thunar-archive-plugin
       thunar-volman
     ];
   };
+
+  services.avahi = {
+    enable = true;
+    nssmdns4 = true;
+    openFirewall = true;
+  };
+
+  services.printing = {
+    enable = true;
+    drivers = with pkgs; [
+      cups-filters
+      cups-browsed
+    ];
+  };
+
+  security.pam.services.hyprlock = { };
 
   # security.pam.services.swaylock = {
   #   text = "auth include login";

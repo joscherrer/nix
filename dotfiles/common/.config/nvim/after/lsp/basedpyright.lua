@@ -6,7 +6,11 @@ return {
                 useLibraryCodeForTypes = true,
                 diagnosticMode = 'openFilesOnly',
             },
-            pythonPath = vim.fn.exepath("python3.13")
+        },
+        basedpyright = {
+            analysis = {
+                typeCheckingMode = "standard",
+            },
         },
     },
     on_init = function(client, _)

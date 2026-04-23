@@ -33,7 +33,6 @@ if vim.uv.os_uname().sysname == "Windows_NT" then
     end
 end
 
-
 vim.opt.termguicolors = true -- required before starting nvim-notify
 if vim.g.neovide then        -- required before loading plugins
     vim.g.default_winblend = 20

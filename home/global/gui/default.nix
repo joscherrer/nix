@@ -14,6 +14,23 @@ let
     url = "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Notion-logo.svg/480px-Notion-logo.svg.png";
     sha256 = "sha256:0liksflpwv14q4fqg36syaa2sbxc2nwksf0j6gpr36qaji7mnwwk";
   };
+
+  zen = inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default;
+
+  # zen-unwrapped =
+  #   inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.zen-browser-unwrapped
+  # zen-unwrapped =
+  #   inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.zen-browser-unwrapped.overrideAttrs
+  #     (old: {
+  #       installPhase = old.installPhase + ''
+  #         ln -s "$out/lib/${zen-unwrapped.libName}" "$out/lib/zen"
+  #       '';
+  #     });
+  # zenPwa = (
+  #   pkgs.firefoxpwa.override {
+  #     firefoxRuntime = zen-unwrapped;
+  #   }
+  # );
 in
 {
   imports = [
@@ -33,9 +50,18 @@ in
     inputs.vicinae.homeManagerModules.default
   ];
 
-  programs.firefox.enable = true;
-  home.sessionVariables.BROWSER = "${pkgs.firefox}/bin/firefox";
-  home.sessionVariables.DEFAULT_BROWSER = "${pkgs.firefox}/bin/firefox";
+  programs.firefox = {
+    enable = true;
+    nativeMessagingHosts = [ pkgs.firefoxpwa ];
+  };
+  # home.sessionVariables.BROWSER = "${pkgs.firefox}/bin/firefox";
+  # home.sessionVariables.DEFAULT_BROWSER = "${pkgs.firefox}/bin/firefox";
+  home.sessionVariables.BROWSER = "${
+    inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
+  }/bin/zen";
+  home.sessionVariables.DEFAULT_BROWSER = "${
+    inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
+  }/bin/zen";
   home.sessionVariables.GTK_THEME = "rose-pine";
 
   catppuccin = {
@@ -119,7 +145,7 @@ in
     "x-scheme-handler/https" = lib.mkDefault browser;
     "x-scheme-handler/unknown" = lib.mkDefault browser;
     "application/json" = lib.mkDefault browser;
-    "x-scheme-handler/chrome" = [ "chromium-browser.desktop" ];
+    # "x-scheme-handler/chrome" = [ "chromium-browser.desktop" ];
     "audio/*" = [ "mpv.desktop" ];
     "video/*" = [ "mpv.dekstop" ];
     "image/*" = [ "imv.desktop" ];
@@ -210,6 +236,8 @@ in
       })
       hyprfollow
       uwsm
+      inputs.zen-browser.packages.${pkgs.system}.default
+      pkgs.firefoxpwa
     ]
     ++ lib.optionals stdenv.isx86_64 [
       spotify

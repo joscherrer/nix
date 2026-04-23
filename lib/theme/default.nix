@@ -6,7 +6,7 @@ rec {
   # rgba(,,,) colors (css)
   rgbaColors = lib.mapAttrs (_: colorlib.rgba) colors;
 
-  browser = "brave";
+  browser = "zen";
 
   launcher = "anyrun";
 

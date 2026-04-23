@@ -153,5 +153,8 @@ in
     urlencode
     rclone
     zip
+    sshpass
+    expect
+    libsecret
   ];
 }

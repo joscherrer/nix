@@ -49,7 +49,7 @@ in
   };
   nix = {
     gc = {
-      automatic = true;
+      automatic = false;
       dates = "hourly";
       options = "--delete-older-than 10d";
     };

@@ -120,7 +120,7 @@ return {
                     end
                 end,
                 function()
-                    require('copilot.command').enable()
+                    -- require('copilot.command').enable()
                 end,
             }
         }

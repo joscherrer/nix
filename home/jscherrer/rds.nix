@@ -14,11 +14,11 @@ let
   homemon2 = "desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675";
   homemon3 = "desc:Dell Inc. DELL U2415 7MT0167B2YNL";
 
-  browser = "google-chrome.desktop";
+  browser = "zen.desktop";
 
   start-kitty-dropdown = ''hyprctl clients -j | jq -e '.[] | select(.class == "kitty-dropdown")' || kitty --app-id kitty-dropdown'';
-  move-kitty-dropdown = ''hyprctl dispatch movetoworkspace special:terminal,class:kitty-dropdown'';
-  toggle-browser = '''';
+  move-kitty-dropdown = "hyprctl dispatch movetoworkspace special:terminal,class:kitty-dropdown";
+  toggle-browser = "";
 in
 {
   imports = [
@@ -50,7 +50,11 @@ in
   };
 
   programs.git = {
-    userEmail = "jonathan.scherrer@rdsdiag.com";
+    settings = {
+      user = {
+        email = "jonathan.scherrer@rdsdiag.com";
+      };
+    };
   };
 
   xdg.mimeApps.enable = true;
@@ -78,7 +82,8 @@ in
     #pkgs.yubikey-manager-qt
     pkgs.obsidian
     pkgs.brightnessctl
-    inputs.zen-browser.packages.${pkgs.system}.default
+    pkgs.openvpn3
+    pkgs.openvpn3-indicator
   ];
 
   # home.sessionVariables = {
@@ -102,6 +107,7 @@ in
     settings = {
       exec-once = [
         ''systemd-inhibit --who="Hyprland config" --why="wlogout keybind" --what=handle-power-key --mode=block sleep infinity & echo $! > /tmp/.hyprland-systemd-inhibit''
+        "${pkgs.openvpn3-indicator}/bin/openvpn3-indicator"
       ];
 
       exec-shutdown = [
@@ -127,47 +133,59 @@ in
 
       monitor = [
         "${mon1},1920x1200,0x0,1"
-        # "${homemon3},1920x1200@60,1920x0,auto,transform,1"
-        # "${homemon2},3840x1600@75,auto-center-right,1"
+        "${homemon3},1920x1200@60,1920x0,auto,transform,1"
+        "${homemon2},3840x1600@60,auto-center-right,1"
 
-        "${workmon3},2560x1440,1920x0,auto,transform,1"
-        "${workmon2},2560x1440,auto-center-right,1"
+        # "${workmon3},2560x1440,1920x0,auto,transform,1"
+        # "${workmon2},2560x1440,auto-center-right,1"
         # ", preferred, 0x0, 1"
         # ", preferred, auto, 1, mirror, eDP-1"
       ];
 
       workspace = [
-        "1, monitor:${workmon2}, persistent:true, default:true"
-        "2, monitor:${workmon3}, persistent:true, default:true, layoutopt:orientation:top"
-        "3, monitor:${workmon2}, persistent:true, default:false"
-        "4, monitor:${workmon3}, persistent:true, default:false, layoutopt:orientation:top"
-        "5, monitor:${workmon2}, persistent:true, default:false"
-        "6, monitor:${workmon3}, persistent:true, default:false, layoutopt:orientation:top"
-        "7, monitor:${workmon2}, persistent:true, default:false"
-        "8, monitor:${workmon3}, persistent:true, default:false, layoutopt:orientation:top"
-        "9, monitor:${workmon2}, persistent:true, default:false"
-        "10, monitor:${workmon3}, persistent:true, default:false, layoutopt:orientation:top"
-        # "1, monitor:${homemon2}, persistent:true, default:true"
-        # "2, monitor:${homemon3}, persistent:true, default:true, layoutopt:orientation:top"
-        # "3, monitor:${homemon2}, persistent:true, default:false"
-        # "4, monitor:${homemon3}, persistent:true, default:false, layoutopt:orientation:top"
-        # "5, monitor:${homemon2}, persistent:true, default:false"
-        # "6, monitor:${homemon3}, persistent:true, default:false, layoutopt:orientation:top"
-        # "7, monitor:${homemon2}, persistent:true, default:false"
-        # "8, monitor:${homemon3}, persistent:true, default:false, layoutopt:orientation:top"
-        # "9, monitor:${homemon2}, persistent:true, default:false"
-        # "10, monitor:${homemon3}, persistent:true, default:false, layoutopt:orientation:top"
+        # "1, monitor:${workmon2}, persistent:true, default:true"
+        # "2, monitor:${workmon3}, persistent:true, default:true, layoutopt:orientation:top"
+        # "3, monitor:${workmon2}, persistent:true, default:false"
+        # "4, monitor:${workmon3}, persistent:true, default:false, layoutopt:orientation:top"
+        # "5, monitor:${workmon2}, persistent:true, default:false"
+        # "6, monitor:${workmon3}, persistent:true, default:false, layoutopt:orientation:top"
+        # "7, monitor:${workmon2}, persistent:true, default:false"
+        # "8, monitor:${workmon3}, persistent:true, default:false, layoutopt:orientation:top"
+        # "9, monitor:${workmon2}, persistent:true, default:false"
+        # "10, monitor:${workmon3}, persistent:true, default:false, layoutopt:orientation:top"
+        "1, monitor:${homemon2}, persistent:true, default:true"
+        "2, monitor:${homemon3}, persistent:true, default:true, layoutopt:orientation:top"
+        "3, monitor:${homemon2}, persistent:true, default:false"
+        "4, monitor:${homemon3}, persistent:true, default:false, layoutopt:orientation:top"
+        "5, monitor:${homemon2}, persistent:true, default:false"
+        "6, monitor:${homemon3}, persistent:true, default:false, layoutopt:orientation:top"
+        "7, monitor:${homemon2}, persistent:true, default:false"
+        "8, monitor:${homemon3}, persistent:true, default:false, layoutopt:orientation:top"
+        "9, monitor:${homemon2}, persistent:true, default:false"
+        "10, monitor:${homemon3}, persistent:true, default:false, layoutopt:orientation:top"
       ];
 
-      # windowrulev2 = float,class:(qalculate-gtk)
-      # windowrulev2 = workspace special:calculator,class:(qalculate-gtk)
-      # bind = SUPER, Q, exec, pgrep qalculate-gtk && hyprctl dispatch togglespecialworkspace calculator || qalculate-gtk &
-
-      windowrulev2 = [
-        "workspace 2, initialTitle:^(Gmail)$"
-        "workspace 4, initialTitle:^(Google Calendar)$"
-        "workspace 6, initialTitle:^(Google Chat)$"
-        "workspace special:terminal,class:(kitty-dropdown)"
+      windowrule = [
+        {
+          name = "gmail workspace 2";
+          workspace = "2";
+          "match:initial_title" = "^(Gmail)$";
+        }
+        {
+          name = "calendar workspace 4";
+          workspace = "4";
+          "match:initial_title" = "^(Google Calendar)$";
+        }
+        {
+          name = "chat workspace 6";
+          workspace = "6";
+          "match:initial_title" = "^(Google Chat)$";
+        }
+        {
+          name = "terminal dropdown";
+          workspace = "special:terminal";
+          "match:class" = "(kitty-dropdown)";
+        }
       ];
 
     };

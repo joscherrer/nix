@@ -7,6 +7,8 @@ return {
             and "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false"
             or "make",
         event = "VeryLazy",
+        enabled = false,
+
         version = false, -- Never set this value to "*"! Never!
         ---@module 'avante'
         ---@type avante.Config
@@ -14,7 +16,23 @@ return {
             -- add any opts here
             -- this file can contain specific instructions for your project
             instructions_file = "avante.md",
-            provider = "copilot",
+            provider = "gemini",
+            -- auto_suggestions_provider = "geminif",
+            providers = {
+                gemini = {
+                    model = "gemini-3.1-flash-lite-preview",
+                    max_tokens = 8192,
+                },
+                geminif = {
+                    __inherited_from = 'gemini',
+                    model = "gemini-3.1-flash-lite-preview",
+                    temperature = 0,
+                    max_tokens = 4096,
+                },
+            },
+            behaviour = {
+                auto_suggestions = false,
+            }
         },
         dependencies = {
             "nvim-lua/plenary.nvim",

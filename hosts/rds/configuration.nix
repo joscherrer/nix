@@ -21,7 +21,7 @@
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  boot.kernelPackages = pkgs.linuxPackages_6_17;
+  boot.kernelPackages = pkgs.linuxPackages_6_18;
 
   programs.nix-ld.enable = true;
   programs.nix-ld.libraries =
@@ -40,11 +40,11 @@
       libnotify
       pango
       cairo
-      xorg.libX11
-      xorg.libXcomposite
-      xorg.libXdamage
-      xorg.libXfixes
-      xorg.libxcb
+      libX11
+      libXcomposite
+      libXdamage
+      libXfixes
+      libxcb
       libgbm
       expat
       alsa-lib
@@ -56,7 +56,12 @@
 
   networking.hostName = "rds"; # Define your hostname.
 
-  networking.networkmanager.enable = true;
+  networking.networkmanager = {
+    enable = true;
+    plugins = with pkgs; [
+      networkmanager-openvpn
+    ];
+  };
 
   time.timeZone = "Europe/Paris";
 
@@ -108,7 +113,7 @@
   environment.systemPackages = with pkgs; [
     pkgs.uv
     pkgs.networkmanager-l2tp
-    pkgs.python311
+    # pkgs.python311
     (pkgs.python3.withPackages (
       ps: with ps; [
         flake8
@@ -146,4 +151,20 @@
 
   system.stateVersion = "25.05"; # Did you read the comment?
 
+  programs.openvpn3.enable = true;
+
+  services.resolved.enable = true;
+
+  services.openvpn.servers = {
+    claranet = {
+      autoStart = false;
+      config = " config /home/jscherrer/.config/openvpn/claranet.conf ";
+    };
+    # homeVPN = {
+    #   config = "config /root/nixos/openvpn/homeVPN.conf ";
+    # };
+    # serverVPN = {
+    #   config = "config /root/nixos/openvpn/serverVPN.conf ";
+    # };
+  };
 }

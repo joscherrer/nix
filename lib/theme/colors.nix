@@ -35,5 +35,59 @@ rec {
 
   bg = background;
   fg = foreground;
-}
 
+  catpuccin = {
+    rosewater = "rgb(245, 224, 220)";
+    rosewaterAlpha = "#f5e0dc";
+    flamingo = "rgb(242, 205, 205)";
+    flamingoAlpha = "#f2cdcd";
+    pink = "rgb(245, 194, 231)";
+    pinkAlpha = "#f5c2e7";
+    mauve = "rgb(203, 166, 247)";
+    mauveAlpha = "#cba6f7";
+    red = "rgb(243, 139, 168)";
+    redAlpha = "#f38ba8";
+    maroon = "rgb(235, 160, 172)";
+    maroonAlpha = "#eba0ac";
+    peach = "rgb(250, 179, 135)";
+    peachAlpha = "#fab387";
+    yellow = "rgb(249, 226, 175)";
+    yellowAlpha = "#f9e2af";
+    green = "rgb(166, 227, 161)";
+    greenAlpha = "#a6e3a1";
+    teal = "rgb(148, 226, 213)";
+    tealAlpha = "#94e2d5";
+    sky = "rgb(137, 220, 235)";
+    skyAlpha = "#89dceb";
+    sapphire = "rgb(116, 199, 236)";
+    sapphireAlpha = "#74c7ec";
+    blue = "rgb(137, 180, 250)";
+    blueAlpha = "#89b4fa";
+    lavender = "rgb(180, 190, 254)";
+    lavenderAlpha = "#b4befe";
+    text = "rgb(205, 214, 244)";
+    textAlpha = "#cdd6f4";
+    subtext1 = "rgb(186, 194, 222)";
+    subtext1Alpha = "#bac2de";
+    subtext0 = "rgb(166, 173, 200)";
+    subtext0Alpha = "#a6adc8";
+    overlay2 = "rgb(147, 153, 178)";
+    overlay2Alpha = "#9399b2";
+    overlay1 = "rgb(127, 132, 156)";
+    overlay1Alpha = "#7f849c";
+    overlay0 = "rgb(108, 112, 134)";
+    overlay0Alpha = "#6c7086";
+    surface2 = "rgb(88, 91, 112)";
+    surface2Alpha = "#585b70";
+    surface1 = "rgb(69, 71, 90)";
+    surface1Alpha = "#45475a";
+    surface0 = "rgb(49, 50, 68)";
+    surface0Alpha = "#313244";
+    base = "rgb(30, 30, 46)";
+    baseAlpha = "#1e1e2e";
+    mantle = "rgb(24, 24, 37)";
+    mantleAlpha = "#181825";
+    crust = "rgb(17, 17, 27)";
+    crustAlpha = "#11111b";
+  };
+}

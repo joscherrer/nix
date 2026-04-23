@@ -53,6 +53,7 @@ jumbo:
 
 rds:
 	sudo nixos-rebuild switch --flake "$(PWD)/#rds" $(EXTRA_ARGS)
+	hyprctl reload
 
 utm:
 	sudo nixos-rebuild switch --flake "$(PWD)/#bbrain-utm" $(EXTRA_ARGS)

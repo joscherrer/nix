@@ -72,13 +72,19 @@ return {
         config = function(_, opts)
             local telescope = require('telescope')
             local open_with_trouble = require("trouble.sources.telescope").open
+            local ta = require("telescope.actions")
             local lga_actions = require("telescope-live-grep-args.actions")
             local actions = require("telescope.actions")
+
+            local function send_to_trouble_qflist(prompt_bufnr)
+                ta.send_to_qflist(prompt_bufnr)
+                require("trouble").open("quickfix")
+            end
 
             opts.defaults = vim.tbl_deep_extend("force", opts.defaults, {
                 mappings = {
                     i = {
-                        ["<c-t>"] = open_with_trouble,
+                        ["<c-t>"] = send_to_trouble_qflist,
                         ["<c-f>"] = actions.to_fuzzy_refine,
                         ["<C-k>"] = lga_actions.quote_prompt(),
                         ["<C-i>"] = lga_actions.quote_prompt({ postfix = " --iglob " }),

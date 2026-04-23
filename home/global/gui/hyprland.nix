@@ -147,7 +147,7 @@ rec {
       general = {
         disable_loading_bar = true;
         grace = 0;
-        hide_cursor = true;
+        hide_cursor = false;
         no_fade_in = false;
       };
 
@@ -161,17 +161,47 @@ rec {
 
       input-field = [
         {
-          size = "200, 50";
-          position = "0, -80";
           monitor = "";
+          size = "300, 60";
+          outline_thickness = 4;
+          dots_size = 0.2;
+          dots_spacing = 0.2;
           dots_center = true;
+          outer_color = colors.catpuccin.blue;
+          inner_color = colors.catpuccin.surface0;
+          font_color = colors.catpuccin.text;
           fade_on_empty = false;
-          font_color = "rgb(202, 211, 245)";
-          inner_color = "rgb(91, 96, 120)";
-          outer_color = "rgb(24, 25, 38)";
-          outline_thickness = 5;
-          placeholder_text = ''<span foreground="##cad3f5">Password...</span>'';
-          shadow_passes = 2;
+          placeholder_text = ''<span foreground="#${colors.catpuccin.textAlpha}"><i>󰌾 Logged in as </i><span foreground="#${colors.catpuccin.blueAlpha}">$USER</span></span>'';
+          hide_input = false;
+          check_color = colors.catpuccin.blue;
+          fail_color = colors.catpuccin.red;
+          fail_text = "<i>$FAIL <b>($ATTEMPTS)</b></i>";
+          capslock_color = colors.catpuccin.yellow;
+          position = "0, -47";
+          halign = "center";
+          valign = "center";
+          # shadow_passes = 2;
+        }
+      ];
+
+      label = [
+        {
+          text = "$TIME";
+          color = "white";
+          font_size = 90;
+          font_family = "JetBrains Mono";
+          position = "-30, 0";
+          halign = "right";
+          valign = "top";
+        }
+        {
+          text = ''cmd[update:43200000] date +"%A, %d %B %Y"'';
+          color = "white";
+          font_size = 25;
+          font_family = "JetBrains Mono";
+          position = "-30, -150";
+          halign = "right";
+          valign = "top";
         }
       ];
     };
@@ -269,6 +299,12 @@ rec {
         {
           name = "at-translated-set-2-keyboard";
           kb_options = "caps:swapescape";
+          kb_variant = "intl";
+        }
+        {
+          name = "microsoft-wired-keyboard-400";
+          kb_options = "caps:swapescape";
+          kb_variant = "intl";
         }
       ];
 
@@ -442,99 +478,251 @@ rec {
         "$mainMod, mouse:273, resizewindow"
       ];
 
-      windowrulev2 = [
-        # "bordercolor rgb(${colors.color9}) rgb(${colors.color9}) 270deg, fullscreen:1"
-        # "bordercolor rgb(${colors.color9}) rgb(${colors.color9}) 270deg, fullscreenstate:2 2"
-        # "bordercolor rgb(${colors.color9}) rgb(${colors.color9}) 270deg, fullscreenstate:3 3"
+      windowrule = [
+        # Notion: prevent fullscreen
+        {
+          name = "notion-no-fullscreen";
+          fullscreen_state = "-1 2";
+          "match:title" = "^(notion|notion-calendar)$";
+        }
 
-        "fullscreenstate -1 2, title:^(notion)$"
-        "fullscreenstate -1 2, title:^(notion-calendar)$"
-        "opacity 0.90 0.90,class:^(org.wezfurlong.wezterm)$"
-        "opacity 0.90 0.90,class:^(Alacritty)$"
-        "opacity 0.90 0.90,class:^(Brave-browser)$"
-        "opacity 0.90 0.90,class:^(brave-browser)$"
-        "opacity 0.95 0.95,class:^(firefox)$"
-        "opacity 0.80 0.80,class:^(Steam)$"
-        "opacity 0.80 0.80,class:^(steam)$"
-        "opacity 0.80 0.80,class:^(steamwebhelper)$"
-        "opacity 0.80 0.80,class:^(Spotify)$"
-        "opacity 0.95 0.90,class:^(Code)$"
-        "opacity 0.95 0.90,class:^(code-url-handler)$"
-        "opacity 0.80 0.80,class:^(thunar)$"
-        "opacity 0.80 0.80,class:^(file-roller)$"
-        "opacity 0.80 0.80,class:^(nwg-look)$"
-        "opacity 0.80 0.80,class:^(qt5ct)$"
-        "opacity 0.80 0.80,class:^(discord)$"
-        "opacity 1 1,class:^(WebCord)$"
-        "opacity 0.80 0.70,class:^(pavucontrol)$"
-        "opacity 0.80 0.70,class:^(org.kde.polkit-kde-authentication-agent-1)$"
-        "opacity 0.80 0.80,class:^(org.telegram.desktop)$"
-        "opacity 0.80 0.80,title:^(Spotify)$"
+        # Terminals: opacity
+        {
+          name = "terminal-opacity-90";
+          opacity = "0.90 0.90";
+          "match:class" = "^(org.wezfurlong.wezterm|Alacritty)$";
+        }
 
-        "float,class:^(org.kde.polkit-kde-authentication-agent-1)$"
-        "float,class:^(pavucontrol)$"
-        "float,title:^(Media viewer)$"
-        "float,title:^(Volume Control)$"
-        "float,title:^(Picture-in-Picture)$"
-        "float,class:^(Viewnior)$"
-        "float,title:^(DevTools)$"
-        "float,class:^(file_progress)$"
-        "float,class:^(confirm)$"
-        "float,class:^(dialog)$"
-        "float,class:^(download)$"
-        "float,class:^(notification)$"
-        "float,class:^(error)$"
-        "float,class:^(confirmreset)$"
-        "float,title:^(Open File)$"
-        "float,title:^(branchdialog)$"
-        "float,title:^(Confirm to replace files)$"
-        "float,title:^(File Operation Progress)$"
-        "float,title:^(Qalculate!)$"
-        "float,class:^(.blueman-manager-wrapped)$"
-        # "nofullscreenrequest,class:^(firefox)$,title:^(Mozilla Firefox)$"
-        # "float,title:^(Mozilla Firefox)$"
-        # "move 50% 50%,class:^(firefox)$,floating:1"
+        # Browsers: opacity (+ optional idle inhibit on fullscreen)
+        {
+          name = "brave-opacity-90";
+          opacity = "0.90 0.90";
+          "match:class" = "^(Brave-browser|brave-browser)$";
+        }
+        {
+          name = "brave-inhibit-idle-on-fullscreen";
+          idle_inhibit = "fullscreen";
+          "match:class" = "^(Brave-browser|brave-browser)$";
+        }
+        {
+          name = "firefox-zen-opacity-95-inhibit-idle-on-fullscreen";
+          opacity = "0.95 0.95";
+          idle_inhibit = "fullscreen";
+          "match:class" = "^(firefox|zen)$";
+        }
 
-        # "nomaximizerequest,class:^(firefox)$"
+        # Steam: opacity
+        {
+          name = "steam-opacity-80";
+          opacity = "0.80 0.80";
+          "match:class" = "^(Steam|steam|steamwebhelper)$";
+        }
 
-        # "bordercolor rgb(${colors.color9}), tag:pin:bbrain"
-        # "bordercolor g${colors.color9}) color(${colors.color1}) 270deg, tag:pin:work"
+        # Spotify: opacity
+        {
+          name = "spotify-opacity-80";
+          opacity = "0.80 0.80";
+          "match:class" = "^(Spotify)$";
+        }
 
-        "noshadow, floating:0"
+        # VS Code: opacity
+        {
+          name = "vscode-opacity-95-90";
+          opacity = "0.95 0.90";
+          "match:class" = "^(Code|code-url-handler)$";
+        }
 
-        "tile, title:^(Spotify)$"
-        "workspace 9 silent, title:^(Spotify)$"
-        "workspace 4, title:^(.*(Disc|WebC)ord.*)$"
-        "workspace 2, class:^(firefox)$,title:^(Mozilla Firefox)$"
-        "workspace 8, initialClass:^(.*com.jumbomana.avatar.*)$"
-        "fullscreen, initialClass:^(.*com.jumbomana.avatar.*)$"
+        # File/tools: opacity
+        {
+          name = "file-tools-opacity-80";
+          opacity = "0.80 0.80";
+          "match:class" = "^(thunar|file-roller|nwg-look|qt5ct)$";
+        }
 
-        "idleinhibit focus, class:^(mpv|.+exe)$"
-        "idleinhibit focus, class:^(firefox)$, title:^(.*YouTube.*)$"
-        "idleinhibit fullscreen, class:^(firefox)$"
-        "idleinhibit fullscreen,class:^(Brave-browser)$"
+        # Chat apps: opacity (discord/webcord/telegram)
+        {
+          name = "chat-apps-opacity";
+          opacity = "0.80 0.80";
+          "match:class" = "^(discord|org.telegram.desktop)$";
+        }
+        {
+          name = "webcord-opacity-100";
+          opacity = "1 1";
+          "match:class" = "^(WebCord)$";
+        }
 
-        # "rounding 0, xwayland:1, floating:1"
-        "center, class:^(.*jetbrains.*)$, title:^(Confirm Exit|Open Project|win424|win201|splash)$"
-        "size 640 400, class:^(.*jetbrains.*)$, title:^(splash)$"
+        # Utility dialogs: float + opacity
+        {
+          name = "pavucontrol-float-opacity-80-70";
+          opacity = "0.80 0.70";
+          float = "on";
+          "match:class" = "^(pavucontrol)$";
+        }
+        {
+          name = "polkit-agent-float-opacity-80-70";
+          opacity = "0.80 0.70";
+          float = "on";
+          "match:class" = "^(org.kde.polkit-kde-authentication-agent-1)$";
+        }
 
-        "opacity 0.0 override 0.0 override,class:^(xwaylandvideobridge)$"
-        "noanim,class:^(xwaylandvideobridge)$"
-        "nofocus,class:^(xwaylandvideobridge)$"
-        "noinitialfocus,class:^(xwaylandvideobridge)$"
-        "noblur,class:^(xwaylandvideobridge)$"
-        "noshadow,class:^(xwaylandvideobridge)$"
-        "noblur,title:^(Picture-in-Picture)$"
-        "opacity 1.0 1.0,title:^(Picture-in-Picture)$"
-        # "bordersize 0, floating:0, onworkspace:w[tv1]"
-        # "rounding 0, floating:0, onworkspace:w[tv1]"
-        # "bordersize 0, floating:0, onworkspace:f[1]"
-        # "rounding 0, floating:0, onworkspace:f[1]"
+        # Spotify (title) -> workspace 9 silent + tile + opacity
+        # (kept separate because it's more specific and sets workspace/tile)
+        {
+          name = "spotify-title-workspace-9-silent-tile-opacity-80";
+          opacity = "0.80 0.80";
+          tile = "on";
+          workspace = "9 silent";
+          "match:title" = "^(Spotify)$";
+        }
 
-        # "bordercolor rgb(${colors.color9}), fullscreenstate:* 1"
-        # "bordercolor rgb(${colors.color9}), fullscreenstate:* 2"
-        "bordercolor rgb(${colors.color9}) rgb(${colors.color9}), fullscreen:1"
+        # Common float-by-title rules
+        {
+          name = "float-media-viewer-and-volume-control";
+          float = "on";
+          "match:title" = "^(Media viewer|Volume Control)$";
+        }
+        {
+          name = "picture-in-picture-float-no-blur-opacity-100";
+          float = "on";
+          no_blur = "on";
+          opacity = "1.0 1.0";
+          "match:title" = "^(Picture-in-Picture)$";
+        }
+
+        # Common float-by-class rules
+        {
+          name = "float-viewnior";
+          float = "on";
+          "match:class" = "^(Viewnior)$";
+        }
+        {
+          name = "devtools-float";
+          float = "on";
+          "match:title" = "^(DevTools)$";
+        }
+
+        # Generic dialog-like windows: float
+        {
+          name = "generic-dialogs-float";
+          float = "on";
+          "match:class" = "^(file_progress|confirm|dialog|download|notification|error|confirmreset)$";
+        }
+        {
+          name = "common-dialog-titles-float";
+          float = "on";
+          "match:title" = "^(Open File|branchdialog|Confirm to replace files|File Operation Progress)$";
+        }
+
+        # Qalculate: float (by title or class)
+        {
+          name = "qalculate-float";
+          float = "on";
+          "match:title" = "Qalculate!";
+        }
+        {
+          name = "qalculate-qt-float";
+          float = "on";
+          "match:class" = "io.github.Qalculate.qalculate-qt";
+        }
+        {
+          name = "openvpn3-indicator";
+          float = "on";
+          "match:class" = "^(.openvpn3-indicator.*)$";
+        }
+
+        # Bluetooth manager: float
+        {
+          name = "blueman-manager-float";
+          float = "on";
+          "match:class" = "^(.blueman-manager-wrapped)$";
+        }
+
+        # Shadow rule
+        {
+          name = "no-shadow-on-non-floating-windows";
+          no_shadow = "on";
+          "match:float" = "0";
+        }
+
+        # Discord/WebCord by title -> workspace 4
+        {
+          name = "discord-webcord-to-workspace-4";
+          workspace = "4";
+          "match:title" = "^(.*(Disc|WebC)ord.*)$";
+        }
+
+        # Firefox/Zen -> workspace 2 (specifically main Firefox title)
+        {
+          name = "firefox-zen-to-workspace-2-firefox-title";
+          workspace = "2";
+          "match:class" = "^(firefox|zen)$";
+          "match:title" = "^(Mozilla Firefox)$";
+        }
+
+        # Avatar app: workspace 8 + fullscreen
+        {
+          name = "avatar-app-fullscreen-to-workspace-8";
+          workspace = "8";
+          fullscreen = "on";
+          "match:initial_class" = "^(.*com.jumbomana.avatar.*)$";
+        }
+
+        # Media players / exe: inhibit idle on focus
+        {
+          name = "idle-inhibit-on-focus-mpv-and-windows-exe";
+          idle_inhibit = "focus";
+          "match:class" = "^(mpv|.+exe)$";
+        }
+
+        # YouTube in Firefox/Zen: inhibit idle on focus
+        {
+          name = "idle-inhibit-on-focus-youtube-in-firefox-zen";
+          idle_inhibit = "focus";
+          "match:class" = "^(firefox|zen)$";
+          "match:title" = "^(.*YouTube.*)$";
+        }
+
+        # JetBrains: center selected dialogs/splash windows
+        {
+          name = "jetbrains-center-confirm-open-splash";
+          center = "on";
+          "match:class" = "^(.*jetbrains.*)$";
+          "match:title" = "^(Confirm Exit|Open Project|win424|win201|splash)$";
+        }
+        {
+          name = "jetbrains-splash-size-640x400";
+          size = "640 400";
+          "match:class" = "^(.*jetbrains.*)$";
+          "match:title" = "^(splash)$";
+        }
+
+        # xwaylandvideobridge: invisible + disable effects + no focus
+        {
+          name = "xwaylandvideobridge-invisible-no-input-no-effects";
+          opacity = "0.0 override 0.0 override";
+          no_anim = "on";
+          no_focus = "on";
+          no_initial_focus = "on";
+          no_blur = "on";
+          no_shadow = "on";
+          "match:class" = "^(xwaylandvideobridge)$";
+        }
+
+        # Fullscreen: border color
+        {
+          name = "fullscreen-border-color-accent";
+          border_color = "rgb(e76365) rgb(e76365)";
+          "match:fullscreen" = "1";
+        }
+
+        # Dropdown terminal -> special workspace
+        {
+          name = "kitty-dropdown-to-special-terminal-workspace";
+          workspace = "special:terminal";
+          "match:class" = "(kitty-dropdown)";
+        }
       ];
+
       layerrule = [
         {
           name = "gtk_layer_shell_anyrun_blur";
