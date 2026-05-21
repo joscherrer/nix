@@ -4,7 +4,7 @@
     # nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-23.05-darwin";
 
     nixpkgs.url = "nixpkgs/nixos-unstable";
-    nixpkgs-stable.url = "nixpkgs/nixos-24.05";
+    nixpkgs-stable.url = "nixpkgs/nixos-25.11";
     nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     nixpkgs-darwin-stable.url = "github:nixos/nixpkgs/nixpkgs-24.05-darwin";
     nixpkgs-unstable.url = "nixpkgs/nixos-unstable";
@@ -81,14 +81,14 @@
         });
       };
 
-      overlay-terraform = final: prev: {
-        terraform = prev.terraform.overrideAttrs (old: {
-          ldflags = old.ldflags ++ [
-            "-X"
-            "'github.com/hashicorp/terraform/version.dev=no'"
-          ];
-        });
-      };
+      # overlay-terraform = final: prev: {
+      #   terraform = prev.terraform.overrideAttrs (old: {
+      #     ldflags = old.ldflags ++ [
+      #       "-X"
+      #       "'github.com/hashicorp/terraform/version.dev=no'"
+      #     ];
+      #   });
+      # };
 
       overlay-dolphin = final: prev: {
         kdePackages = prev.kdePackages.overrideScope (
@@ -121,7 +121,7 @@
         unstable = overlay-unstable;
         stable = overlay-stable;
         inherit overlay-kubectx;
-        inherit overlay-terraform;
+        # inherit overlay-terraform;
         inherit overlay-dolphin;
       };
 
