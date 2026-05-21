@@ -31,17 +31,17 @@ vim.api.nvim_create_autocmd({ 'FocusLost', 'InsertLeave' }, {
     end,
 })
 
-vim.api.nvim_create_autocmd('BufWritePost', {
-    pattern = '*',
-    group = af_group,
-    desc = 'Auto format on save',
-    callback = function()
-        local tscontext = require('treesitter-context')
-        tscontext.disable()
-        helpers.format(0, { async = true, timeout_ms = 5000 })
-        vim.defer_fn(tscontext.enable, 500)
-    end
-})
+-- vim.api.nvim_create_autocmd('BufWritePost', {
+--     pattern = '*',
+--     group = af_group,
+--     desc = 'Auto format on save',
+--     callback = function()
+--         local tscontext = require('treesitter-context')
+--         tscontext.disable()
+--         helpers.format(0, { async = true, timeout_ms = 5000 })
+--         vim.defer_fn(tscontext.enable, 500)
+--     end
+-- })
 
 vim.api.nvim_create_autocmd({ 'BufEnter', 'CursorHold', 'CursorHoldI', 'FocusGained' }, {
     pattern = '*',

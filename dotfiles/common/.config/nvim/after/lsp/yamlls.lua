@@ -36,6 +36,9 @@ local function findLocalSchema(kind, group, version)
 end
 
 local lsp_symbol_callback = function(client, bufnr, _, result)
+    if result == nil then
+        return
+    end
     local rootStrings = vim.tbl_filter(function(o) return o.kind == 15 end, result)
     local kinds = getSymbol(rootStrings, "kind")
     local apiVersions = getSymbol(rootStrings, "apiVersion")
@@ -146,20 +149,20 @@ local function on_attach(client, bufnr)
     )
 end
 
-local lsp_capabilities = require('cmp_nvim_lsp').default_capabilities()
-lsp_capabilities.textDocument.foldingRange = {
-    dynamicRegistration = false,
-    lineFoldingOnly = true
-}
+-- local lsp_capabilities = require('cmp_nvim_lsp').default_capabilities()
+-- lsp_capabilities.textDocument.foldingRange = {
+--     dynamicRegistration = false,
+--     lineFoldingOnly = true
+-- }
 
 return {
-    capabilities = vim.tbl_deep_extend('force', lsp_capabilities, {
-        workspace = {
-            didChangeConfiguration = {
-                dynamicRegistration = true
-            }
-        }
-    }),
+    -- capabilities = vim.tbl_deep_extend('force', lsp_capabilities, {
+    --     workspace = {
+    --         didChangeConfiguration = {
+    --             dynamicRegistration = true
+    --         }
+    --     }
+    -- }),
     on_attach = on_attach,
     settings = {
         yaml = {

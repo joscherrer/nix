@@ -131,6 +131,7 @@ function M.format(buffer, opts)
 
     if filetype == 'go' then
         format_go()
+        return
     end
 
     if filetype == 'hcl' then
@@ -147,9 +148,6 @@ function M.format(buffer, opts)
         vim.cmd('silent !alloy fmt %')
         return
     end
-
-    vim.lsp.buf.format(opts)
-    vim.cmd('silent! write')
 end
 
 M.telescope = { config = {} }

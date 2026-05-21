@@ -126,9 +126,9 @@ local plugins = {
                 vim.keymap.set({ "n", "t" }, "<A-n>", function()
                     require("bbrain.helpers").new_term()
                 end, { desc = "New Terminal" })
-                vim.keymap.set({ "n", "t" }, "<A-q>", function()
-                    require("bbrain.helpers").close_term()
-                end, { desc = "Close Terminal" })
+                -- vim.keymap.set({ "n", "t" }, "<A-q>", function()
+                --     require("bbrain.helpers").close_term()
+                -- end, { desc = "Close Terminal" })
             end,
         },
         config = function(_, opts)

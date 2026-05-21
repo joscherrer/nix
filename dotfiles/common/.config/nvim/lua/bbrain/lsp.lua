@@ -19,9 +19,10 @@ vim.lsp.enable('lua_ls')
 vim.lsp.enable('tofu_ls')
 vim.lsp.enable('basedpyright')
 vim.lsp.enable('yamlls')
+vim.lsp.enable('roslyn')
+-- vim.lsp.enable('csharp_ls')
 -- vim.lsp.enable('marksman')
 -- vim.lsp.enable('jsonnet_ls')
--- vim.lsp.enable('csharp_ls')
 
 -- -- ts/js
 vim.lsp.enable({ 'vtsls', 'vue_ls' })
@@ -30,8 +31,41 @@ vim.lsp.enable({ 'vtsls', 'vue_ls' })
 
 -- -- dart/flutter
 -- vim.lsp.enable('dartls')
---
---
+
+vim.api.nvim_create_autocmd('LspAttach', {
+    group = vim.api.nvim_create_augroup('my.lsp', {}),
+    callback = function(ev)
+        local client = assert(vim.lsp.get_client_by_id(ev.data.client_id))
+        if not client:supports_method('textDocument/willSaveWaitUntil') and client:supports_method('textDocument/formatting') then
+            vim.api.nvim_create_autocmd('BufWritePre', {
+                group = vim.api.nvim_create_augroup('my.lsp', { clear = false }),
+                buffer = ev.buf,
+                callback = function()
+                    vim.lsp.buf.format({ bufnr = ev.buf, id = client.id, timeout_ms = 1000 })
+                end
+            })
+        elseif client.name == 'copilot' then
+            return
+            -- elseif not client:supports_method('textDocument/willSaveWaitUntil') and not client:supports_method('textDocument/formatting') then
+            --     vim.notify(
+            --         "LSP client '" ..
+            --         client.name .. "' does not support formatting, using BufWritePost autocmd for auto formatting",
+            --         vim.log.levels.WARN)
+            --     vim.api.nvim_create_autocmd('BufWritePost', {
+            --         group = vim.api.nvim_create_augroup("AutoFormat", { clear = true }),
+            --         buffer = ev.buf,
+            --         desc = 'Auto format on save',
+            --         callback = function()
+            --             -- local tscontext = require('treesitter-context')
+            --             -- tscontext.disable()
+            --             helpers.format(0, { async = true, timeout_ms = 5000 })
+            --             vim.notify("Auto formatting with LSP", vim.log.levels.INFO)
+            --             -- vim.defer_fn(tscontext.enable, 500)
+            --         end
+            --     })
+        end
+    end
+})
 
 local function lsp_restart(info)
     vim.notify("Restarting LSP", vim.log.levels.INFO)
