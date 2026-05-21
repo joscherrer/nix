@@ -19,7 +19,6 @@
 
   home.packages = with pkgs; [
     # IaC/Cloud
-    terraform
     opentofu
     tofu-ls
     terraform-ls
@@ -77,6 +76,7 @@
     marksman
     k6
     bitwarden-cli
+    fx
 
     # kube-prometheus
     go-jsonnet

@@ -238,6 +238,7 @@ in
       uwsm
       inputs.zen-browser.packages.${pkgs.system}.default
       pkgs.firefoxpwa
+      gnome-system-monitor
     ]
     ++ lib.optionals stdenv.isx86_64 [
       spotify

@@ -493,6 +493,13 @@ rec {
           "match:class" = "^(org.wezfurlong.wezterm|Alacritty)$";
         }
 
+        # system monitor: opacity
+        {
+          name = "gnome-system-monitor-opacity-100";
+          opacity = "1 1";
+          "match:class" = "^(org.gnome.SystemMonitor)$";
+        }
+
         # Browsers: opacity (+ optional idle inhibit on fullscreen)
         {
           name = "brave-opacity-90";

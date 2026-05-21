@@ -8,5 +8,7 @@
     ./nix.nix
     ./python.nix
     ./dart.nix
+    ./csharp.nix
+    ./yaml.nix
   ];
 }

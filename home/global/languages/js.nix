@@ -5,7 +5,7 @@
     nodejs
     # nodePackages.typescript
     yarn
-    nodePackages.prettier
+    prettier
     typescript
     typescript-language-server
     tailwindcss-language-server

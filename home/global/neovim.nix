@@ -12,7 +12,7 @@ let
 in
 {
   programs.neovim = {
-    enable = true;
+    enable = false;
   };
 
   # xdg.configFile.nvim = {
@@ -37,5 +37,6 @@ in
     pkgs.copilot-language-server
     # Needed for smart-open plugin
     pkgs.sqlite
+    pkgs.unstable.tree-sitter
   ];
 }

@@ -40,7 +40,6 @@ let
     fi
 
     complete -o nospace -C ${pkgs.vault-bin}/bin/vault vault
-    complete -o nospace -C ${pkgs.terraform}/bin/terraform terraform
     complete -o nospace -C ${pkgs.awscli2}/bin/aws_completer aws
     complete -o nospace -C ${pkgs.minio-client}/bin/mc mc
     complete -o nospace -C ${pkgs.opentofu}/bin/tofu tofu
