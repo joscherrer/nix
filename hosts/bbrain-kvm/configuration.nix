@@ -108,10 +108,34 @@
       qemu = {
         swtpm.enable = true;
       };
+      # A guest with USB hostdev passthrough (haos) can't be reliably
+      # suspended/restored across a host reboot - the physical USB device
+      # doesn't travel with the saved memory image. Do a clean guest
+      # shutdown instead, so boot-time autostart always does a fresh start.
+      onShutdown = "shutdown";
     };
     spiceUSBRedirection.enable = true;
   };
   services.spice-vdagentd.enable = true;
+
+  # Autostarted guests with USB hostdev passthrough (e.g. haos) can fail to
+  # start at boot if libvirtd runs its autostart pass before udev has
+  # finished enumerating USB devices (missing ID_VENDOR_ID races the domain
+  # definition lookup). Wait for udev to settle before starting libvirtd.
+  systemd.services.libvirtd = {
+    after = [ "systemd-udev-settle.service" ];
+    wants = [ "systemd-udev-settle.service" ];
+  };
+
+  # Hot-attaches haos's two USB dongles live as udev detects them, instead
+  # of relying on libvirt to match them at domain start time. See
+  # haos-usb-hotplug.sh for why (identical vendor:product ids, unstable USB
+  # bus numbering across reboots, and libvirt qemu hooks turning out not to
+  # support rewriting a domain's XML for a plain start/autostart - only for
+  # migration/restore).
+  services.udev.extraRules = ''
+    SUBSYSTEM=="usb", ACTION=="add", ATTR{idVendor}=="303a", ATTR{idProduct}=="831a", ENV{DEVTYPE}=="usb_device", RUN+="${pkgs.systemd}/bin/systemd-run --no-block --unit=haos-usb-attach-%k --setenv=BUSNUM=$env{BUSNUM} --setenv=DEVNUM=$env{DEVNUM} --setenv=ID_SERIAL_SHORT=$env{ID_SERIAL_SHORT} ${pkgs.writeShellScript "haos-usb-hotplug" (builtins.readFile ./haos-usb-hotplug.sh)}"
+  '';
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -125,6 +149,7 @@
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
+  security.sudo.wheelNeedsPassword = false;
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
