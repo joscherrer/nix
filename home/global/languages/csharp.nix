@@ -4,12 +4,13 @@
 }:
 {
   home.packages = with pkgs; [
-    stable.dotnetCorePackages.sdk_10_0_2xx
+    stable.dotnetCorePackages.sdk_10_0
     stable.roslyn-ls
     stable.rzls
+    stable.patchelf
   ];
 
   home.sessionVariables = {
-    DOTNET_ROOT = "${pkgs.stable.dotnetCorePackages.sdk_10_0_2xx}/share/dotnet";
+    DOTNET_ROOT = "${pkgs.stable.dotnetCorePackages.sdk_10_0}/share/dotnet";
   };
 }

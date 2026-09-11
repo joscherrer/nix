@@ -8,4 +8,5 @@
   ankama-launcher = pkgs.callPackage ./ankama-launcher { };
   hyprfollow = import ./hyprfollow.nix { inherit pkgs; };
   openvpn3-indicator = pkgs.callPackage ./openvpn3-indicator { };
+  pure-prompt-git = pkgs.callPackage ./pure { };
 }

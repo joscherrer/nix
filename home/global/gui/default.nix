@@ -87,7 +87,7 @@ in
     enable = true;
     theme = {
       name = "rose-pine";
-      package = pkgs.rose-pine-gtk-theme;
+      package = pkgs.stable.rose-pine-gtk-theme;
     };
     font = {
       name = "Roboto";
@@ -216,7 +216,7 @@ in
       playerctl
       pamixer
       # webcord
-      vesktop
+      # vesktop
       slurp
       grim
       wf-recorder
@@ -226,10 +226,10 @@ in
       libsForQt5.qtstyleplugin-kvantum
       chromium
       dbeaver-bin
-      bitwarden-desktop
+      # bitwarden-desktop
       telegram-desktop
       pandoc
-      rose-pine-gtk-theme
+      stable.rose-pine-gtk-theme
       (catppuccin-kvantum.override {
         accent = "mauve";
         variant = "mocha";
@@ -237,6 +237,7 @@ in
       hyprfollow
       uwsm
       inputs.zen-browser.packages.${pkgs.system}.default
+      floorp-bin
       pkgs.firefoxpwa
       gnome-system-monitor
     ]

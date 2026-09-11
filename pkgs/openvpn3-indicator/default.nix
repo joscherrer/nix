@@ -31,7 +31,7 @@ stdenv.mkDerivation rec {
     owner = "OpenVPN";
     repo = "openvpn3-indicator";
     rev = "main";
-    sha256 = "sha256-KK/ZrVsPJtjJtmRGhxVW/gCFTv759qzlPZHKVMg7pKU=";
+    sha256 = "sha256-jsFlmybscDvSKupiAaVkFj2Pg6ej8360OQOnDh9RsbQ=";
   };
 
   pythonPath = [
@@ -71,6 +71,8 @@ stdenv.mkDerivation rec {
     runHook preInstall
     mkdir -p $out
     cp -r dest/* $out/
+    substituteInPlace $out/share/applications/net.openvpn.openvpn3_indicator.desktop \
+      --replace-fail "Exec=/bin/openvpn3-indicator" "Exec=$out/bin/openvpn3-indicator"
     runHook postInstall
   '';
 
@@ -79,7 +81,7 @@ stdenv.mkDerivation rec {
     wrapProgram $out/bin/openvpn3-indicator \
       --set PYTHON ${pythonEnv}/bin/python3 \
       --prefix PATH : ${lib.makeBinPath [ pythonEnv ]} \
-      --prefix PYTHONPATH : ${openvpn3}/lib/python3.13/site-packages
+      --prefix PYTHONPATH : ${openvpn3}/${python3.sitePackages}
   '';
 
   meta = with lib; {

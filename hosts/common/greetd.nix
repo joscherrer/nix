@@ -39,7 +39,7 @@ in
   # };
 
   services.greetd = {
-    enable = true;
+    enable = false;
     settings = {
       default_session = {
         command = "${hyprland-kiosk}/bin/hyprland-kiosk";
@@ -48,13 +48,13 @@ in
     };
   };
 
-  users.users.greeter = {
-    home = "/home/greeter";
-    createHome = true;
-  };
+  # users.users.greeter = {
+  #   home = "/home/greeter";
+  #   createHome = true;
+  # };
 
-  programs.regreet.enable = true;
-  programs.regreet.settings = {
+  services.displayManager.regreet.enable = false;
+  services.displayManager.regreet.settings = {
     background = {
       path = "${default.wallpaper}";
       fit = "Cover";

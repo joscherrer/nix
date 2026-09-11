@@ -31,11 +31,14 @@
           "SystemInfo"
           "Tray"
           [
-            "Clock"
+            "Tempo"
             "Privacy"
             "Settings"
           ]
         ];
+      };
+      settings = {
+        battery_format = "IconAndPercentage";
       };
     };
   };

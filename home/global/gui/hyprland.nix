@@ -48,14 +48,14 @@ let
     wname=$(hyprctl clients -j | jq -e -r '.[] | select(.class == "google-chrome") | .workspace.name')
     # currw=$(hyprctl activeworkspace -j | jq -r '.name')
     if [ "$wname" != "special:browser" ]; then
-      hyprctl dispatch togglespecialworkspace browser 
-      hyprctl dispatch movetoworkspace special:browser,class:google-chrome
-    else 
+      hyprctl dispatch 'hl.dsp.togglespecialworkspace("browser")'
+      hyprctl dispatch 'hl.dsp.movetoworkspace("special:browser,class:google-chrome")'
+    else
       cposx=$(hyprctl cursorpos -j | jq -e -r '.x')
       cposy=$(hyprctl cursorpos -j | jq -e -r '.y')
-      hyprctl dispatch togglespecialworkspace browser 
-      hyprctl dispatch movetoworkspace 2,class:google-chrome
-      hyprctl dispatch movecursor $cposx $cposy
+      hyprctl dispatch 'hl.dsp.togglespecialworkspace("browser")'
+      hyprctl dispatch 'hl.dsp.movetoworkspace("2,class:google-chrome")'
+      hyprctl dispatch "hl.dsp.movecursor(\"$cposx $cposy\")"
     fi
   '';
 
@@ -70,14 +70,14 @@ let
     if [ $? -ne 0 ]; then exit 0; fi
 
     if [ "$wname" != "special:$workspace_name" ]; then
-      hyprctl dispatch togglespecialworkspace $workspace_name 
-      hyprctl dispatch movetoworkspace "special:$workspace_name,$selnamelower:$selvalue"
-    else 
+      hyprctl dispatch "hl.dsp.togglespecialworkspace(\"$workspace_name\")"
+      hyprctl dispatch "hl.dsp.movetoworkspace(\"special:$workspace_name,$selnamelower:$selvalue\")"
+    else
       cposx=$(hyprctl cursorpos -j | jq -e -r '.x')
       cposy=$(hyprctl cursorpos -j | jq -e -r '.y')
-      hyprctl dispatch togglespecialworkspace $workspace_name 
-      hyprctl dispatch movetoworkspacesilent "$workspace_num,$selnamelower:$selvalue"
-      hyprctl dispatch movecursor $cposx $cposy
+      hyprctl dispatch "hl.dsp.togglespecialworkspace(\"$workspace_name\")"
+      hyprctl dispatch "hl.dsp.movetoworkspacesilent(\"$workspace_num,$selnamelower:$selvalue\")"
+      hyprctl dispatch "hl.dsp.movecursor(\"$cposx $cposy\")"
     fi
   '';
 
@@ -213,7 +213,8 @@ rec {
       general = {
         lock_cmd = "pidof hyprlock || hyprlock";
         before_sleep_cmd = "loginctl lock-session";
-        after_sleep_cmd = "hyprctl dispatch dpms on";
+        after_sleep_cmd = "sleep 3 && hyprctl dispatch 'hl.dsp.force_renderer_reload()'";
+        # after_sleep_cmd = ''sleep 3 && hyprctl dispatch 'hl.dsp.dpms("on")'; hyprctl dispatch 'hl.dsp.force_renderer_reload()'';
       };
 
       listener = [
@@ -245,515 +246,582 @@ rec {
     ];
 
     enable = true;
+    configType = "lua";
     xwayland.enable = true;
+
+    extraLuaFiles = {
+      "binds" = {
+        autoLoad = true;
+        content = builtins.readFile "${inputs.self}/dotfiles/common/.config/hypr/binds.lua";
+      };
+      "autostart" = {
+        autoLoad = true;
+        content = builtins.readFile "${inputs.self}/dotfiles/common/.config/hypr/autostart.lua";
+      };
+      "config" = {
+        autoLoad = true;
+        content = builtins.readFile "${inputs.self}/dotfiles/common/.config/hypr/config.lua";
+      };
+      "env" = {
+        autoLoad = true;
+        content = builtins.readFile "${inputs.self}/dotfiles/common/.config/hypr/env.lua";
+      };
+      "layer_rules" = {
+        autoLoad = true;
+        content = builtins.readFile "${inputs.self}/dotfiles/common/.config/hypr/layer_rules.lua";
+      };
+      "window_rules" = {
+        autoLoad = true;
+        content = builtins.readFile "${inputs.self}/dotfiles/common/.config/hypr/window_rules.lua";
+      };
+      "monitors" = {
+        autoLoad = true;
+        content = builtins.readFile "${inputs.self}/dotfiles/common/.config/hypr/monitors.lua";
+      };
+      "devices" = {
+        autoLoad = true;
+        content = builtins.readFile "${inputs.self}/dotfiles/common/.config/hypr/devices.lua";
+      };
+      "animations" = {
+        autoLoad = true;
+        content = builtins.readFile "${inputs.self}/dotfiles/common/.config/hypr/animations.lua";
+      };
+      "workspaces" = {
+        autoLoad = true;
+        content = builtins.readFile "${inputs.self}/dotfiles/common/.config/hypr/workspaces.lua";
+      };
+    };
+
+    # hl.exec_cmd(
+    #     "/nix/store/5gln2rkcjx93cr5x0rr3wqrxjdmshd2f-dbus-1.16.2/bin/dbus-update-activation-environment --systemd DISPLAY HYPRLAND_INSTANCE_SIGNATURE WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE && systemctl --user stop hyprland-session.target && systemctl --user start hyprland-session.target")
+    # hl.exec_cmd("/nix/store/qyhb15km0rwkj6rc1s4vk635j5jhk86q-vicinae-0.20.12/bin/vicinae server")
     settings = {
-      exec-once = [
-        "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
-        # "${pkgs.wl-clipboard}/bin/wl-paste --type text --watch cliphist store"
-        # "${pkgs.wl-clipboard}/bin/wl-paste --type image --watch cliphist store"
-        # "${waybar-wrapper}/bin/waybar-wrapper"
-        # "hyprlauncher -d"
-        "${pkgs.vicinae}/bin/vicinae server"
-        "thunar --daemon"
-        # "${pkgs.networkmanagerapplet}/bin/nm-applet --indicator"
-        # "hyprswitch init --show-title --custom-css ${config.xdg.configHome}/hyprswitch/style.css &"
-      ];
-
-      monitor = [
-        # "desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675,3840x1600@144,1200x160,1.25"
-        # "desc:Dell Inc. DELL U2415 7MT0167B2YNL,1920x1200@60,0x0,auto,transform,1"
-        # "desc:AOC 28E850,disable"
-      ];
-
-      env = [
-        "LIBVA_DRIVER_NAME,nvidia"
-        "XDG_SESSION_TYPE,wayland"
-        "GBM_BACKEND,nvidia-drm"
-        "__GLX_VENDOR_LIBRARY_NAME,nvidia"
-        "WLR_NO_HARDWARE_CURSORS,1"
-        "GTK_THEME,rose-pine"
-        "XMODIFIERS=\"\""
-        "XCURSOR_SIZE,24"
-        "XCURSOR_THEME,Bibata-Modern-Classic"
-        "HYPRCURSOR_SIZE,24"
-        "HYPRCURSOR_THEME,Bibata-Modern-Classic"
-      ];
-
-      input = {
-        kb_layout = "us";
-        kb_options = "compose:ralt";
-        # kb_variant = "intl";
-        repeat_rate = 60;
-        repeat_delay = 250;
-        follow_mouse = 2;
-
-        touchpad = {
-          natural_scroll = false;
-        };
-
-        sensitivity = 0;
-        accel_profile = "flat";
-      };
-
-      device = [
-        {
-          name = "at-translated-set-2-keyboard";
-          kb_options = "caps:swapescape";
-          kb_variant = "intl";
-        }
-        {
-          name = "microsoft-wired-keyboard-400";
-          kb_options = "caps:swapescape";
-          kb_variant = "intl";
-        }
-      ];
-
-      workspace = [
-        # "1, monitor:desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675, persistent:true, default:true"
-        # "2, monitor:desc:Dell Inc. DELL U2415 7MT0167B2YNL, persistent:true, default:true, layoutopt:orientation:top"
-        # "3, monitor:desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675, persistent:true, default:false"
-        # "4, monitor:desc:Dell Inc. DELL U2415 7MT0167B2YNL, persistent:true, default:false, layoutopt:orientation:top"
-        # "5, monitor:desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675, persistent:true, default:false"
-        # "6, monitor:desc:Dell Inc. DELL U2415 7MT0167B2YNL, persistent:true, default:false, layoutopt:orientation:top"
-        # "7, monitor:desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675, persistent:true, default:false"
-        # "8, monitor:desc:Dell Inc. DELL U2415 7MT0167B2YNL, persistent:true, default:false, layoutopt:orientation:top"
-        # "9, monitor:desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675, persistent:true, default:false"
-        # "10, monitor:desc:Dell Inc. DELL U2415 7MT0167B2YNL, persistent:true, default:false, layoutopt:orientation:top"
-        # "11, monitor:desc:AOC 28E850, persistent:true, default:true"
-      ];
-
-      general = {
-        gaps_in = 5;
-        gaps_out = 5;
-        border_size = 2;
-        "col.active_border" = "rgb(${colors.background}) rgb(${colors.color8}) 270deg";
-        "col.inactive_border" = "rgb(${colors.contrast}) rgb(${colors.color4}) 270deg";
-        # group borders
-        # "no_border_on_floating" = false;
-        layout = "master";
-        # no_cursor_warps = true;
-      };
-
-      source = [
-        "~/.config/hypr/tests.conf"
-        "~/.config/hypr/monitors.conf"
-      ];
-
-      group = {
-        # "col.border_active" = "rgb(${colors.color5})";
-        # "col.border_inactive" = "rgb(${colors.contrast})";
-      };
-      debug = {
-        disable_logs = false;
-      };
-
-      misc = {
-        disable_hyprland_logo = true;
-        focus_on_activate = true;
-      };
-
-      xwayland = {
-        force_zero_scaling = true;
-      };
-
-      decoration = {
-        rounding = 5;
-        blur = {
-          size = 6;
-          passes = 3;
-          new_optimizations = true;
-          ignore_opacity = true;
-          noise = "0.1";
-          contrast = "1.1";
-          brightness = "1.2";
-          xray = true;
-        };
-
-        shadow = {
-          enabled = true;
-          ignore_window = true;
-          offset = "0 8";
-          range = 50;
-          render_power = 3;
-          color = "rgba(00000099)";
-        };
-      };
-
-      animations = {
-        enabled = true;
-        bezier = [
-          "wind, 0.05, 0.9, 0.1, 1.05"
-          "winIn, 0.1, 1.1, 0.1, 1.1"
-          "winOut, 0.3, -0.3, 0, 1"
-          "liner, 1, 1, 1, 1"
-        ];
-
-        animation = [
-          "windows, 1, 6, wind, slide"
-          "windowsIn, 1, 6, winIn, slide"
-          "windowsOut, 1, 5, winOut, slide"
-          "windowsMove, 1, 5, wind, slide"
-          "border, 1, 1, liner"
-          "borderangle, 1, 30, liner, loop"
-          "fade, 1, 10, default"
-          "workspaces, 1, 3, wind"
-        ];
-      };
-
-      dwindle = {
-        pseudotile = true;
-        preserve_split = true;
-      };
-
-      master = {
-        new_status = "slave";
-        mfact = 0.66;
-      };
-
-      "$mainMod" = "SUPER";
-
-      binds = {
-        movefocus_cycles_fullscreen = true;
-      };
-
       bind = [
-        "$mainMod, Q, exec, kitty"
-        "$mainMod, C, killactive,"
-        "$mainMod, E, exec, Thunar"
-        "$mainMod, F, fullscreen,"
-        "$mainMod, M, fullscreen, 1"
-        "$mainMod SHIFT, F, fullscreenstate, -1, 2"
-        "$mainMod, S, layoutmsg, swapwithmaster master"
-        # "$mainMod, V, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy && wtype -M ctrl -M shift v -m ctrl -m shift"
-        "$mainMod, V, exec, vicinae vicinae://extensions/vicinae/clipboard/history"
-        "$mainMod ALT, C, exec, hyprpicker -a --no-fancy -r"
-        "$mainMod, period, exec, rofi -modi 'emoji:rofimoji' -show emoji | wl-copy"
-        "$mainMod, W, layoutmsg, toggle split"
-        # "$mainMod, Space, exec, rofi -show drun"
-        "$mainMod SHIFT, R, exec, hyprdispatch"
-        "$mainMod, P, togglefloating,"
-        "$mainMod SHIFT, P, pin,"
-        "$mainMod, J, togglesplit, # dwindle"
-        "$mainMod, L, exec, loginctl lock-session"
-        "$mainMod, left, movefocus, l"
-        "$mainMod, right, movefocus, r"
-        "$mainMod, up, movefocus, u"
-        "$mainMod, down, movefocus, d"
-        "$mainMod, 1, workspace, 1"
-        "$mainMod, 2, workspace, 2"
-        "$mainMod, 3, workspace, 3"
-        "$mainMod, 4, workspace, 4"
-        "$mainMod, 5, workspace, 5"
-        "$mainMod, 6, workspace, 6"
-        "$mainMod, 7, workspace, 7"
-        "$mainMod, 8, workspace, 8"
-        "$mainMod, 9, workspace, 9"
-        "$mainMod, 0, workspace, 10"
-        "$mainMod SHIFT, 1, movetoworkspace, 1"
-        "$mainMod SHIFT, 2, movetoworkspace, 2"
-        "$mainMod SHIFT, 3, movetoworkspace, 3"
-        "$mainMod SHIFT, 4, movetoworkspace, 4"
-        "$mainMod SHIFT, 5, movetoworkspace, 5"
-        "$mainMod SHIFT, 6, movetoworkspace, 6"
-        "$mainMod SHIFT, 7, movetoworkspace, 7"
-        "$mainMod SHIFT, 8, movetoworkspace, 8"
-        "$mainMod SHIFT, 9, movetoworkspace, 9"
-        "$mainMod SHIFT, 0, movetoworkspace, 10"
-        "$mainMod, mouse_down, workspace, e+1"
-        "$mainMod, mouse_up, workspace, e-1"
-        "$mainMod CTRL, B, tagwindow, pin:bbrain"
-        "$mainMod CTRL, W, tagwindow, pin:work"
-        ",Print, exec, slurp | grim -g - - | wl-copy"
-        "SHIFT, Print, exec, hyprctl -j activewindow | jq -r '\"\\(.at[0]),\\(.at[1]) \\(.size[0])x\\(.size[1])\"' | grim -g - - | wl-copy"
-        "CTRL, Print, exec, ${screenrecorder}/bin/screenrecorder region"
-        "SUPER CTRL ALT SHIFT, DELETE, exit,"
-        "CTRL ALT, DELETE, exec, wlogout -p layer-shell"
-        # "SUPER, grave, hyprexpo:expo, toggle"
-        "$mainMod, Space, exec, ${pkgs.vicinae}/bin/vicinae toggle"
-        "$mainMod, T, exec, ${pkgs.vicinae}/bin/vicinae vicinae://extensions/vicinae/wm/switch-windows"
-      ];
-
-      bindm = [
-        "$mainMod, mouse:272, movewindow"
-        "$mainMod, mouse:273, resizewindow"
-      ];
-
-      windowrule = [
-        # Notion: prevent fullscreen
         {
-          name = "notion-no-fullscreen";
-          fullscreen_state = "-1 2";
-          "match:title" = "^(notion|notion-calendar)$";
-        }
-
-        # Terminals: opacity
-        {
-          name = "terminal-opacity-90";
-          opacity = "0.90 0.90";
-          "match:class" = "^(org.wezfurlong.wezterm|Alacritty)$";
-        }
-
-        # system monitor: opacity
-        {
-          name = "gnome-system-monitor-opacity-100";
-          opacity = "1 1";
-          "match:class" = "^(org.gnome.SystemMonitor)$";
-        }
-
-        # Browsers: opacity (+ optional idle inhibit on fullscreen)
-        {
-          name = "brave-opacity-90";
-          opacity = "0.90 0.90";
-          "match:class" = "^(Brave-browser|brave-browser)$";
+          _args = [
+            "CTRL + Print"
+            (lib.generators.mkLuaInline "function() hl.exec_cmd(\"${screenrecorder}/bin/screenrecorder region\") end")
+          ];
         }
         {
-          name = "brave-inhibit-idle-on-fullscreen";
-          idle_inhibit = "fullscreen";
-          "match:class" = "^(Brave-browser|brave-browser)$";
+          _args = [
+            "SUPER + Space"
+            (lib.generators.mkLuaInline "function() hl.exec_cmd(\"${pkgs.vicinae}/bin/vicinae toggle\") end")
+          ];
         }
         {
-          name = "firefox-zen-opacity-95-inhibit-idle-on-fullscreen";
-          opacity = "0.95 0.95";
-          idle_inhibit = "fullscreen";
-          "match:class" = "^(firefox|zen)$";
-        }
-
-        # Steam: opacity
-        {
-          name = "steam-opacity-80";
-          opacity = "0.80 0.80";
-          "match:class" = "^(Steam|steam|steamwebhelper)$";
-        }
-
-        # Spotify: opacity
-        {
-          name = "spotify-opacity-80";
-          opacity = "0.80 0.80";
-          "match:class" = "^(Spotify)$";
-        }
-
-        # VS Code: opacity
-        {
-          name = "vscode-opacity-95-90";
-          opacity = "0.95 0.90";
-          "match:class" = "^(Code|code-url-handler)$";
-        }
-
-        # File/tools: opacity
-        {
-          name = "file-tools-opacity-80";
-          opacity = "0.80 0.80";
-          "match:class" = "^(thunar|file-roller|nwg-look|qt5ct)$";
-        }
-
-        # Chat apps: opacity (discord/webcord/telegram)
-        {
-          name = "chat-apps-opacity";
-          opacity = "0.80 0.80";
-          "match:class" = "^(discord|org.telegram.desktop)$";
-        }
-        {
-          name = "webcord-opacity-100";
-          opacity = "1 1";
-          "match:class" = "^(WebCord)$";
-        }
-
-        # Utility dialogs: float + opacity
-        {
-          name = "pavucontrol-float-opacity-80-70";
-          opacity = "0.80 0.70";
-          float = "on";
-          "match:class" = "^(pavucontrol)$";
-        }
-        {
-          name = "polkit-agent-float-opacity-80-70";
-          opacity = "0.80 0.70";
-          float = "on";
-          "match:class" = "^(org.kde.polkit-kde-authentication-agent-1)$";
-        }
-
-        # Spotify (title) -> workspace 9 silent + tile + opacity
-        # (kept separate because it's more specific and sets workspace/tile)
-        {
-          name = "spotify-title-workspace-9-silent-tile-opacity-80";
-          opacity = "0.80 0.80";
-          tile = "on";
-          workspace = "9 silent";
-          "match:title" = "^(Spotify)$";
-        }
-
-        # Common float-by-title rules
-        {
-          name = "float-media-viewer-and-volume-control";
-          float = "on";
-          "match:title" = "^(Media viewer|Volume Control)$";
-        }
-        {
-          name = "picture-in-picture-float-no-blur-opacity-100";
-          float = "on";
-          no_blur = "on";
-          opacity = "1.0 1.0";
-          "match:title" = "^(Picture-in-Picture)$";
-        }
-
-        # Common float-by-class rules
-        {
-          name = "float-viewnior";
-          float = "on";
-          "match:class" = "^(Viewnior)$";
-        }
-        {
-          name = "devtools-float";
-          float = "on";
-          "match:title" = "^(DevTools)$";
-        }
-
-        # Generic dialog-like windows: float
-        {
-          name = "generic-dialogs-float";
-          float = "on";
-          "match:class" = "^(file_progress|confirm|dialog|download|notification|error|confirmreset)$";
-        }
-        {
-          name = "common-dialog-titles-float";
-          float = "on";
-          "match:title" = "^(Open File|branchdialog|Confirm to replace files|File Operation Progress)$";
-        }
-
-        # Qalculate: float (by title or class)
-        {
-          name = "qalculate-float";
-          float = "on";
-          "match:title" = "Qalculate!";
-        }
-        {
-          name = "qalculate-qt-float";
-          float = "on";
-          "match:class" = "io.github.Qalculate.qalculate-qt";
-        }
-        {
-          name = "openvpn3-indicator";
-          float = "on";
-          "match:class" = "^(.openvpn3-indicator.*)$";
-        }
-
-        # Bluetooth manager: float
-        {
-          name = "blueman-manager-float";
-          float = "on";
-          "match:class" = "^(.blueman-manager-wrapped)$";
-        }
-
-        # Shadow rule
-        {
-          name = "no-shadow-on-non-floating-windows";
-          no_shadow = "on";
-          "match:float" = "0";
-        }
-
-        # Discord/WebCord by title -> workspace 4
-        {
-          name = "discord-webcord-to-workspace-4";
-          workspace = "4";
-          "match:title" = "^(.*(Disc|WebC)ord.*)$";
-        }
-
-        # Firefox/Zen -> workspace 2 (specifically main Firefox title)
-        {
-          name = "firefox-zen-to-workspace-2-firefox-title";
-          workspace = "2";
-          "match:class" = "^(firefox|zen)$";
-          "match:title" = "^(Mozilla Firefox)$";
-        }
-
-        # Avatar app: workspace 8 + fullscreen
-        {
-          name = "avatar-app-fullscreen-to-workspace-8";
-          workspace = "8";
-          fullscreen = "on";
-          "match:initial_class" = "^(.*com.jumbomana.avatar.*)$";
-        }
-
-        # Media players / exe: inhibit idle on focus
-        {
-          name = "idle-inhibit-on-focus-mpv-and-windows-exe";
-          idle_inhibit = "focus";
-          "match:class" = "^(mpv|.+exe)$";
-        }
-
-        # YouTube in Firefox/Zen: inhibit idle on focus
-        {
-          name = "idle-inhibit-on-focus-youtube-in-firefox-zen";
-          idle_inhibit = "focus";
-          "match:class" = "^(firefox|zen)$";
-          "match:title" = "^(.*YouTube.*)$";
-        }
-
-        # JetBrains: center selected dialogs/splash windows
-        {
-          name = "jetbrains-center-confirm-open-splash";
-          center = "on";
-          "match:class" = "^(.*jetbrains.*)$";
-          "match:title" = "^(Confirm Exit|Open Project|win424|win201|splash)$";
-        }
-        {
-          name = "jetbrains-splash-size-640x400";
-          size = "640 400";
-          "match:class" = "^(.*jetbrains.*)$";
-          "match:title" = "^(splash)$";
-        }
-
-        # xwaylandvideobridge: invisible + disable effects + no focus
-        {
-          name = "xwaylandvideobridge-invisible-no-input-no-effects";
-          opacity = "0.0 override 0.0 override";
-          no_anim = "on";
-          no_focus = "on";
-          no_initial_focus = "on";
-          no_blur = "on";
-          no_shadow = "on";
-          "match:class" = "^(xwaylandvideobridge)$";
-        }
-
-        # Fullscreen: border color
-        {
-          name = "fullscreen-border-color-accent";
-          border_color = "rgb(e76365) rgb(e76365)";
-          "match:fullscreen" = "1";
-        }
-
-        # Dropdown terminal -> special workspace
-        {
-          name = "kitty-dropdown-to-special-terminal-workspace";
-          workspace = "special:terminal";
-          "match:class" = "(kitty-dropdown)";
+          _args = [
+            "SUPER + T"
+            (lib.generators.mkLuaInline "function() hl.exec_cmd(\"${pkgs.vicinae}/bin/vicinae vicinae://extensions/vicinae/wm/switch-windows\") end")
+          ];
         }
       ];
 
-      layerrule = [
-        {
-          name = "gtk_layer_shell_anyrun_blur";
-          blur = "on";
-          ignore_alpha = 0;
-          "match:namespace" = "^(gtk-layer-shell|anyrun|ashell-main-layer)$";
-        }
-        {
-          name = "vicinae_blur";
-          blur = "on";
-          blur_popups = "on";
-          ignore_alpha = 0.8;
-          no_anim = true;
-          "match:namespace" = "vicinae";
-        }
-        {
-          name = "notifications_blur";
-          blur = "on";
-          blur_popups = "on";
-          ignore_alpha = 0;
-          "match:namespace" = "notifications";
-        }
-        "blur on, match:namespace launcher"
-      ];
+      # exec-once = [
+      #   "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
+      #   # "${pkgs.wl-clipboard}/bin/wl-paste --type text --watch cliphist store"
+      #   # "${pkgs.wl-clipboard}/bin/wl-paste --type image --watch cliphist store"
+      #   # "${waybar-wrapper}/bin/waybar-wrapper"
+      #   # "hyprlauncher -d"
+      #   "${pkgs.vicinae}/bin/vicinae server"
+      #   "thunar --daemon"
+      #   # "${pkgs.networkmanagerapplet}/bin/nm-applet --indicator"
+      #   # "hyprswitch init --show-title --custom-css ${config.xdg.configHome}/hyprswitch/style.css &"
+      # ];
+
+      # monitor = [
+      #   # "desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675,3840x1600@144,1200x160,1.25"
+      #   # "desc:Dell Inc. DELL U2415 7MT0167B2YNL,1920x1200@60,0x0,auto,transform,1"
+      #   # "desc:AOC 28E850,disable"
+      # ];
+
+      # env = [
+      #   "LIBVA_DRIVER_NAME,nvidia"
+      #   "XDG_SESSION_TYPE,wayland"
+      #   "GBM_BACKEND,nvidia-drm"
+      #   "__GLX_VENDOR_LIBRARY_NAME,nvidia"
+      #   "WLR_NO_HARDWARE_CURSORS,1"
+      #   "GTK_THEME,rose-pine"
+      #   "XMODIFIERS,\"\""
+      #   "XCURSOR_SIZE,24"
+      #   "XCURSOR_THEME,Bibata-Modern-Classic"
+      #   "HYPRCURSOR_SIZE,24"
+      #   "HYPRCURSOR_THEME,Bibata-Modern-Classic"
+      # ];
+
+      # input = {
+      #   kb_layout = "us";
+      #   kb_options = "compose:ralt";
+      #   # kb_variant = "intl";
+      #   repeat_rate = 60;
+      #   repeat_delay = 250;
+      #   follow_mouse = 2;
+      #
+      #   touchpad = {
+      #     natural_scroll = false;
+      #   };
+      #
+      #   sensitivity = 0;
+      #   accel_profile = "flat";
+      # };
+
+      # device = [
+      #   {
+      #     name = "at-translated-set-2-keyboard";
+      #     kb_options = "caps:swapescape";
+      #     kb_variant = "intl";
+      #   }
+      #   {
+      #     name = "microsoft-wired-keyboard-400";
+      #     kb_options = "caps:swapescape";
+      #     kb_variant = "intl";
+      #   }
+      # ];
+
+      # workspace = [
+      #   # "1, monitor:desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675, persistent:true, default:true"
+      #   # "2, monitor:desc:Dell Inc. DELL U2415 7MT0167B2YNL, persistent:true, default:true, layoutopt:orientation:top"
+      #   # "3, monitor:desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675, persistent:true, default:false"
+      #   # "4, monitor:desc:Dell Inc. DELL U2415 7MT0167B2YNL, persistent:true, default:false, layoutopt:orientation:top"
+      #   # "5, monitor:desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675, persistent:true, default:false"
+      #   # "6, monitor:desc:Dell Inc. DELL U2415 7MT0167B2YNL, persistent:true, default:false, layoutopt:orientation:top"
+      #   # "7, monitor:desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675, persistent:true, default:false"
+      #   # "8, monitor:desc:Dell Inc. DELL U2415 7MT0167B2YNL, persistent:true, default:false, layoutopt:orientation:top"
+      #   # "9, monitor:desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675, persistent:true, default:false"
+      #   # "10, monitor:desc:Dell Inc. DELL U2415 7MT0167B2YNL, persistent:true, default:false, layoutopt:orientation:top"
+      #   # "11, monitor:desc:AOC 28E850, persistent:true, default:true"
+      # ];
+
+      # general = {
+      #   gaps_in = 5;
+      #   gaps_out = 5;
+      #   border_size = 2;
+      #   "col.active_border" = "rgb(${colors.background}) rgb(${colors.color8}) 270deg";
+      #   "col.inactive_border" = "rgb(${colors.contrast}) rgb(${colors.color4}) 270deg";
+      #   # group borders
+      #   # "no_border_on_floating" = false;
+      #   layout = "master";
+      #   # no_cursor_warps = true;
+      # };
+
+      # source = [
+      #   "~/.config/hypr/tests.conf"
+      #   "~/.config/hypr/monitors.conf"
+      # ];
+
+      # group = {
+      #   # "col.border_active" = "rgb(${colors.color5})";
+      #   # "col.border_inactive" = "rgb(${colors.contrast})";
+      # };
+      # debug = {
+      #   disable_logs = false;
+      # };
+
+      # misc = {
+      #   disable_hyprland_logo = true;
+      #   focus_on_activate = true;
+      # };
+      #
+      # xwayland = {
+      #   force_zero_scaling = true;
+      # };
+
+      # decoration = {
+      #   rounding = 5;
+      #   blur = {
+      #     size = 6;
+      #     passes = 3;
+      #     new_optimizations = true;
+      #     ignore_opacity = true;
+      #     noise = "0.1";
+      #     contrast = "1.1";
+      #     brightness = "1.2";
+      #     xray = true;
+      #   };
+      #
+      #   shadow = {
+      #     enabled = true;
+      #     ignore_window = true;
+      #     offset = "0 8";
+      #     range = 50;
+      #     render_power = 3;
+      #     color = "rgba(00000099)";
+      #   };
+      # };
+
+      # animations = {
+      #   enabled = true;
+      #   bezier = [
+      #     "wind, 0.05, 0.9, 0.1, 1.05"
+      #     "winIn, 0.1, 1.1, 0.1, 1.1"
+      #     "winOut, 0.3, -0.3, 0, 1"
+      #     "liner, 1, 1, 1, 1"
+      #   ];
+      #
+      #   animation = [
+      #     "windows, 1, 6, wind, slide"
+      #     "windowsIn, 1, 6, winIn, slide"
+      #     "windowsOut, 1, 5, winOut, slide"
+      #     "windowsMove, 1, 5, wind, slide"
+      #     "border, 1, 1, liner"
+      #     "borderangle, 1, 30, liner, loop"
+      #     "fade, 1, 10, default"
+      #     "workspaces, 1, 3, wind"
+      #   ];
+      # };
+
+      # dwindle = {
+      #   pseudotile = true;
+      #   preserve_split = true;
+      # };
+      #
+      # master = {
+      #   new_status = "slave";
+      #   mfact = 0.66;
+      # };
+
+      # binds = {
+      #   movefocus_cycles_fullscreen = true;
+      # };
+
+      # bind = [
+      #   "SUPER + Q, exec, kitty"
+      #   # "SUPER, C, killactive,"
+      #   # "SUPER, E, exec, Thunar"
+      #   # "SUPER, F, fullscreen,"
+      #   # "SUPER, M, fullscreen, 1"
+      #   # "SUPER SHIFT, F, fullscreenstate, -1, 2"
+      #   # "SUPER, S, layoutmsg, swapwithmaster master"
+      #   # # "SUPER, V, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy && wtype -M ctrl -M shift v -m ctrl -m shift"
+      #   # "SUPER, V, exec, vicinae vicinae://extensions/vicinae/clipboard/history"
+      #   # "SUPER ALT, C, exec, hyprpicker -a --no-fancy -r"
+      #   # "SUPER, period, exec, rofi -modi 'emoji:rofimoji' -show emoji | wl-copy"
+      #   # "SUPER, W, layoutmsg, toggle split"
+      #   # # "SUPER, Space, exec, rofi -show drun"
+      #   # "SUPER SHIFT, R, exec, hyprdispatch"
+      #   # "SUPER, P, togglefloating,"
+      #   # "SUPER SHIFT, P, pin,"
+      #   # "SUPER, J, togglesplit, # dwindle"
+      #   # "SUPER, L, exec, loginctl lock-session"
+      #   # "SUPER, left, movefocus, l"
+      #   # "SUPER, right, movefocus, r"
+      #   # "SUPER, up, movefocus, u"
+      #   # "SUPER, down, movefocus, d"
+      #   # "SUPER, 1, workspace, 1"
+      #   # "SUPER, 2, workspace, 2"
+      #   # "SUPER, 3, workspace, 3"
+      #   # "SUPER, 4, workspace, 4"
+      #   # "SUPER, 5, workspace, 5"
+      #   # "SUPER, 6, workspace, 6"
+      #   # "SUPER, 7, workspace, 7"
+      #   # "SUPER, 8, workspace, 8"
+      #   # "SUPER, 9, workspace, 9"
+      #   # "SUPER, 0, workspace, 10"
+      #   # "SUPER SHIFT, 1, movetoworkspace, 1"
+      #   # "SUPER SHIFT, 2, movetoworkspace, 2"
+      #   # "SUPER SHIFT, 3, movetoworkspace, 3"
+      #   # "SUPER SHIFT, 4, movetoworkspace, 4"
+      #   # "SUPER SHIFT, 5, movetoworkspace, 5"
+      #   # "SUPER SHIFT, 6, movetoworkspace, 6"
+      #   # "SUPER SHIFT, 7, movetoworkspace, 7"
+      #   # "SUPER SHIFT, 8, movetoworkspace, 8"
+      #   # "SUPER SHIFT, 9, movetoworkspace, 9"
+      #   # "SUPER SHIFT, 0, movetoworkspace, 10"
+      #   # "SUPER, mouse_down, workspace, e+1"
+      #   # "SUPER, mouse_up, workspace, e-1"
+      #   # "SUPER CTRL, B, tagwindow, pin:bbrain"
+      #   # "SUPER CTRL, W, tagwindow, pin:work"
+      #   # ",Print, exec, slurp | grim -g - - | wl-copy"
+      #   # "SHIFT, Print, exec, hyprctl -j activewindow | jq -r '\"\\(.at[0]),\\(.at[1]) \\(.size[0])x\\(.size[1])\"' | grim -g - - | wl-copy"
+      #   # "CTRL, Print, exec, ${screenrecorder}/bin/screenrecorder region"
+      #   # "SUPER CTRL ALT SHIFT, DELETE, exit,"
+      #   # "CTRL ALT, DELETE, exec, wlogout -p layer-shell"
+      #   # # "SUPER, grave, hyprexpo:expo, toggle"
+      #   # "SUPER, Space, exec, ${pkgs.vicinae}/bin/vicinae toggle"
+      #   # "SUPER, T, exec, ${pkgs.vicinae}/bin/vicinae vicinae://extensions/vicinae/wm/switch-windows"
+      # ];
+      #
+      # bindm = [
+      #   "SUPER, mouse:272, movewindow"
+      #   "SUPER, mouse:273, resizewindow"
+      # ];
+
+      # windowrule = [
+      #   # Notion: prevent fullscreen
+      #   {
+      #     name = "notion-no-fullscreen";
+      #     fullscreen_state = "-1 2";
+      #     "match:title" = "^(notion|notion-calendar)$";
+      #   }
+      #
+      #   # Terminals: opacity
+      #   {
+      #     name = "terminal-opacity-90";
+      #     opacity = "0.90 0.90";
+      #     "match:class" = "^(org.wezfurlong.wezterm|Alacritty)$";
+      #   }
+      #
+      #   # system monitor: opacity
+      #   {
+      #     name = "gnome-system-monitor-opacity-100";
+      #     opacity = "1 1";
+      #     "match:class" = "^(org.gnome.SystemMonitor)$";
+      #   }
+      #
+      #   # Browsers: opacity (+ optional idle inhibit on fullscreen)
+      #   {
+      #     name = "brave-opacity-90";
+      #     opacity = "0.90 0.90";
+      #     "match:class" = "^(Brave-browser|brave-browser)$";
+      #   }
+      #   {
+      #     name = "brave-inhibit-idle-on-fullscreen";
+      #     idle_inhibit = "fullscreen";
+      #     "match:class" = "^(Brave-browser|brave-browser)$";
+      #   }
+      #   {
+      #     name = "firefox-zen-opacity-95-inhibit-idle-on-fullscreen";
+      #     opacity = "0.95 0.95";
+      #     idle_inhibit = "fullscreen";
+      #     "match:class" = "^(firefox|zen)$";
+      #   }
+      #
+      #   # Steam: opacity
+      #   {
+      #     name = "steam-opacity-80";
+      #     opacity = "0.80 0.80";
+      #     "match:class" = "^(Steam|steam|steamwebhelper)$";
+      #   }
+      #
+      #   # Spotify: opacity
+      #   {
+      #     name = "spotify-opacity-80";
+      #     opacity = "0.80 0.80";
+      #     "match:class" = "^(Spotify)$";
+      #   }
+      #
+      #   # VS Code: opacity
+      #   {
+      #     name = "vscode-opacity-95-90";
+      #     opacity = "0.95 0.90";
+      #     "match:class" = "^(Code|code-url-handler)$";
+      #   }
+      #
+      #   # File/tools: opacity
+      #   {
+      #     name = "file-tools-opacity-80";
+      #     opacity = "0.80 0.80";
+      #     "match:class" = "^(thunar|file-roller|nwg-look|qt5ct)$";
+      #   }
+      #
+      #   # Chat apps: opacity (discord/webcord/telegram)
+      #   {
+      #     name = "chat-apps-opacity";
+      #     opacity = "0.80 0.80";
+      #     "match:class" = "^(discord|org.telegram.desktop)$";
+      #   }
+      #   {
+      #     name = "webcord-opacity-100";
+      #     opacity = "1 1";
+      #     "match:class" = "^(WebCord)$";
+      #   }
+      #
+      #   # Utility dialogs: float + opacity
+      #   {
+      #     name = "pavucontrol-float-opacity-80-70";
+      #     opacity = "0.80 0.70";
+      #     float = "on";
+      #     "match:class" = "^(pavucontrol)$";
+      #   }
+      #   {
+      #     name = "polkit-agent-float-opacity-80-70";
+      #     opacity = "0.80 0.70";
+      #     float = "on";
+      #     "match:class" = "^(org.kde.polkit-kde-authentication-agent-1)$";
+      #   }
+      #
+      #   # Spotify (title) -> workspace 9 silent + tile + opacity
+      #   # (kept separate because it's more specific and sets workspace/tile)
+      #   {
+      #     name = "spotify-title-workspace-9-silent-tile-opacity-80";
+      #     opacity = "0.80 0.80";
+      #     tile = "on";
+      #     workspace = "9 silent";
+      #     "match:title" = "^(Spotify)$";
+      #   }
+      #
+      #   # Common float-by-title rules
+      #   {
+      #     name = "float-media-viewer-and-volume-control";
+      #     float = "on";
+      #     "match:title" = "^(Media viewer|Volume Control)$";
+      #   }
+      #   {
+      #     name = "picture-in-picture-float-no-blur-opacity-100";
+      #     float = "on";
+      #     no_blur = "on";
+      #     opacity = "1.0 1.0";
+      #     "match:title" = "^(Picture-in-Picture)$";
+      #   }
+      #
+      #   # Common float-by-class rules
+      #   {
+      #     name = "float-viewnior";
+      #     float = "on";
+      #     "match:class" = "^(Viewnior)$";
+      #   }
+      #   {
+      #     name = "devtools-float";
+      #     float = "on";
+      #     "match:title" = "^(DevTools)$";
+      #   }
+      #
+      #   # Generic dialog-like windows: float
+      #   {
+      #     name = "generic-dialogs-float";
+      #     float = "on";
+      #     "match:class" = "^(file_progress|confirm|dialog|download|notification|error|confirmreset)$";
+      #   }
+      #   {
+      #     name = "common-dialog-titles-float";
+      #     float = "on";
+      #     "match:title" = "^(Open File|branchdialog|Confirm to replace files|File Operation Progress)$";
+      #   }
+      #
+      #   # Qalculate: float (by title or class)
+      #   # {
+      #   #   name = "qalculate-float";
+      #   #   float = "on";
+      #   #   "match:title" = "Qalculate!";
+      #   # }
+      #   {
+      #     name = "qalculate-qt-float";
+      #     float = "on";
+      #     "match:class" = "io.github.Qalculate.qalculate-qt";
+      #   }
+      #   {
+      #     name = "openvpn3-indicator";
+      #     float = "on";
+      #     "match:class" = "^(.openvpn3-indicator.*)$";
+      #   }
+      #
+      #   # Bluetooth manager: float
+      #   {
+      #     name = "blueman-manager-float";
+      #     float = "on";
+      #     "match:class" = "^(.blueman-manager-wrapped)$";
+      #   }
+      #
+      #   # Shadow rule
+      #   {
+      #     name = "no-shadow-on-non-floating-windows";
+      #     no_shadow = "on";
+      #     "match:float" = "0";
+      #   }
+      #
+      #   # Discord/WebCord by title -> workspace 4
+      #   {
+      #     name = "discord-webcord-to-workspace-4";
+      #     workspace = "4";
+      #     "match:title" = "^(.*(Disc|WebC)ord.*)$";
+      #   }
+      #
+      #   # Firefox/Zen -> workspace 2 (specifically main Firefox title)
+      #   {
+      #     name = "firefox-zen-to-workspace-2-firefox-title";
+      #     workspace = "2";
+      #     "match:class" = "^(firefox|zen)$";
+      #     "match:title" = "^(Mozilla Firefox)$";
+      #   }
+      #
+      #   # Avatar app: workspace 8 + fullscreen
+      #   {
+      #     name = "avatar-app-fullscreen-to-workspace-8";
+      #     workspace = "8";
+      #     fullscreen = "on";
+      #     "match:initial_class" = "^(.*com.jumbomana.avatar.*)$";
+      #   }
+      #
+      #   # Media players / exe: inhibit idle on focus
+      #   {
+      #     name = "idle-inhibit-on-focus-mpv-and-windows-exe";
+      #     idle_inhibit = "focus";
+      #     "match:class" = "^(mpv|.+exe)$";
+      #   }
+      #
+      #   # YouTube in Firefox/Zen: inhibit idle on focus
+      #   {
+      #     name = "idle-inhibit-on-focus-youtube-in-firefox-zen";
+      #     idle_inhibit = "focus";
+      #     "match:class" = "^(firefox|zen)$";
+      #     "match:title" = "^(.*YouTube.*)$";
+      #   }
+      #
+      #   # JetBrains: center selected dialogs/splash windows
+      #   {
+      #     name = "jetbrains-center-confirm-open-splash";
+      #     center = "on";
+      #     "match:class" = "^(.*jetbrains.*)$";
+      #     "match:title" = "^(Confirm Exit|Open Project|win424|win201|splash)$";
+      #   }
+      #   {
+      #     name = "jetbrains-splash-size-640x400";
+      #     size = "640 400";
+      #     "match:class" = "^(.*jetbrains.*)$";
+      #     "match:title" = "^(splash)$";
+      #   }
+      #
+      #   # xwaylandvideobridge: invisible + disable effects + no focus
+      #   {
+      #     name = "xwaylandvideobridge-invisible-no-input-no-effects";
+      #     opacity = "0.0 override 0.0 override";
+      #     no_anim = "on";
+      #     no_focus = "on";
+      #     no_initial_focus = "on";
+      #     no_blur = "on";
+      #     no_shadow = "on";
+      #     "match:class" = "^(xwaylandvideobridge)$";
+      #   }
+      #
+      #   # Fullscreen: border color
+      #   {
+      #     name = "fullscreen-border-color-accent";
+      #     border_color = "rgb(e76365) rgb(e76365)";
+      #     "match:fullscreen" = "1";
+      #   }
+      #
+      #   # Dropdown terminal -> special workspace
+      #   {
+      #     name = "kitty-dropdown-to-special-terminal-workspace";
+      #     workspace = "special:terminal";
+      #     "match:class" = "(kitty-dropdown)";
+      #   }
+      # ];
+
+      #   layerrule = [
+      #     {
+      #       name = "gtk_layer_shell_anyrun_blur";
+      #       blur = "on";
+      #       ignore_alpha = 0;
+      #       "match:namespace" = "^(gtk-layer-shell|anyrun|ashell-main-layer)$";
+      #     }
+      #     {
+      #       name = "vicinae_blur";
+      #       blur = "on";
+      #       blur_popups = "on";
+      #       ignore_alpha = 0.8;
+      #       no_anim = true;
+      #       "match:namespace" = "vicinae";
+      #     }
+      #     {
+      #       name = "notifications_blur";
+      #       blur = "on";
+      #       blur_popups = "on";
+      #       ignore_alpha = 0;
+      #       "match:namespace" = "notifications";
+      #     }
+      #     "blur on, match:namespace launcher"
+      #   ];
     };
     extraConfig = "";
   };

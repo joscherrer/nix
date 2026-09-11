@@ -17,7 +17,7 @@ let
   browser = "zen.desktop";
 
   start-kitty-dropdown = ''hyprctl clients -j | jq -e '.[] | select(.class == "kitty-dropdown")' || kitty --app-id kitty-dropdown'';
-  move-kitty-dropdown = "hyprctl dispatch movetoworkspace special:terminal,class:kitty-dropdown";
+  move-kitty-dropdown = ''hyprctl dispatch 'hl.dsp.movetoworkspace("special:terminal,class:kitty-dropdown")' '';
   toggle-browser = "";
 in
 {
@@ -28,6 +28,22 @@ in
 
   home.username = lib.mkDefault "jscherrer";
   home.homeDirectory = lib.mkDefault "/home/jscherrer";
+
+  home.file.".local/share/applications/aws-prod5.desktop".text = ''
+    [Desktop Entry]
+    Version=1.0
+    Type=Application
+    Name=AWS PROD5
+    Comment=AWS PROD5
+    Exec=${pkgs.floorp-bin}/bin/floorp --name aws-prod5 -P aws-prod5 --start-ssb "{6d276e92-e8d7-419d-ad73-9c5049b48f18}"
+    Terminal=false
+    Categories=Network;WebBrowser;
+    StartupNotify=true
+    StartupWMClass=aws-prod5
+    X-MultipleArgs=false
+    X-Floorp-StartUrl=https://ssoins-6656bd05da3e5368.portal.eu-west-3.app.aws/#/console?account_id=636017850287&role_name=AdministratorAccess
+    X-Floorp-Id={6d276e92-e8d7-419d-ad73-9c5049b48f18}
+  '';
 
   # services.gnome-keyring = {
   #   enable = true;
@@ -46,7 +62,6 @@ in
 
   services.ssh-agent = {
     enable = true;
-    enableZshIntegration = true;
   };
 
   programs.git = {
@@ -105,88 +120,95 @@ in
 
   wayland.windowManager.hyprland = {
     settings = {
-      exec-once = [
-        ''systemd-inhibit --who="Hyprland config" --why="wlogout keybind" --what=handle-power-key --mode=block sleep infinity & echo $! > /tmp/.hyprland-systemd-inhibit''
-        "${pkgs.openvpn3-indicator}/bin/openvpn3-indicator"
-      ];
 
-      exec-shutdown = [
-        ''kill -9 "$(cat /tmp/.hyprland-systemd-inhibit)"''
-      ];
+      on = {
+        _args = [
+          "hyprland.start"
+          (lib.generators.mkLuaInline "function() hl.exec_cmd(\"dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP\") end")
+        ];
+      };
+      # exec-once = [
+      #   ''systemd-inhibit --who="Hyprland config" --why="wlogout keybind" --what=handle-power-key --mode=block sleep infinity & echo "$!" > /tmp/.hyprland-systemd-inhibit''
+      #   "${pkgs.openvpn3-indicator}/bin/openvpn3-indicator"
+      # ];
 
-      bind = [
-        ",XF86PowerOff, exec, systemctl suspend"
-      ];
+      # exec-shutdown = [
+      #   ''kill -9 "$(cat /tmp/.hyprland-systemd-inhibit)"''
+      # ];
 
-      bindl = [
-        ",switch:on:Lid Switch, exec, hyprctl keyword monitor 'eDP-1, disable' && brightnessctl set 0% --device='tpacpi::kbd_backlight' && sudo systemctl restart ipsec.service"
-        ",switch:off:Lid Switch, exec, hyprctl keyword monitor 'eDP-1, 1920x1200, 0x0, 1.2' && brightnessctl set 100% --device='tpacpi::kbd_backlight' && brightnessctl set 70% --device='amdgpu_bl1'"
-      ];
+      # bind = [
+      #   ",XF86PowerOff, exec, systemctl suspend"
+      # ];
+      #
+      # bindl = [
+      #   ",switch:on:Lid Switch, exec, hyprctl keyword monitor 'eDP-1, disable' && brightnessctl set 0% --device='tpacpi::kbd_backlight' && sudo systemctl restart ipsec.service"
+      #   ",switch:off:Lid Switch, exec, hyprctl keyword monitor 'eDP-1, 1920x1200, 0x0, 1.2' && brightnessctl set 100% --device='tpacpi::kbd_backlight' && brightnessctl set 70% --device='amdgpu_bl1'"
+      # ];
+      #
+      # bindel = [
+      #   ",XF86MonBrightnessUp, exec, brightnessctl set +10% --device='amdgpu_bl1'"
+      #   ",XF86MonBrightnessDown, exec, brightnessctl set 10%- --device='amdgpu_bl1'"
+      #   ",XF86AudioRaiseVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"
+      #   ",XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+      #   ",XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+      # ];
 
-      bindel = [
-        ",XF86MonBrightnessUp, exec, brightnessctl set +10% --device='amdgpu_bl1'"
-        ",XF86MonBrightnessDown, exec, brightnessctl set 10%- --device='amdgpu_bl1'"
-        ",XF86AudioRaiseVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"
-        ",XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
-        ",XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
-      ];
+      # monitor = [
+      #   "${mon1},1920x1200,0x0,1"
+      #   "${homemon3},1920x1200@60,1920x0,auto,transform,1"
+      #   "${homemon2},3840x1600@60,auto-center-right,1"
+      #
+      #   "${workmon3},2560x1440,1920x0,auto,transform,1"
+      #   "${workmon2},2560x1440,auto-center-right,1"
+      #   # ", preferred, 0x0, 1"
+      #   # ", preferred, auto, 1, mirror, eDP-1"
+      # ];
 
-      monitor = [
-        "${mon1},1920x1200,0x0,1"
-        "${homemon3},1920x1200@60,1920x0,auto,transform,1"
-        "${homemon2},3840x1600@60,auto-center-right,1"
+      # workspace = [
+      #   "1, monitor:${workmon2}, persistent:true, default:true"
+      #   "2, monitor:${workmon3}, persistent:true, default:true, layoutopt:orientation:top"
+      #   "3, monitor:${workmon2}, persistent:true, default:false"
+      #   "4, monitor:${workmon3}, persistent:true, default:false, layoutopt:orientation:top"
+      #   "5, monitor:${workmon2}, persistent:true, default:false"
+      #   "6, monitor:${workmon3}, persistent:true, default:false, layoutopt:orientation:top"
+      #   "7, monitor:${workmon2}, persistent:true, default:false"
+      #   "8, monitor:${workmon3}, persistent:true, default:false, layoutopt:orientation:top"
+      #   "9, monitor:${workmon2}, persistent:true, default:false"
+      #   "10, monitor:${workmon3}, persistent:true, default:false, layoutopt:orientation:top"
+      #   # "1, monitor:${homemon2}, persistent:true, default:true"
+      #   # "2, monitor:${homemon3}, persistent:true, default:true, layoutopt:orientation:top"
+      #   # "3, monitor:${homemon2}, persistent:true, default:false"
+      #   # "4, monitor:${homemon3}, persistent:true, default:false, layoutopt:orientation:top"
+      #   # "5, monitor:${homemon2}, persistent:true, default:false"
+      #   # "6, monitor:${homemon3}, persistent:true, default:false, layoutopt:orientation:top"
+      #   # "7, monitor:${homemon2}, persistent:true, default:false"
+      #   # "8, monitor:${homemon3}, persistent:true, default:false, layoutopt:orientation:top"
+      #   # "9, monitor:${homemon2}, persistent:true, default:false"
+      #   # "10, monitor:${homemon3}, persistent:true, default:false, layoutopt:orientation:top"
+      # ];
 
-        # "${workmon3},2560x1440,1920x0,auto,transform,1"
-        # "${workmon2},2560x1440,auto-center-right,1"
-        # ", preferred, 0x0, 1"
-        # ", preferred, auto, 1, mirror, eDP-1"
-      ];
-
-      workspace = [
-        # "1, monitor:${workmon2}, persistent:true, default:true"
-        # "2, monitor:${workmon3}, persistent:true, default:true, layoutopt:orientation:top"
-        # "3, monitor:${workmon2}, persistent:true, default:false"
-        # "4, monitor:${workmon3}, persistent:true, default:false, layoutopt:orientation:top"
-        # "5, monitor:${workmon2}, persistent:true, default:false"
-        # "6, monitor:${workmon3}, persistent:true, default:false, layoutopt:orientation:top"
-        # "7, monitor:${workmon2}, persistent:true, default:false"
-        # "8, monitor:${workmon3}, persistent:true, default:false, layoutopt:orientation:top"
-        # "9, monitor:${workmon2}, persistent:true, default:false"
-        # "10, monitor:${workmon3}, persistent:true, default:false, layoutopt:orientation:top"
-        "1, monitor:${homemon2}, persistent:true, default:true"
-        "2, monitor:${homemon3}, persistent:true, default:true, layoutopt:orientation:top"
-        "3, monitor:${homemon2}, persistent:true, default:false"
-        "4, monitor:${homemon3}, persistent:true, default:false, layoutopt:orientation:top"
-        "5, monitor:${homemon2}, persistent:true, default:false"
-        "6, monitor:${homemon3}, persistent:true, default:false, layoutopt:orientation:top"
-        "7, monitor:${homemon2}, persistent:true, default:false"
-        "8, monitor:${homemon3}, persistent:true, default:false, layoutopt:orientation:top"
-        "9, monitor:${homemon2}, persistent:true, default:false"
-        "10, monitor:${homemon3}, persistent:true, default:false, layoutopt:orientation:top"
-      ];
-
-      windowrule = [
-        {
-          name = "gmail workspace 2";
-          workspace = "2";
-          "match:initial_title" = "^(Gmail)$";
-        }
-        {
-          name = "calendar workspace 4";
-          workspace = "4";
-          "match:initial_title" = "^(Google Calendar)$";
-        }
-        {
-          name = "chat workspace 6";
-          workspace = "6";
-          "match:initial_title" = "^(Google Chat)$";
-        }
-        {
-          name = "terminal dropdown";
-          workspace = "special:terminal";
-          "match:class" = "(kitty-dropdown)";
-        }
-      ];
+      # windowrule = [
+      #   {
+      #     name = "gmail workspace 2";
+      #     workspace = "2";
+      #     "match:initial_title" = "^(Gmail)$";
+      #   }
+      #   {
+      #     name = "calendar workspace 4";
+      #     workspace = "4";
+      #     "match:initial_title" = "^(Google Calendar)$";
+      #   }
+      #   {
+      #     name = "chat workspace 6";
+      #     workspace = "6";
+      #     "match:initial_title" = "^(Google Chat)$";
+      #   }
+      #   {
+      #     name = "terminal dropdown";
+      #     workspace = "special:terminal";
+      #     "match:class" = "(kitty-dropdown)";
+      #   }
+      # ];
 
     };
   };

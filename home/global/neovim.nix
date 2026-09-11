@@ -35,6 +35,7 @@ in
     pkgs.unzip
     pkgs.lua-language-server
     pkgs.copilot-language-server
+    pkgs.claude-code
     # Needed for smart-open plugin
     pkgs.sqlite
     pkgs.unstable.tree-sitter

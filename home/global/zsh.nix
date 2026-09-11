@@ -21,13 +21,22 @@ let
     builtins.readFile "${inputs.self}/scripts/kubectl-fw"
   );
 
-  awsp = pkgs.writeShellScriptBin "awsp" ''
-    profile=$(aws configure list-profiles | fzf)
-    [ -n "$profile" ] && export AWS_PROFILE="$profile"
-  '';
-
   initExtra = ''
     prompt pure
+
+    precmd_ansible_log() {
+      export ANSIBLE_LOG_PATH="$HOME/.ansible/logs/ansible_$(date +%s).log"
+    }
+    add-zsh-hook precmd precmd_ansible_log
+
+    prompt_pure_precustom() {
+      if [ -n "$AWS_PROFILE" ]; then
+        psvar[22]="<$AWS_PROFILE>"
+      else
+        psvar[22]=""
+      fi
+      psvar[23]="- $(date +%H:%M:%S)"
+    }
 
     for config_file (~/.config/zsh/*.zsh(N)); do
       custom_config_file="''$HOME/.config/zsh/''${config_file:t}"
@@ -43,6 +52,9 @@ let
     complete -o nospace -C ${pkgs.awscli2}/bin/aws_completer aws
     complete -o nospace -C ${pkgs.minio-client}/bin/mc mc
     complete -o nospace -C ${pkgs.opentofu}/bin/tofu tofu
+
+    source ${pkgs.openvpn3}/share/bash-completion/completions/openvpn3
+    source ${pkgs.libsecret}/share/bash-completion/completions/secret-tool
   '';
 
   envExtra = ''
@@ -147,7 +159,6 @@ in
 
   home.packages = [
     kubectx-wrapper
-    awsp
   ];
 
   home.file.".config/zsh/keybindings.zsh".source = "${common-root}/.config/zsh/keybindings.zsh";

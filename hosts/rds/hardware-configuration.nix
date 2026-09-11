@@ -50,11 +50,15 @@
   # still possible to use this option, but it's recommended to use it in conjunction
   # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
   networking.useDHCP = lib.mkDefault true;
+  networking.firewall.enable = lib.mkForce false;
   networking.interfaces."enp195s0f0" = {
-    mtu = 1300;
+    mtu = 1500;
+  };
+  networking.interfaces."enp198s0f4u1u1" = {
+    mtu = 1500;
   };
   networking.interfaces."wlp194s0" = {
-    mtu = 1300;
+    mtu = 1500;
   };
 
   # networking.interfaces.enp198s0f3u1u2.useDHCP = lib.mkDefault true;

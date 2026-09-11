@@ -74,10 +74,10 @@ in
     enableZshIntegration = true;
     settings = {
       git = {
-        pagers = [
+        diffRenderers = [
           {
             colorArg = "always";
-            pager = "delta --dark --paging=never --line-numbers --hyperlinks --hyperlinks-file-link-format=\"lazygit-edit://{path}:{line}\"";
+            command = "delta --dark --paging=never --line-numbers --hyperlinks --hyperlinks-file-link-format=\"lazygit-edit://{path}:{line}\"";
           }
         ];
       };
@@ -124,7 +124,7 @@ in
     shellcheck
     cht-sh
     fzf
-    pure-prompt
+    pure-prompt-git
     unzip
     httpie
     curlie

@@ -5,14 +5,14 @@
 }:
 
 stdenv.mkDerivation (finalAttrs: {
-  pname = "pure-prompt";
+  pname = "pure-prompt-git";
   version = "1.28.0";
 
   src = fetchFromGitHub {
     owner = "sindresorhus";
     repo = "pure";
     rev = "v${finalAttrs.version}";
-    sha256 = "sha256-+X3JehQOKaWKz2jTfWiEUIFc2/+z81sox1dWU+jXiz8=";
+    sha256 = "sha256-4And0+06KbIsFDTNupi42yR8fa1BjHoZVi9btdYPkTg=";
   };
 
   strictDeps = true;
