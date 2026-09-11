@@ -393,6 +393,22 @@ M.add("Misc", "ToggleAutoSave", {
     keys = {},
     desc = "Toggle auto-save"
 })
+M.add("Misc", "ToggleAutoFormat", {
+    cmd = {
+        name = "ToggleAutoFormat",
+        cmd = function()
+            if vim.g.bbrain_auto_format then
+                vim.notify("Disabling auto-format")
+                vim.g.bbrain_auto_format = false
+            else
+                vim.notify("Enabling auto-format")
+                vim.g.bbrain_auto_format = true
+            end
+        end
+    },
+    keys = {},
+    desc = "Toggle auto-format"
+})
 
 M.add("View", "ToggleDapUI", {
     cmd = { name = "ToggleDapUI", cmd = function() require("dapui").toggle() end },
@@ -456,7 +472,7 @@ M.add("Actions", "ToggleFold", {
 
 M.add("Actions", "SearchWord", {
     cmd = { name = "SearchWord", cmd = require('telescope.builtin').grep_string },
-    keys = { { mode = "n", lhs = "<C-f>", opts = {} } },
+    keys = { { mode = { "n", "v" }, lhs = "<C-f>", opts = {} } },
     desc = "Search word under cursor"
 })
 

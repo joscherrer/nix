@@ -5,16 +5,16 @@ hl.bind(mainMod .. " + " .. "C", hl.dsp.window.close())
 hl.bind(mainMod .. " + " .. "E", hl.dsp.exec_cmd("Thunar"))
 hl.bind(mainMod .. " + " .. "F", hl.dsp.window.fullscreen())
 hl.bind(mainMod .. " + " .. "M", hl.dsp.window.fullscreen())
-hl.bind(mainMod .. " + " .. "SHIFT" .. " + " .. "F", hl.dsp.window.fullscreen_state(-1, 2))
+-- hl.bind(mainMod .. " + " .. "SHIFT" .. " + " .. "F", hl.dsp.window.fullscreen_state(-1, 2))
 hl.bind(mainMod .. " + " .. "S", hl.dsp.layout("swapwithmaster master"))
-hl.bind(mainMod .. " + " .. "V", hl.dsp.exec_cmd("vicinae vicinae://extensions/vicinae/clipboard/history"))
+hl.bind(mainMod .. " + " .. "V", hl.dsp.exec_cmd("vicinae vicinae://launch/clipboard/history"))
 hl.bind(mainMod .. " + " .. "ALT" .. " + " .. "C", hl.dsp.exec_cmd("hyprpicker -a --no-fancy -r"))
 hl.bind(mainMod .. " + " .. "period", hl.dsp.exec_cmd("rofi -modi 'emoji:rofimoji' -show emoji| wl-copy"))
 hl.bind(mainMod .. " + " .. "W", hl.dsp.layout("toggle split"))
 hl.bind(mainMod .. " + " .. "SHIFT" .. " + " .. "R", hl.dsp.exec_cmd("hyprdispatch"))
 hl.bind(mainMod .. " + " .. "P", hl.dsp.window.float())
 hl.bind(mainMod .. " + " .. "SHIFT" .. " + " .. "P", hl.dsp.window.pin())
-hl.bind(mainMod .. " + " .. "J", hl.dsp.layout(nil))
+-- hl.bind(mainMod .. " + " .. "J", hl.dsp.layout(nil))
 
 -- dwindle
 hl.bind(mainMod .. " + " .. "L", hl.dsp.exec_cmd("loginctl lock-session"))
@@ -44,12 +44,12 @@ hl.bind(mainMod .. " + " .. "SHIFT" .. " + " .. 9, hl.dsp.window.move({ workspac
 hl.bind(mainMod .. " + " .. "SHIFT" .. " + " .. 0, hl.dsp.window.move({ workspace = 10 }))
 hl.bind(mainMod .. " + " .. "mouse_down", hl.dsp.focus({ workspace = "e+1" }))
 hl.bind(mainMod .. " + " .. "mouse_up", hl.dsp.focus({ workspace = "e-1" }))
-hl.bind("$mainMod + CTRL + B", hl.dsp.window.tag("pin:bbrain"))
-hl.bind("$mainMod + CTRL + W", hl.dsp.window.tag("pin:work"))
-hl.bind("Print", hl.dsp.exec_cmd("slurp| grim -g--| wl-copy"))
+-- hl.bind(mainMod .. " + " .. "CTRL + B", hl.dsp.window.tag("pin:bbrain"))
+-- hl.bind(mainMod .. " + " .. "CTRL + W", hl.dsp.window.tag("pin:work"))
+hl.bind("Print", hl.dsp.exec_cmd("slurp | grim -g - - | wl-copy"))
 hl.bind("SHIFT" .. " + " .. "Print",
     hl.dsp.exec_cmd(
-        "hyprctl -j activewindow| jq -r ' \\(.at[0]),\\(.at[1]) \\(.size[0])x\\(.size[1]) '| grim -g--| wl-copy"))
+        "hyprctl -j activewindow | jq -r ' \\(.at[0]),\\(.at[1]) \\(.size[0])x\\(.size[1]) '| grim -g - - | wl-copy"))
 hl.bind("SUPER + CTRL + ALT + SHIFT" .. " + " .. "DELETE", hl.dsp.exit())
 hl.bind("CTRL + ALT" .. " + " .. "DELETE", hl.dsp.exec_cmd("wlogout -p layer-shell"))
 
@@ -59,13 +59,25 @@ hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("brightnessctl set 10%- --devic
 hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"), { locked = true })
 hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"), { locked = true })
 hl.bind("XF86AudioMute", hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"), { locked = true })
-hl.bind("switch:on:Lid Switch",
-    hl.dsp.exec_cmd(
-        "hyprctl keyword monitor 'eDP-1,disable' && brightnessctl set 0% --device='tpacpi::kbd_backlight' && sudo systemctl restart ipsec.service"),
-    { locked = true })
-hl.bind("switch:off:Lid Switch",
-    hl.dsp.exec_cmd(
-        "hyprctl keyword monitor 'eDP-1,1920x1200,0x0,1.2' && brightnessctl set 100% --device='tpacpi::kbd_backlight' && brightnessctl set 70% --device='amdgpu_bl1'"),
-    { locked = true })
+
+hl.bind(
+    "switch:on:Lid Switch",
+    function()
+        hl.monitor({ output = "eDP-1", disabled = true })
+        hl.dsp.exec_cmd("brightnessctl set 0% --device='tpacpi::kbd_backlight'")
+        hl.dsp.exec_cmd("sudo systemctl restart ipsec.service")
+    end,
+    { locked = true }
+)
+
+hl.bind(
+    "switch:off:Lid Switch",
+    function()
+        hl.monitor({ output = "eDP-1", disabled = false, mode = "1920x1200", position = "0x0", scale = 1.2 })
+        hl.dsp.exec_cmd("brightnessctl set 100% --device='tpacpi::kbd_backlight'")
+        hl.dsp.exec_cmd("brightnessctl set 70% --device='amdgpu_bl1'")
+    end,
+    { locked = true }
+)
 hl.bind(mainMod .. " + " .. "mouse:272", hl.dsp.window.drag(), { mouse = true })
 hl.bind(mainMod .. " + " .. "mouse:273", hl.dsp.window.resize(), { mouse = true })

@@ -1,9 +1,11 @@
 export HIGHLIGHT_STYLE=base16/snazzy
 
-RPROMPT='%F{white}%*'
+# RPROMPT='%F{white}%*'
 
 zstyle :prompt:pure:user color white
 zstyle :prompt:pure:host color green
+zstyle :prompt:pure:custom:prefix color yellow
+zstyle :prompt:pure:custom:suffix color white
 
 # ls colors
 autoload -U colors && colors

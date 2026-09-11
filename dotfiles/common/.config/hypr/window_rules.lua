@@ -1,30 +1,30 @@
-hl.window_rule({
-    name             = "notion-no-fullscreen",
-    match            = {
-        title = "^(notion|notion-calendar)$",
-    },
-    fullscreen_state = { -1, 2 },
-})
+-- hl.window_rule({
+--     name             = "notion-no-fullscreen",
+--     match            = {
+--         title = "^(notion|notion-calendar)$",
+--     },
+--     fullscreen_state = { -1, 2 },
+-- })
 hl.window_rule({
     name    = "terminal-opacity-90",
     match   = {
         class = "^(org.wezfurlong.wezterm|Alacritty)$",
     },
-    opacity = { 0.90, 0.90 },
+    opacity = "0.90 0.90",
 })
 hl.window_rule({
     name    = "gnome-system-monitor-opacity-100",
     match   = {
         class = "^(org.gnome.SystemMonitor)$",
     },
-    opacity = { 1, 1 },
+    opacity = "1 1",
 })
 hl.window_rule({
     name    = "brave-opacity-90",
     match   = {
         class = "^(Brave-browser|brave-browser)$",
     },
-    opacity = { 0.90, 0.90 },
+    opacity = "0.90 0.90",
 })
 hl.window_rule({
     name         = "brave-inhibit-idle-on-fullscreen",
@@ -39,49 +39,49 @@ hl.window_rule({
         class = "^(firefox|zen)$",
     },
     idle_inhibit = "fullscreen",
-    opacity      = { 0.95, 0.95 },
+    opacity      = "0.95 0.95",
 })
 hl.window_rule({
     name    = "steam-opacity-80",
     match   = {
         class = "^(Steam|steam|steamwebhelper)$",
     },
-    opacity = { 0.80, 0.80 },
+    opacity = "0.80 0.80",
 })
 hl.window_rule({
     name    = "spotify-opacity-80",
     match   = {
         class = "^(Spotify)$",
     },
-    opacity = { 0.80, 0.80 },
+    opacity = "0.80 0.80",
 })
 hl.window_rule({
     name    = "vscode-opacity-95-90",
     match   = {
         class = "^(Code|code-url-handler)$",
     },
-    opacity = { 0.95, 0.90 },
+    opacity = "0.95 0.90",
 })
 hl.window_rule({
     name    = "file-tools-opacity-80",
     match   = {
         class = "^(thunar|file-roller|nwg-look|qt5ct)$",
     },
-    opacity = { 0.80, 0.80 },
+    opacity = "0.80 0.80",
 })
 hl.window_rule({
     name    = "chat-apps-opacity",
     match   = {
         class = "^(discord|org.telegram.desktop)$",
     },
-    opacity = { 0.80, 0.80 },
+    opacity = "0.80 0.80",
 })
 hl.window_rule({
     name    = "webcord-opacity-100",
     match   = {
         class = "^(WebCord)$",
     },
-    opacity = { 1, 1 },
+    opacity = "1 1",
 })
 hl.window_rule({
     name    = "pavucontrol-float-opacity-80-70",
@@ -89,7 +89,7 @@ hl.window_rule({
         class = "^(pavucontrol)$",
     },
     float   = true,
-    opacity = { 0.80, 0.70 },
+    opacity = "0.80 0.70",
 })
 hl.window_rule({
     name    = "polkit-agent-float-opacity-80-70",
@@ -97,16 +97,16 @@ hl.window_rule({
         class = "^(org.kde.polkit-kde-authentication-agent-1)$",
     },
     float   = true,
-    opacity = { 0.80, 0.70 },
+    opacity = "0.80 0.70",
 })
 hl.window_rule({
     name      = "spotify-title-workspace-9-silent-tile-opacity-80",
     match     = {
         title = "^(Spotify)$",
     },
-    opacity   = { 0.80, 0.80 },
+    opacity   = "0.80 0.80",
     tile      = true,
-    workspace = { 9, "silent" },
+    workspace = "9 silent",
 })
 hl.window_rule({
     name  = "float-media-viewer-and-volume-control",
@@ -122,7 +122,7 @@ hl.window_rule({
     },
     float   = true,
     no_blur = true,
-    opacity = { 1.0, 1.0 },
+    opacity = "1.0 1.0",
 })
 hl.window_rule({
     name  = "float-viewnior",
@@ -185,7 +185,7 @@ hl.window_rule({
     match     = {
         title = "^(.*(Disc|WebC)ord.*)$",
     },
-    workspace = 4,
+    workspace = "4",
 })
 hl.window_rule({
     name      = "firefox-zen-to-workspace-2-firefox-title",
@@ -193,7 +193,7 @@ hl.window_rule({
         class = "^(firefox|zen)$",
         title = "^(Mozilla Firefox)$",
     },
-    workspace = 2,
+    workspace = "2",
 })
 hl.window_rule({
     name       = "avatar-app-fullscreen-to-workspace-8",
@@ -201,7 +201,7 @@ hl.window_rule({
         initial_class = "^(.*com.jumbomana.avatar.*)$",
     },
     fullscreen = true,
-    workspace  = 8,
+    workspace  = "8",
 })
 hl.window_rule({
     name         = "idle-inhibit-on-focus-mpv-and-windows-exe",
@@ -244,14 +244,14 @@ hl.window_rule({
     no_focus         = true,
     no_initial_focus = true,
     no_shadow        = true,
-    opacity          = { 0.0, "override", 0.0, "override" },
+    opacity          = "0.0 override 0.0 override",
 })
 hl.window_rule({
     name         = "fullscreen-border-color-accent",
     match        = {
         fullscreen = 1,
     },
-    border_color = { "rgb(e76365)", "rgb(e76365)" },
+    border_color = "rgb(e76365) rgb(e76365)",
 })
 hl.window_rule({
     name      = "kitty-dropdown-to-special-terminal-workspace",
@@ -265,21 +265,21 @@ hl.window_rule({
     match     = {
         initial_title = "^(Gmail)$",
     },
-    workspace = 2,
+    workspace = "2",
 })
 hl.window_rule({
     name      = "calendar workspace 4",
     match     = {
         initial_title = "^(Google Calendar)$",
     },
-    workspace = 4,
+    workspace = "4",
 })
 hl.window_rule({
     name      = "chat workspace 6",
     match     = {
         initial_title = "^(Google Chat)$",
     },
-    workspace = 6,
+    workspace = "6",
 })
 hl.window_rule({
     name      = "terminal dropdown",

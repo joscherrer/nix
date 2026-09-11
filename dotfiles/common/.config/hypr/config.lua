@@ -55,7 +55,7 @@ hl.config({
         shadow = {
             color = "rgba(00000099)",
             enabled = true,
-            ignore_window = true,
+            -- ignore_window = true,
             offset = "0 8",
             range = 50,
             render_power = 3,
@@ -64,6 +64,6 @@ hl.config({
     },
     dwindle = {
         preserve_split = true,
-        pseudotile = true,
+        -- pseudotile = true,
     },
 })

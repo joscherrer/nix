@@ -18,7 +18,7 @@ vim.lsp.enable('lua_ls')
 -- vim.lsp.enable('terraformls')
 vim.lsp.enable('tofu_ls')
 vim.lsp.enable('basedpyright')
-vim.lsp.enable('yamlls')
+-- vim.lsp.enable('yamlls')
 vim.lsp.enable('roslyn')
 -- vim.lsp.enable('csharp_ls')
 -- vim.lsp.enable('marksman')
@@ -41,6 +41,9 @@ vim.api.nvim_create_autocmd('LspAttach', {
                 group = vim.api.nvim_create_augroup('my.lsp', { clear = false }),
                 buffer = ev.buf,
                 callback = function()
+                    if vim.g.bbrain_auto_format == false then
+                        return
+                    end
                     vim.lsp.buf.format({ bufnr = ev.buf, id = client.id, timeout_ms = 1000 })
                 end
             })

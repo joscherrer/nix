@@ -11,7 +11,12 @@ function ToggleTheme()
     end
 end
 
+function PrettyMdTable(opts)
+    vim.cmd(opts.line1 .. ',' .. opts.line2 .. "!column -t -s '|' -o '|'")
+end
+
 vim.api.nvim_create_user_command('ToggleTheme', ToggleTheme, {})
+vim.api.nvim_create_user_command('PrettyMdTable', PrettyMdTable, { range = true })
 
 M.MaxTabs = {}
 
@@ -121,6 +126,9 @@ end
 
 function M.format(buffer, opts)
     opts = opts or { async = false }
+    if vim.g.bbrain_auto_format == false then
+        return
+    end
 
     local filetype = vim.api.nvim_get_option_value('filetype', { buf = buffer })
 

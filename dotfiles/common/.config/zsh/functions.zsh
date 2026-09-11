@@ -1,3 +1,11 @@
+function awssu() {
+    profile=$(aws configure list-profiles | fzf)
+    [ -n "$profile" ] && export AWS_PROFILE="$profile"
+    if !aws sts get-caller-identity >/dev/null 2>&1; then
+      exec aws sso login --profile "$AWS_PROFILE"
+    fi 
+}
+
 #
 # bat (less) with yaml highlighting
 #

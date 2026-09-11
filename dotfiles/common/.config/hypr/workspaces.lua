@@ -1,85 +1,119 @@
 local function setup_workspaces()
     local monitors = {
         home = {
-            left = "desc:Dell Inc. DELL U2415 7MT0167B2YNL",
-            right = "desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675"
+            left = {
+                monitor = "desc:Dell Inc. DELL U2415 7MT0167B2YNL",
+                layout_opts = {
+                    orientation = "top"
+                }
+            },
+            right = {
+                monitor = "desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675",
+                layout_opts = {}
+            },
         },
         work = {
-            left = "desc:Lenovo Group Limited L27qe UTP02GR9",
-            right = "desc:Lenovo Group Limited L27qe UTP02GR4"
+            left = {
+                monitor = "desc:Lenovo Group Limited L27qe UTP02GR9",
+                layout_opts = {
+                    orientation = "top"
+                }
+            },
+            right = {
+                monitor = "desc:Lenovo Group Limited L27qe UTP02GR4",
+                layout_opts = {}
+            },
+        },
+        bare = {
+            left = {
+                monitor = "eDP-1",
+                layout_opts = {}
+
+            },
+            right = {
+                monitor = "DP-1",
+                layout_opts = {}
+            },
         }
     }
 
     local selected_monitors
-    if hl.get_monitor(monitors.home.left) then
+    if hl.get_monitor(monitors.home.left.monitor) then
         selected_monitors = monitors.home
-    else
+    elseif hl.get_monitor(monitors.work.left.monitor) then
         selected_monitors = monitors.work
+    else
+        selected_monitors = monitors.bare
     end
     hl.workspace_rule({
         workspace = 1,
-        monitor = selected_monitors.right,
+        monitor = selected_monitors.right.monitor,
         persistent = true,
-        is_default = true,
+        default = true,
+        layout_opts = selected_monitors.right.layout_opts,
     })
     hl.workspace_rule({
         workspace = 2,
-        monitor = selected_monitors.left,
+        monitor = selected_monitors.left.monitor,
         persistent = true,
-        is_default = true,
-        layoutopt = "orientation:top",
+        default = true,
+        layout_opts = selected_monitors.left.layout_opts,
     })
     hl.workspace_rule({
         workspace = 3,
-        monitor = selected_monitors.right,
+        monitor = selected_monitors.right.monitor,
         persistent = true,
-        is_default = false,
+        default = false,
+        layout_opts = selected_monitors.right.layout_opts,
     })
     hl.workspace_rule({
         workspace = 4,
-        monitor = selected_monitors.left,
+        monitor = selected_monitors.left.monitor,
         persistent = true,
-        is_default = false,
-        layoutopt = "orientation:top",
+        default = false,
+        layout_opts = selected_monitors.left.layout_opts,
     })
     hl.workspace_rule({
         workspace = 5,
-        monitor = selected_monitors.right,
+        monitor = selected_monitors.right.monitor,
         persistent = true,
-        is_default = false,
+        default = false,
+        layout_opts = selected_monitors.right.layout_opts,
     })
     hl.workspace_rule({
         workspace = 6,
-        monitor = selected_monitors.left,
+        monitor = selected_monitors.left.monitor,
         persistent = true,
-        is_default = false,
-        layoutopt = "orientation:top",
+        default = false,
+        layout_opts = selected_monitors.left.layout_opts,
     })
     hl.workspace_rule({
         workspace = 7,
-        monitor = selected_monitors.right,
+        monitor = selected_monitors.right.monitor,
         persistent = true,
-        is_default = false,
+        default = false,
+        layout_opts = selected_monitors.right.layout_opts,
     })
     hl.workspace_rule({
         workspace = 8,
-        monitor = selected_monitors.left,
+        monitor = selected_monitors.left.monitor,
         persistent = true,
-        is_default = false,
-        layoutopt = "orientation:top",
+        default = false,
+        layout_opts = selected_monitors.left.layout_opts,
     })
     hl.workspace_rule({
         workspace = 9,
-        monitor = selected_monitors.right,
+        monitor = selected_monitors.right.monitor,
         persistent = true,
-        is_default = false,
+        default = false,
+        layout_opts = selected_monitors.right.layout_opts,
     })
     hl.workspace_rule({
         workspace = 10,
-        monitor = selected_monitors.left,
+        monitor = selected_monitors.left.monitor,
         persistent = true,
-        is_default = false,
-        layoutopt = "orientation:top",
+        default = false,
+        layout_opts = selected_monitors.left.layout_opts,
     })
 end
 

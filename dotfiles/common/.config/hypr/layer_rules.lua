@@ -26,5 +26,5 @@ hl.layer_rule({
     match = {
         namespace = "match:namespace launcher",
     },
-    blur = "on",
+    blur = true,
 })
