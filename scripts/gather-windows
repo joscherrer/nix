@@ -1,0 +1,32 @@
+#!/usr/bin/env python3
+
+import json
+import sh
+
+
+def main():
+    active_workspace = json.loads(sh.hyprctl("activeworkspace", "-j"))
+    target_id = active_workspace["id"]
+
+    clients = json.loads(sh.hyprctl("clients", "-j"))
+
+    to_move = [
+        client
+        for client in clients
+        if not client["pinned"] and client["workspace"]["id"] != target_id
+    ]
+
+    if not to_move:
+        print("No windows to move")
+        return
+
+    print(f"Moving {len(to_move)} window(s) to workspace {target_id}")
+    for client in to_move:
+        sh.hyprctl(
+            "dispatch",
+            f'hl.dsp.window.move({{workspace={target_id}, window="address:{client["address"]}"}})',
+        )
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+#
+# Runs as root, triggered by udev on every DRM "change" event (see
+# hosts/rds/configuration.nix). A dock replug causes exactly this kind
+# of event once the DP-MST link comes back up, but so do lots of
+# harmless things, so this only calls fix-monitors when monitors-broken
+# says an external output is actually stuck.
+set -euo pipefail
+
+user="jscherrer"
+uid=$(id -u "$user")
+runtime_dir="/run/user/$uid"
+# Old signature directories are never cleaned up across restarts, so
+# this must pick the most recently created one, not just the first.
+sig=$(ls -t "$runtime_dir/hypr" 2>/dev/null | head -n1)
+
+if [ -z "$sig" ]; then
+    echo "monitor-watchdog: no running Hyprland instance for $user, skipping"
+    exit 0
+fi
+
+run_as_user() {
+    runuser -l "$user" -c "XDG_RUNTIME_DIR='$runtime_dir' HYPRLAND_INSTANCE_SIGNATURE='$sig' $*"
+}
+
+# let the MST link settle before judging it
+sleep 5
+
+if run_as_user monitors-broken; then
+    echo "monitor-watchdog: broken output detected, running fix-monitors"
+    run_as_user fix-monitors
+else
+    echo "monitor-watchdog: monitors OK, nothing to do"
+fi

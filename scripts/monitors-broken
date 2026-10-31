@@ -1,0 +1,60 @@
+#!/usr/bin/env python3
+#
+# Exits 0 (true) if any non-laptop monitor is stuck in the known
+# aquamarine MST-reconnect desync state, 1 otherwise. See
+# scripts/fix-monitors for what actually recovers it.
+#
+# Two signatures of "stuck", both observed live on a broken dock replug:
+#   - the kernel connector is connected but its CRTC was never
+#     reattached (status=connected, enabled=disabled)
+#   - Hyprland re-lit the output but pinned it to an invalid 0x0
+#     fallback mode instead of its real EDID resolution
+
+import glob
+import json
+import sys
+
+import sh
+
+
+def connector_state(name):
+    matches = glob.glob(f"/sys/class/drm/card*-{name}")
+    if not matches:
+        return None, None
+    base = matches[0]
+    try:
+        with open(f"{base}/status") as f:
+            status = f.read().strip()
+        with open(f"{base}/enabled") as f:
+            enabled = f.read().strip()
+    except OSError:
+        return None, None
+    return status, enabled
+
+
+def main():
+    monitors = json.loads(sh.hyprctl("monitors", "all", "-j"))
+
+    broken = []
+    for monitor in monitors:
+        name = monitor["name"]
+        if name.startswith("eDP") or monitor["disabled"]:
+            continue
+
+        status, enabled = connector_state(name)
+        if status == "connected" and enabled == "disabled":
+            broken.append(f"{name}: kernel connector disabled despite being connected")
+            continue
+
+        if monitor["width"] == 0 or monitor["height"] == 0:
+            broken.append(f"{name}: stuck at invalid {monitor['width']}x{monitor['height']} mode")
+
+    if broken:
+        print("\n".join(broken))
+        sys.exit(0)
+
+    sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()

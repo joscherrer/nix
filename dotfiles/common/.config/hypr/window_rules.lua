@@ -160,6 +160,13 @@ hl.window_rule({
     float = true,
 })
 hl.window_rule({
+    name = "mspts-float",
+    match = {
+        title = "MultiSense Manufacturing Software",
+    },
+    float = true,
+})
+hl.window_rule({
     name  = "openvpn3-indicator",
     match = {
         class = "^(.openvpn3-indicator.*)$",

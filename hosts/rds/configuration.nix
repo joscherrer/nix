@@ -116,10 +116,23 @@
     enable = true;
   };
 
+  nixpkgs.config.permittedInsecurePackages = [
+    "segger-jlink-qt4-952"
+  ];
+
+  services.udev.packages = [
+    pkgs.nrf-udev
+    pkgs.segger-jlink
+  ];
+
   environment.systemPackages = with pkgs; [
     pkgs.uv
     pkgs.networkmanager-l2tp
-    # pkgs.python311
+    pkgs.nrfconnect
+    pkgs.nrfconnect-bluetooth-low-energy
+    pkgs.appimage-run
+    pkgs.segger-jlink
+    pkgs.ghidra
     (pkgs.python3.withPackages (
       ps: with ps; [
         flake8
@@ -139,6 +152,7 @@
       ]
     ))
   ];
+  nixpkgs.config.segger-jlink.acceptLicense = true;
 
   environment.sessionVariables = {
     NIXOS_OZONE_WL = "1";
@@ -150,7 +164,25 @@
   # devices so the dock's internal hubs don't power-cycle mid-resume.
   services.udev.extraRules = ''
     ACTION=="add", SUBSYSTEM=="usb", ATTR{bDeviceClass}=="09", TEST=="power/control", ATTR{power/control}="on"
+
+    # Dock/MST reconnect leaves external monitors stuck black (known
+    # aquamarine bug, see scripts/fix-monitors for details). Every DRM
+    # "change" event is a candidate for this, so kick off a oneshot
+    # watchdog that only acts if monitors-broken says something's
+    # actually stuck - see scripts/monitor-watchdog.
+    ACTION=="change", SUBSYSTEM=="drm", KERNEL=="card*", TAG+="systemd", ENV{SYSTEMD_WANTS}+="monitor-watchdog.service"
   '';
+
+  systemd.services.monitor-watchdog = {
+    description = "Recover stuck external monitors after a dock/MST reconnect";
+    path = [ pkgs.util-linux ];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = pkgs.writeShellScript "monitor-watchdog" (
+        builtins.readFile "${self}/scripts/monitor-watchdog"
+      );
+    };
+  };
 
   # Safety net for the internal panel staying black when the lid is opened
   # onto a session that already finished resuming (e.g. some other wakeup
@@ -158,25 +190,27 @@
   # closed). logind's suspend/resume D-Bus signal (which drives
   # hypridle's after_sleep_cmd) doesn't fire in that case, so hook the
   # physical lid switch directly and force the same dpms-on dispatch.
-  services.acpid = {
-    enable = true;
-    lidEventCommands = ''
-      case "$1" in
-        *open*)
-          uid=$(${pkgs.coreutils}/bin/id -u jscherrer)
-          runtime_dir="/run/user/$uid"
-          sig=$(${pkgs.coreutils}/bin/ls "$runtime_dir/hypr" 2>/dev/null | ${pkgs.coreutils}/bin/head -n1)
-          if [ -n "$sig" ]; then
-            ${pkgs.coreutils}/bin/sleep 3
-            ${pkgs.util-linux}/bin/runuser -u jscherrer -- \
-              ${pkgs.coreutils}/bin/env XDG_RUNTIME_DIR="$runtime_dir" HYPRLAND_INSTANCE_SIGNATURE="$sig" \
-              ${config.programs.hyprland.package}/bin/hyprctl dispatch 'hl.dsp.dpms("on")'
-              ${config.programs.hyprland.package}/bin/hyprctl dispatch 'hl.dsp.force_renderer_reload()'
-          fi
-          ;;
-      esac
-    '';
-  };
+  # services.acpid = {
+  #   enable = true;
+  #   lidEventCommands = ''
+  #     case "$1" in
+  #       *open*)
+  #         uid=$(${pkgs.coreutils}/bin/id -u jscherrer)
+  #         runtime_dir="/run/user/$uid"
+  #         sig=$(${pkgs.coreutils}/bin/ls "$runtime_dir/hypr" 2>/dev/null | ${pkgs.coreutils}/bin/head -n1)
+  #         if [ -n "$sig" ]; then
+  #           ${pkgs.coreutils}/bin/sleep 3
+  #           ${pkgs.util-linux}/bin/runuser -u jscherrer -- \
+  #             ${pkgs.coreutils}/bin/env XDG_RUNTIME_DIR="$runtime_dir" HYPRLAND_INSTANCE_SIGNATURE="$sig" \
+  #             ${config.programs.hyprland.package}/bin/hyprctl dispatch 'hl.dsp.dpms("on")'
+  #           ${pkgs.util-linux}/bin/runuser -u jscherrer -- \
+  #             ${pkgs.coreutils}/bin/env XDG_RUNTIME_DIR="$runtime_dir" HYPRLAND_INSTANCE_SIGNATURE="$sig" \
+  #             ${config.programs.hyprland.package}/bin/hyprctl dispatch 'hl.dsp.force_renderer_reload()'
+  #         fi
+  #         ;;
+  #     esac
+  #   '';
+  # };
 
   services.logind = {
     settings = {

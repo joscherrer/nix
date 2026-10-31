@@ -1,0 +1,78 @@
+#!/usr/bin/env python3
+#
+# Recovers external monitors stuck black after a Thunderbolt/USB-C dock
+# replug. This is a known Hyprland/aquamarine bug: aquamarine's internal
+# atomic-commit state gets desynced from the kernel DRM state on an MST
+# reconnect, and never issues a correct modeset again on its own.
+#
+# Cycling the VT forces Hyprland to drop and reacquire DRM master, which
+# makes it redo a full atomic commit for every connector - unlike a full
+# Hyprland restart, this keeps every window and the whole session intact.
+# `hyprctl reload` re-applies the real layout from monitors.lua (auto
+# placement included), but some outputs can still come back pinned to
+# an invalid 0x0 fallback mode even after that, so those (and only
+# those) get their mode explicitly re-applied as a last resort, using
+# their already-correct post-reload position/scale/transform.
+
+import json
+import time
+
+import sh
+
+
+def notify(title, body):
+    try:
+        sh.Command("notify-send")(title, body)
+    except Exception:
+        pass
+
+
+def current_vt():
+    with open("/sys/class/tty/tty0/active") as f:
+        return int(f.read().strip().lstrip("tty"))
+
+
+def cycle_vt():
+    vt = current_vt()
+    target = 6 if vt != 6 else 1
+    sh.sudo("chvt", str(target))
+    time.sleep(2)
+    sh.sudo("chvt", str(vt))
+    time.sleep(1)
+
+
+def fix_stuck_modes():
+    monitors = json.loads(sh.hyprctl("monitors", "all", "-j"))
+    for monitor in monitors:
+        if monitor["name"].startswith("eDP") or monitor["disabled"]:
+            continue
+        if monitor["width"] != 0 and monitor["height"] != 0:
+            continue
+        spec = (
+            f'hl.monitor({{output="desc:{monitor["description"]}", disabled=false, '
+            f'mode="preferred", position="{monitor["x"]}x{monitor["y"]}", '
+            f'scale={monitor["scale"]}, transform={monitor["transform"]}}})'
+        )
+        print(f"Re-applying mode for {monitor['name']} ({monitor['description']})")
+        sh.hyprctl("eval", spec)
+
+
+def restart_ashell():
+    try:
+        sh.systemctl("--user", "restart", "ashell")
+    except Exception as e:
+        print(f"Failed to restart ashell: {e}")
+
+
+def main():
+    notify("Fixing monitors", "Cycling VT, displays will blank briefly...")
+    cycle_vt()
+    sh.hyprctl("reload")
+    time.sleep(1)
+    fix_stuck_modes()
+    restart_ashell()
+    notify("Fixing monitors", "Done")
+
+
+if __name__ == "__main__":
+    main()

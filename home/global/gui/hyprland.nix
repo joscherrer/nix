@@ -112,14 +112,39 @@ let
     done
   '';
 
-  hyprdispatch = pkgs.writeScriptBin "hyprdispatch" (
-    builtins.readFile "${inputs.self}/scripts/hyprdispatch"
-  );
+  # Scripts below are plain `#!/usr/bin/env python3` files on disk (so
+  # they stay directly runnable for local testing), but that shebang
+  # resolves whatever `python3` happens to win PATH priority at
+  # runtime - which may not have `sh` installed (e.g. a plain
+  # pkgs.python311 in home.packages shadows the system one that does,
+  # since per-user packages take priority). Pin an explicit interpreter
+  # instead of trusting PATH: the real shebang below wins, and the
+  # script's own `#!/usr/bin/env python3` line just becomes an inert
+  # comment on line 2.
+  pythonWithSh = pkgs.python3.withPackages (ps: [ ps.sh ]);
+  pythonScriptBin =
+    name: path:
+    pkgs.writeScriptBin name ''
+      #!${pythonWithSh}/bin/python3
+      ${builtins.readFile path}
+    '';
+
+  hyprdispatch = pythonScriptBin "hyprdispatch" "${inputs.self}/scripts/hyprdispatch";
+
+  gather-windows = pythonScriptBin "gather-windows" "${inputs.self}/scripts/gather-windows";
+
+  fix-monitors = pythonScriptBin "fix-monitors" "${inputs.self}/scripts/fix-monitors";
+
+  monitors-broken = pythonScriptBin "monitors-broken" "${inputs.self}/scripts/monitors-broken";
 in
 rec {
   home.packages = [
     screenshot-handler
     hyprdispatch
+    gather-windows
+    fix-monitors
+    monitors-broken
+    pkgs.libnotify
     pkgs.bibata-cursors
     pkgs.hyprpicker
     toggle-win
@@ -213,7 +238,7 @@ rec {
       general = {
         lock_cmd = "pidof hyprlock || hyprlock";
         before_sleep_cmd = "loginctl lock-session";
-        after_sleep_cmd = "sleep 3 && hyprctl dispatch 'hl.dsp.force_renderer_reload()'";
+        # after_sleep_cmd = "sleep 3 && hyprctl dispatch 'hl.dsp.force_renderer_reload()'";
         # after_sleep_cmd = ''sleep 3 && hyprctl dispatch 'hl.dsp.dpms("on")'; hyprctl dispatch 'hl.dsp.force_renderer_reload()'';
       };
 
