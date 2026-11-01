@@ -1,120 +1,31 @@
+-- Workspaces 1-10 alternate right/left (odd on the right monitor, even on
+-- the left one) over the first connected set from host.lua (see
+-- base/monitors.lua). 1 and 2 are each monitor's default workspace.
+local host = package.searchpath("host", package.path) and require("host") or {}
+local sets = host.workspace_sets or {}
+
 local function setup_workspaces()
-    local monitors = {
-        home = {
-            left = {
-                monitor = "desc:Dell Inc. DELL U2415 7MT0167B2YNL",
-                layout_opts = {
-                    orientation = "top"
-                }
-            },
-            right = {
-                monitor = "desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675",
-                layout_opts = {}
-            },
-        },
-        work = {
-            left = {
-                monitor = "desc:Lenovo Group Limited L27qe UTP02GR9",
-                layout_opts = {
-                    orientation = "top"
-                }
-            },
-            right = {
-                monitor = "desc:Lenovo Group Limited L27qe UTP02GR4",
-                layout_opts = {}
-            },
-        },
-        bare = {
-            left = {
-                monitor = "eDP-1",
-                layout_opts = {}
-
-            },
-            right = {
-                monitor = "DP-1",
-                layout_opts = {}
-            },
-        }
-    }
-
-    local selected_monitors
-    if hl.get_monitor(monitors.home.left.monitor) then
-        selected_monitors = monitors.home
-    elseif hl.get_monitor(monitors.work.left.monitor) then
-        selected_monitors = monitors.work
-    else
-        selected_monitors = monitors.bare
+    local selected
+    for _, set in ipairs(sets) do
+        if hl.get_monitor(set.left.monitor) then
+            selected = set
+            break
+        end
     end
-    hl.workspace_rule({
-        workspace = 1,
-        monitor = selected_monitors.right.monitor,
-        persistent = true,
-        default = true,
-        layout_opts = selected_monitors.right.layout_opts,
-    })
-    hl.workspace_rule({
-        workspace = 2,
-        monitor = selected_monitors.left.monitor,
-        persistent = true,
-        default = true,
-        layout_opts = selected_monitors.left.layout_opts,
-    })
-    hl.workspace_rule({
-        workspace = 3,
-        monitor = selected_monitors.right.monitor,
-        persistent = true,
-        default = false,
-        layout_opts = selected_monitors.right.layout_opts,
-    })
-    hl.workspace_rule({
-        workspace = 4,
-        monitor = selected_monitors.left.monitor,
-        persistent = true,
-        default = false,
-        layout_opts = selected_monitors.left.layout_opts,
-    })
-    hl.workspace_rule({
-        workspace = 5,
-        monitor = selected_monitors.right.monitor,
-        persistent = true,
-        default = false,
-        layout_opts = selected_monitors.right.layout_opts,
-    })
-    hl.workspace_rule({
-        workspace = 6,
-        monitor = selected_monitors.left.monitor,
-        persistent = true,
-        default = false,
-        layout_opts = selected_monitors.left.layout_opts,
-    })
-    hl.workspace_rule({
-        workspace = 7,
-        monitor = selected_monitors.right.monitor,
-        persistent = true,
-        default = false,
-        layout_opts = selected_monitors.right.layout_opts,
-    })
-    hl.workspace_rule({
-        workspace = 8,
-        monitor = selected_monitors.left.monitor,
-        persistent = true,
-        default = false,
-        layout_opts = selected_monitors.left.layout_opts,
-    })
-    hl.workspace_rule({
-        workspace = 9,
-        monitor = selected_monitors.right.monitor,
-        persistent = true,
-        default = false,
-        layout_opts = selected_monitors.right.layout_opts,
-    })
-    hl.workspace_rule({
-        workspace = 10,
-        monitor = selected_monitors.left.monitor,
-        persistent = true,
-        default = false,
-        layout_opts = selected_monitors.left.layout_opts,
-    })
+    if not selected then
+        return
+    end
+
+    for ws = 1, 10 do
+        local side = (ws % 2 == 1) and selected.right or selected.left
+        hl.workspace_rule({
+            workspace = ws,
+            monitor = side.monitor,
+            persistent = true,
+            default = ws <= 2,
+            layout_opts = side.layout_opts or {},
+        })
+    end
 end
 
 setup_workspaces()

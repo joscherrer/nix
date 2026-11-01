@@ -1,64 +1,64 @@
 {
   inputs,
   lib,
-  outputs,
   config,
   pkgs,
   default,
   ...
 }:
 let
-  cage-kiosk = pkgs.writeShellScriptBin "cage-kiosk" ''
-    dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
-    exec ${pkgs.cage}/bin/cage -s -- ${pkgs.gtkgreet}/bin/gtkgreet -l -s /etc/greetd/gtkgreet.css
+  hyprland = config.programs.hyprland.package;
+  regreet = config.services.displayManager.regreet.package;
+
+  # Same base as the user session (home/global/gui/hyprland.nix): monitors,
+  # input and cursor/GPU env, plus the host's monitor layout if it has one.
+  hyprDir = "${inputs.self}/dotfiles/common/.config/hypr";
+  hostLua = "${inputs.self}/dotfiles/hosts/${config.networking.hostName}/hypr/host.lua";
+
+  greeterConfig = pkgs.writeText "greeter-hyprland.lua" ''
+    package.path = "/etc/greetd/hypr/?.lua;/etc/greetd/hypr/?/init.lua;" .. package.path
+    require("base")
+
+    hl.config({
+        misc = {
+            disable_hyprland_logo = true,
+            disable_splash_rendering = true,
+        },
+        animations = {
+            enabled = false,
+        },
+    })
+
+    -- Escape hatch if regreet hangs.
+    hl.bind("SUPER + M", hl.dsp.exit())
+
+    hl.on("hyprland.start", function()
+        hl.exec_cmd("systemd-cat --identifier=regreet ${regreet}/bin/regreet; ${hyprland}/bin/hyprctl dispatch 'hl.dsp.exit()'")
+    end)
   '';
 
-  hyprland-kiosk = pkgs.writeShellScriptBin "hyprland-kiosk" ''
-    export XDG_SESSION_TYPE=wayland
-    export HYPRLAND_LOG_WLR=1
-    export XCURSOR_THEME=Bibata-Modern-Classic
-    export XCURSOR_SIZE=24
-    # export GTK_IM_MODULE=fcitx
-    # export QT_IM_MODULE=fcitx
-    # export XMODIFIERS=@im=fcitx
-    # export SDL_IM_MODULE=fcitx
-    # export GLFW_IM_MODULE=ibus
-
-    dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
-    exec ${config.programs.hyprland.package}/bin/start-hyprland -- --config /etc/greetd/hyprland.conf
+  hyprland-greeter = pkgs.writeShellScriptBin "hyprland-greeter" ''
+    exec ${hyprland}/bin/start-hyprland -- --config /etc/greetd/hypr/hyprland.lua
   '';
 in
 {
-  # services.logind = {
-  #   settings = {
-  #     Login = {
-  #       HandleLidSwitch = "suspend";
-  #       HandleLidSwitchExternalPower = "lock";
-  #     };
-  #   };
-  # };
-
+  # Disabled by default; hosts opt in with lib.mkForce true (see rds,
+  # bbrain-linux).
   services.greetd = {
     enable = false;
     settings = {
       default_session = {
-        command = "${hyprland-kiosk}/bin/hyprland-kiosk";
+        command = "${hyprland-greeter}/bin/hyprland-greeter";
         user = "greeter";
       };
     };
   };
-
-  # users.users.greeter = {
-  #   home = "/home/greeter";
-  #   createHome = true;
-  # };
 
   services.displayManager.regreet.enable = false;
   services.displayManager.regreet.settings = {
     background = {
       path = "${default.wallpaper}";
       fit = "Cover";
-      # color = "#282a36";
     };
     GTK = {
       theme_name = lib.mkForce "Catppuccin-Mocha-Compact-Mauve-Dark";
@@ -67,28 +67,15 @@ in
   };
 
   environment.systemPackages = [
-    cage-kiosk
-    hyprland-kiosk
-    pkgs.gtkgreet
-    pkgs.cage
+    hyprland-greeter
     pkgs.fluent-gtk-theme
-    # pkgs.qt6.qtwayland
   ];
 
-  environment.etc."greetd/environments".text = "zsh";
-  environment.etc."greetd/gtkgreet.css".text = ''
-    window {
-        background-color: black;
-        color: white;
-    }
-  '';
-  # environment.etc."greetd/hyprland.conf".text = ''
-  #   source = /etc/hypr/default.conf
-  #   exec = systemd-cat --identifier=gtkgreet ${pkgs.greetd.gtkgreet}/bin/gtkgreet -l -s /etc/greetd/gtkgreet.css; hyprctl dispatch exit ""
-  # '';
-  environment.etc."greetd/hyprland.conf".text = ''
-    source = /etc/hypr/default.conf
-    exec-once=dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
-    exec = systemd-cat --identifier=regreet ${pkgs.regreet}/bin/regreet; hyprctl dispatch exit ""
-  '';
+  environment.etc = {
+    "greetd/hypr/hyprland.lua".source = greeterConfig;
+    "greetd/hypr/base".source = "${hyprDir}/base";
+  }
+  // lib.optionalAttrs (builtins.pathExists hostLua) {
+    "greetd/hypr/host.lua".source = hostLua;
+  };
 }

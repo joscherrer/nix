@@ -43,10 +43,10 @@
     pkgs.qt5.qtwayland
     pkgs.libva
     # pkgs.unstable.kdePackages.xwaylandvideobridge
-    pkgs.wineWowPackages.waylandFull
+    # pkgs.wineWowPackages.waylandFull
     pkgs.cifs-utils
     pkgs.qmk
-    pkgs.python311
+    # pkgs.python311
     pkgs.libvirt
     (pkgs.python3.withPackages (
       ps: with ps; [
@@ -58,6 +58,11 @@
         sh
         debugpy
         pywinrm
+        boto3
+        botocore
+        dbus-python
+        ansible-core
+        ansible
       ]
     ))
   ];
@@ -132,6 +137,11 @@
   };
 
   networking.hostName = "bbrain-linux"; # Define your hostname.
+
+  # greetd/regreet are disabled in hosts/common/greetd.nix since the Lua
+  # Hyprland config migration; re-enable them here (same as rds).
+  services.greetd.enable = lib.mkForce true;
+  services.displayManager.regreet.enable = lib.mkForce true;
   networking.networkmanager.enable = true;
 
   # Local k8s cluster with direct access
@@ -253,7 +263,8 @@
     open = false;
     powerManagement.enable = true;
     nvidiaSettings = true;
-    package = config.boot.kernelPackages.nvidiaPackages.production;
+    # GTX 1060 (Pascal) was dropped after the 580 branch; production is 595+.
+    package = config.boot.kernelPackages.nvidiaPackages.legacy_580;
   };
 
   environment.sessionVariables = {

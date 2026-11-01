@@ -93,22 +93,4 @@ in
   ];
 
   services.displayManager.sessionPackages = [ hyprland-log ];
-
-  environment.etc."greetd/environments".text = "hyprland";
-  environment.etc."hypr/default.conf".text = ''
-    monitor=desc:LG Electronics LG HDR WQHD+ 205NTCZ8L675,3840x1600@144,1920x0,auto
-    monitor=desc:Dell Inc. DELL U2415 7MT0167B2YNL,disable
-    monitor=desc:AOC 28E850,disable
-
-    $mainMod=SUPER
-    bind=$mainMod, M, exit,
-    misc {
-      disable_hyprland_logo = true
-    }
-
-    input {
-      kb_layout = us(intl),fr(azerty)
-      kb_options = grp:alt_space_toggle
-    }
-  '';
 }

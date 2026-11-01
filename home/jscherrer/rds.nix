@@ -118,7 +118,14 @@ in
 
   services.hyprfollow.enable = lib.mkForce false;
 
+  # Monitor layout + workspace sets, shared with the greeter (see
+  # dotfiles/common/.config/hypr/base/monitors.lua).
   wayland.windowManager.hyprland = {
+    extraLuaFiles.host = {
+      autoLoad = false;
+      content = builtins.readFile ../../dotfiles/hosts/rds/hypr/host.lua;
+    };
+
     settings = {
 
       on = {

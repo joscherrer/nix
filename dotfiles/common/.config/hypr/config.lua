@@ -1,3 +1,8 @@
+-- Session-only settings. Input, monitors and cursor/GPU env live in base/,
+-- which the greeter shares.
+hl.env("GTK_THEME", "rose-pine")
+hl.env("XMODIFIERS", "")
+
 hl.config({
     xwayland = {
         force_zero_scaling = true,
@@ -19,18 +24,6 @@ hl.config({
             active_border = { colors = { "rgb(101618)", "rgb(303b41)" }, angle = 270 },
             inactive_border = { colors = { "rgb(22292d)", "rgb(85b7b0)" }, angle = 270 },
         },
-    },
-    input = {
-        touchpad = {
-            natural_scroll = false,
-        },
-        accel_profile = "flat",
-        follow_mouse = 2,
-        kb_layout = "us",
-        kb_options = "compose:ralt",
-        repeat_delay = 250,
-        repeat_rate = 60,
-        sensitivity = 0,
     },
     animations = {
         enabled = true,
