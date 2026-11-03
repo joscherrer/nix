@@ -155,5 +155,6 @@ in
     sshpass
     expect
     libsecret
+    trashy
   ];
 }
