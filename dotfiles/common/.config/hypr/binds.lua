@@ -50,10 +50,12 @@ hl.bind(mainMod .. " + " .. "mouse_down", hl.dsp.focus({ workspace = "e+1" }))
 hl.bind(mainMod .. " + " .. "mouse_up", hl.dsp.focus({ workspace = "e-1" }))
 -- hl.bind(mainMod .. " + " .. "CTRL + B", hl.dsp.window.tag("pin:bbrain"))
 -- hl.bind(mainMod .. " + " .. "CTRL + W", hl.dsp.window.tag("pin:work"))
-hl.bind("Print", hl.dsp.exec_cmd("slurp | grim -g - - | wl-copy"))
+hl.bind("Print",
+    hl.dsp.exec_cmd(
+        "geom=\"$(slurp)\" && mkdir -p \"$HOME\"/Screenshots && grim -g \"$geom\" - | tee \"$HOME\"/Screenshots/$(date +%Y-%m-%d_%H-%M-%S).png | wl-copy"))
 hl.bind("SHIFT" .. " + " .. "Print",
     hl.dsp.exec_cmd(
-        "hyprctl -j activewindow | jq -r ' \\(.at[0]),\\(.at[1]) \\(.size[0])x\\(.size[1]) '| grim -g - - | wl-copy"))
+        "mkdir -p \"$HOME\"/Screenshots && hyprctl -j activewindow | jq -r ' \\(.at[0]),\\(.at[1]) \\(.size[0])x\\(.size[1]) '| grim -g - - | tee \"$HOME\"/Screenshots/$(date +%Y-%m-%d_%H-%M-%S).png | wl-copy"))
 hl.bind("SUPER + CTRL + ALT + SHIFT" .. " + " .. "DELETE", hl.dsp.exit())
 hl.bind("CTRL + ALT" .. " + " .. "DELETE", hl.dsp.exec_cmd("wlogout -p layer-shell"))
 
