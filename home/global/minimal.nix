@@ -4,6 +4,16 @@ let
     url = "https://raw.githubusercontent.com/dandavison/delta/refs/heads/main/themes.gitconfig";
     sha256 = "sha256:1pkqd36ls3cc6xgycd6sawpnwvgbchs54dkgg007algkhqxv7wch";
   };
+
+  # trashy's generated zsh completion has a clap_complete bug: the top-level
+  # _arguments call defines two rest args ('*::paths...' and '*:::...->trashy'),
+  # which zsh rejects with "doubled rest argument definition". Drop it and let
+  # zsh fall back to plain filename completion instead.
+  trashy = pkgs.trashy.overrideAttrs (old: {
+    postInstall = (old.postInstall or "") + ''
+      rm -f $out/share/zsh/site-functions/_trash
+    '';
+  });
 in
 {
   imports = [
