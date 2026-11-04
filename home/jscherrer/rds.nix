@@ -99,6 +99,9 @@ in
     pkgs.brightnessctl
     pkgs.openvpn3
     pkgs.openvpn3-indicator
+    # pkgs.python313
+    pkgs.python311
+    pkgs.pyenv
   ];
 
   # home.sessionVariables = {

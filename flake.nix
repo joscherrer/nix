@@ -90,6 +90,26 @@
       #   });
       # };
 
+      # azure-cli pulls in python3Packages.fabric, which declares a hard
+      # `invoke<3.0,>=2.0` requirement but nixpkgs ships invoke 3.0.3,
+      # failing pythonRuntimeDepsCheckHook. fabric's test suite also isn't
+      # updated for invoke 3.x's API, so its checkPhase fails outright.
+      # azure-cli builds its own python3.override'd env (discarding
+      # packageOverrides set here), so the fix has to go through
+      # pythonPackagesExtensions instead, which applies regardless of how
+      # many times python3 gets re-overridden.
+      # https://github.com/fabric/fabric/issues/2376
+      overlay-fabric-fix = final: prev: {
+        pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
+          (pyFinal: pyPrev: {
+            fabric = pyPrev.fabric.overridePythonAttrs (old: {
+              pythonRelaxDeps = [ "invoke" ];
+              doCheck = false;
+            });
+          })
+        ];
+      };
+
       overlay-dolphin = final: prev: {
         kdePackages = prev.kdePackages.overrideScope (
           kfinal: kprev: {
@@ -122,6 +142,7 @@
         stable = overlay-stable;
         inherit overlay-kubectx;
         # inherit overlay-terraform;
+        inherit overlay-fabric-fix;
         inherit overlay-dolphin;
       };
 

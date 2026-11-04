@@ -50,7 +50,6 @@ let
 
     complete -o nospace -C ${pkgs.vault-bin}/bin/vault vault
     complete -o nospace -C ${pkgs.awscli2}/bin/aws_completer aws
-    complete -o nospace -C ${pkgs.minio-client}/bin/mc mc
     complete -o nospace -C ${pkgs.opentofu}/bin/tofu tofu
 
     source ${pkgs.openvpn3}/share/bash-completion/completions/openvpn3

@@ -37,7 +37,6 @@
     vault-bin
     open-policy-agent
     ibmcloud-cli
-    minio-client
     azure-cli
     natscli
     postgresql

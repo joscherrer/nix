@@ -72,12 +72,14 @@ in
   };
   virtualisation.containers = {
     enable = true;
-    registries.search = [
-      "registry.access.redhat.com"
-      "docker.io"
-      "quay.io"
-      "ghcr.io"
-    ];
+    registries.settings = {
+      unqualified-search-registries = [
+        "registry.access.redhat.com"
+        "docker.io"
+        "quay.io"
+        "ghcr.io"
+      ];
+    };
     # registries.insecure = ["cr.dns.podman" "cr.dns.podman:5000" "kind-cr.dns.podman:5000" "localhost:5000"];
   };
 

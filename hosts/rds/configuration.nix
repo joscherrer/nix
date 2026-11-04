@@ -117,8 +117,12 @@
   };
 
   nixpkgs.config.permittedInsecurePackages = [
-    "segger-jlink-qt4-952"
+    "segger-jlink-qt4-970"
   ];
+
+  nixpkgs.config.problems.handlers = {
+    fabric.broken = "warn";
+  };
 
   services.udev.packages = [
     pkgs.nrf-udev
