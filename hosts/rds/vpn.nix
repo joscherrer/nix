@@ -35,6 +35,16 @@
     key = "wgEndpoint";
   };
 
+  # The actual IKE PSK + XAUTH password for the claranet connection, used
+  # directly (no templating needed: libreswan's secretsfile format is the
+  # whole decrypted file as-is).
+  sops.secrets."claranet-ipsec-secrets" = {
+    sopsFile = ../../secrets/claranet.sops.secrets;
+    format = "binary";
+    path = "/etc/ipsec.d/claranet.secrets";
+    restartUnits = [ "ipsec.service" ];
+  };
+
   sops.templates."claranet-ipsec.conf" = {
     content = ''
       conn claranet
