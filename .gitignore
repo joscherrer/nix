@@ -6,6 +6,3 @@ dotfiles/common/.config/nvim/lua/nix/
 scripts/hyprfollow/result
 scripts/hyprfollow/flake.lock
 
-vpn.nix
-
-.sops.yaml

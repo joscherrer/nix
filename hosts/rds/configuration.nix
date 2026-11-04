@@ -18,6 +18,8 @@
     ./hardware-configuration.nix
   ];
 
+  sops.age.keyFile = "/home/jscherrer/.config/sops/age/keys.txt";
+
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
