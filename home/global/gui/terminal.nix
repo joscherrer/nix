@@ -7,6 +7,9 @@
     font.size = 13;
     settings = {
         clear_all_shortcuts = "yes";
+        # Don't restore the last window size/state (e.g. "maximized") on startup;
+        # let Hyprland tile new windows normally.
+        remember_window_size = "no";
     };
     keybindings = {
         "ctrl+shift+v" = "paste_from_clipboard";
